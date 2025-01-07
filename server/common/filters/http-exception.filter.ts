@@ -15,6 +15,7 @@ import {
   
       let code = HttpStatus.INTERNAL_SERVER_ERROR;
       let message = '服务器内部错误';
+      console.log(exception)
   
       if (exception instanceof HttpException) {
         code = exception.getStatus();

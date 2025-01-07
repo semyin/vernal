@@ -3,12 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { VpsModule } from "./vps.module";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticleModule } from './article/article.module';
+import { CategoryModule } from './category/category.module';
 import { Article } from './article/article.entity';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
 import { SnakeNamingStrategy } from "./common/utils/SnakeNamingStrategy";
+import { Category } from "./category/category.entity";
 
 // 获取当前文件的路径
 const __filename = fileURLToPath(import.meta.url);
@@ -29,10 +31,11 @@ const __dirname = dirname(__filename);
       password: process.env.DATABASE_PASSWORD, // 从环境变量中读取
       database: process.env.DATABASE_NAME, // 从环境变量中读取
       namingStrategy: new SnakeNamingStrategy(),
-      entities: [Article],
+      entities: [Article, Category],
       synchronize: false, // 关闭自动同步，因为我们手动创建了表
     }),
     ArticleModule, // 引入 ArticleModule
+    CategoryModule, // 引入 CategoryModule
   ],
   controllers: [
     AppController
