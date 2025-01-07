@@ -14,8 +14,6 @@ const __filename = fileURLToPath(import.meta.url);
 // 获取当前文件的目录路径
 const __dirname = dirname(__filename);
 
-console.log('app.module.ts', process.env.JWT_SECRET)
-
 @Module({
   imports: [
     ConfigModule.forRoot({ // 加载 .env 文件
