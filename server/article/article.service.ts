@@ -2,6 +2,8 @@ import { Injectable, NotFoundException  } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './article.entity';
+import { plainToInstance } from 'class-transformer';
+import { ArticleDto } from '../dto/article.dto';
 
 @Injectable()
 export class ArticleService {
@@ -15,6 +17,14 @@ export class ArticleService {
     return this.articleRepository.find();
   }
 
+  // 查询所有文章-带标签
+  async findAllWithTags(): Promise<ArticleDto[]> {
+    const articles = await this.articleRepository.find({
+      relations: ['articleTags', 'articleTags.tag'],
+    });
+    return plainToInstance(ArticleDto, articles, { excludeExtraneousValues: true });
+  }
+
   // 查询单篇文章
   async findOne(id: number): Promise<Article> {
     const article = await this.articleRepository.findOneBy({ id });
@@ -22,6 +32,18 @@ export class ArticleService {
       throw new NotFoundException(`Article with ID ${id} not found`);
     }
     return article;
+  }
+
+  // 查询单篇文章-带标签
+  async findOneWithTags(id: number): Promise<ArticleDto> {
+    const article = await this.articleRepository.findOne({
+      where: { id },
+      relations: ['articleTags', 'articleTags.tag'],
+    });
+    if (!article) {
+      throw new NotFoundException('文章不存在');
+    }
+    return plainToInstance(ArticleDto, article, { excludeExtraneousValues: true });
   }
 
   // 创建文章
