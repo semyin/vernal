@@ -33,9 +33,6 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
     const code =
       this.reflector.get<number>(RESPONSE_CODE, context.getHandler()) || 200;
 
-      console.log('Message:', message); // 调试输出
-      console.log('Code:', code); // 调试输出
-
     return next.handle().pipe(
       map((data) => ({
         code, // 默认成功状态码
