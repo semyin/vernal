@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException  } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Article } from './article.entity';
 import { plainToInstance } from 'class-transformer';
+import * as P from 'nestjs-paginate'
+import { Article } from './article.entity';
 import { ArticleDto } from '../dto/article.dto';
 
 @Injectable()
@@ -18,11 +19,39 @@ export class ArticleService {
   }
 
   // 查询所有文章-带标签
-  async findAllWithTags(): Promise<ArticleDto[]> {
-    const articles = await this.articleRepository.find({
-      relations: ['articleTags', 'articleTags.tag'],
+  async findAllWithTags(
+    query: P.PaginateQuery,
+    title?: string
+  ): Promise<ArticleDto[]> {
+
+    const queryBuilder = this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.articleTags', 'articleTags')
+      .leftJoinAndSelect('articleTags.tag', 'tag')
+      .orderBy('article.createdAt', 'DESC');
+      if (title) {
+        queryBuilder.andWhere('article.title LIKE :title', {
+          title: `%${title}%`, // 模糊匹配
+        });
+      }
+
+    const paginatedArticles = await P.paginate<Article>(query, queryBuilder, {
+      filterableColumns: { // 指定可过滤的列
+        title: true, // 允许对 title 列进行过滤
+        isPublished: true, // 允许对 isPublished 列进行过滤
+      },
+      sortableColumns: ['createdAt'], // 可排序的列
+      defaultSortBy: [['createdAt', 'DESC']], // 默认排序规则
+      maxLimit: 100, // 每页最大记录数
     });
-    return plainToInstance(ArticleDto, articles, { excludeExtraneousValues: true });
+
+    console.log('-----', paginatedArticles)
+
+    const items = plainToInstance(ArticleDto, paginatedArticles.data, {
+      excludeExtraneousValues: true,
+    });
+
+    return items;
   }
 
   // 查询单篇文章

@@ -16,7 +16,7 @@ export class Article {
 
   @OneToMany(() => ArticleTag, (articleTag) => articleTag.article)
   @Exclude() // 排除 articleTags 字段
-  articleTags!: ArticleTag[];
+  articleTags?: ArticleTag[];
 
   // 计算属性，返回简化后的标签列表
   @Expose() // 暴露 tags 字段
@@ -28,34 +28,31 @@ export class Article {
   }
 
   @Column({ length: 500, nullable: true })
-  summary!: string;
+  summary?: string;
 
   @Column()
   authorId!: number;
 
   @Column({ nullable: true })
-  categoryId!: number;
-
-  // @Column({ length: 255, nullable: true })
-  // tags!: string;
+  categoryId?: number;
 
   @Column({ length: 255, nullable: true })
-  coverImage!: string;
+  coverImage?: string;
 
   @Column({ default: false })
-  isPublished!: boolean;
+  isPublished?: boolean;
 
   @Column({ default: false })
-  isTop!: boolean;
+  isTop?: boolean;
 
   @Column({ default: 0 })
-  viewCount!: number;
+  viewCount?: number;
 
   @Column({ default: 0 })
-  likeCount!: number;
+  likeCount?: number;
 
   @Column({ default: 0 })
-  commentCount!: number;
+  commentCount?: number;
 
   @CreateDateColumn()
   @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串

@@ -1,15 +1,19 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Patch, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { Article } from './article.entity';
-import { ArticleDto } from 'server/dto/article.dto';
+import { ArticleDto } from '../dto/article.dto';
+import * as P from 'nestjs-paginate'
 
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) { }
 
   @Get()
-  findAll(): Promise<ArticleDto[]> {
-    return this.articleService.findAllWithTags();
+  findAll(
+    @P.Paginate() query: P.PaginateQuery,
+    @Query('title') title: string
+  ): Promise<ArticleDto[]> {
+    return this.articleService.findAllWithTags(query, title);
   }
 
   @Get(':id')
