@@ -10,6 +10,14 @@ import { TagModule } from './tag/tag.module';
 import { Tag } from './tag/tag.entity';
 import { ArticleTagModule } from './article-tag/article-tag.module';
 import { ArticleTag } from './article-tag/article-tag.entity';
+import { UserModule } from "./user/user.module";
+import { User } from "./user/user.entity";
+import { LikeModule } from "./like/like.module";
+import { Like } from "./like/like.entity";
+import { BriefModule } from "./brief/brief.module";
+import { Brief } from "./brief/brief.entity";
+import { CommentModule } from "./comment/comment.module";
+import { Comment } from "./comment/comment.entity";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { AppService } from "./app.service";
@@ -39,7 +47,11 @@ const __dirname = dirname(__filename);
         Article, 
         Category,
         Tag,
-        ArticleTag
+        ArticleTag,
+        User,
+        Like,
+        Brief,
+        Comment,
       ],
       synchronize: false, // 关闭自动同步，因为我们手动创建了表
     }),
@@ -47,6 +59,10 @@ const __dirname = dirname(__filename);
     CategoryModule, // 注册 CategoryModule
     TagModule, // 注册 TagModule
     ArticleTagModule, // 注册 ArticleTagModule
+    UserModule, // 注册 UserModule
+    LikeModule, // 注册 LikeModule
+    BriefModule, // 注册 BriefModule
+    CommentModule, // 注册 CommentModule
   ],
   controllers: [
     AppController

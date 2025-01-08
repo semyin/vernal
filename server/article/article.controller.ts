@@ -5,7 +5,7 @@ import { ArticleDto } from 'server/dto/article.dto';
 
 @Controller('articles')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleService) { }
 
   @Get()
   findAll(): Promise<ArticleDto[]> {

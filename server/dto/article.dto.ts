@@ -1,5 +1,5 @@
-// src/article/dto/article.dto.ts
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
+import { format } from 'date-fns'
 
 export class TagDto {
   @Expose()
@@ -51,8 +51,10 @@ export class ArticleDto {
   commentCount?: number;
 
   @Expose()
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   createdAt!: Date;
 
   @Expose()
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   updatedAt!: Date;
 }
