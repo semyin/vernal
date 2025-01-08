@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDto, UpdateCommentDto } from '../dto/comment.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CommentService {
@@ -22,12 +23,14 @@ export class CommentService {
     const comments = await this.commentRepository.find({
       relations: ['user', 'children'], // 加载用户和子评论
     });
-    return this.buildCommentTree(comments); // 手动构建树形结构
+    const result = plainToInstance(Comment, comments);
+    return this.buildCommentTree(result); // 手动构建树形结构
   }
 
   // 查询单个评论
   async findOne(id: number): Promise<Comment | null> {
-    return this.commentRepository.findOne({ where: { id } });
+    const comment = this.commentRepository.findOne({ where: { id } });
+    return plainToInstance(Comment, comment);
   }
 
   // 更新评论
@@ -42,11 +45,26 @@ export class CommentService {
   }
 
   // 查询目标的所有评论
-  async findByTarget(targetId: number, targetType: 'article' | 'brief'): Promise<Comment[]> {
-    return this.commentRepository.find({
-      where: { targetId, targetType },
-      relations: ['user', 'children'], // 加载用户和子评论
-    });
+  async findByTarget(targetId: number, targetType: 'article' | 'brief' | 'comment'): Promise<Comment[]> {
+    // 使用递归 CTE 查询所有评论及其关联的 user
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user') // 加载 user
+      .where('comment.targetId = :targetId', { targetId })
+      .andWhere('comment.targetType = :targetType', { targetType })
+      .getMany();
+
+    // 构建树形结构
+    const buildTree = (parentCommentId: number | null): Comment[] => {
+      return comments
+        .filter(comment => comment.parentCommentId === parentCommentId)
+        .map(comment => {
+          comment.children = buildTree(comment.id); // 递归构建子评论
+          return plainToInstance(Comment, comment);
+        });
+    };
+
+    return buildTree(null); // 从根评论开始构建
   }
 
   // 构建树形结构

@@ -1,6 +1,7 @@
 import { ArticleTag } from 'server/article-tag/article-tag.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
+import { format } from 'date-fns';
 
 @Entity()
 export class Article {
@@ -57,8 +58,10 @@ export class Article {
   commentCount!: number;
 
   @CreateDateColumn()
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   createdAt!: Date;
 
   @UpdateDateColumn()
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   updatedAt!: Date;
 }

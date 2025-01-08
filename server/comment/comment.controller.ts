@@ -49,7 +49,7 @@ export class CommentController {
   @Get('target/:targetId')
   async findByTarget(
     @Param('targetId') targetId: number,
-    @Query('targetType') targetType: 'article' | 'brief',
+    @Query('targetType') targetType: 'article' | 'brief' | 'comment',
   ) {
     return this.commentService.findByTarget(targetId, targetType);
   }
