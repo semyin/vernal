@@ -44,7 +44,7 @@ const __dirname = dirname(__filename);
       database: process.env.DATABASE_NAME, // 从环境变量中读取
       namingStrategy: new SnakeNamingStrategy(),
       entities: [
-        Article, 
+        Article,
         Category,
         Tag,
         ArticleTag,
