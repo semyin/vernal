@@ -1,6 +1,6 @@
 export { Page };
 
-import { useData } from "../../../renderer/useData";
+import { useData } from 'vike-react/useData'
 import type { Data } from "./+data";
 
 function Page() {

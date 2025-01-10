@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import type { Relation } from 'typeorm'
 import { Like } from '../like/like.entity';
 import { Brief } from 'server/brief/brief.entity';
 import { Exclude } from 'class-transformer';
@@ -39,13 +40,13 @@ export class User {
 
   // 用户与点赞的关系
   @OneToMany(() => Like, (like) => like.user)
-  likes?: Like[];
+  likes?: Relation<Like>[];
 
   // 用户与简讯的关系
   @OneToMany(() => Brief, (brief) => brief.author)
-  briefs?: Brief[];
+  briefs?: Relation<Brief>[];
 
    // 用户与评论的关系
    @OneToMany(() => Comment, (comment) => comment.user)
-   comments?: Comment[];
+   comments?: Relation<Comment>[];
 }

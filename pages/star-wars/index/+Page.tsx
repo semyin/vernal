@@ -1,10 +1,21 @@
 export default Page;
 
-import { useData } from "../../../renderer/useData";
+import { useData } from 'vike-react/useData'
+import { usePageContext } from 'vike-react/usePageContext'
 import type { Data } from "./+data";
+import { useEffect } from 'react';
 
 function Page() {
 	const { movies } = useData<Data>();
+  const pageContext = usePageContext()
+
+
+  useEffect(() => {
+    console.log(
+      pageContext
+    );
+  })
+
 	return (
 		<>
 			<h1>Star Wars Movies</h1>

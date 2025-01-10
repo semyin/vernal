@@ -45,8 +45,6 @@ export class ArticleService {
       maxLimit: 100, // 每页最大记录数
     });
 
-    console.log('-----', paginatedArticles)
-
     const items = plainToInstance(ArticleDto, paginatedArticles.data, {
       excludeExtraneousValues: true,
     });

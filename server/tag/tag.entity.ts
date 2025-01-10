@@ -1,7 +1,8 @@
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import type { Relation } from 'typeorm'
 import { Transform } from 'class-transformer';
 import { format } from 'date-fns';
 import { ArticleTag } from 'server/article-tag/article-tag.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('tag')
 export class Tag {
@@ -12,7 +13,7 @@ export class Tag {
   name!: string;
 
   @OneToMany(() => ArticleTag, (articleTag) => articleTag.tag)
-  articleTags!: ArticleTag[];
+  articleTags!: Relation<ArticleTag>[];
 
   @CreateDateColumn()
   @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串

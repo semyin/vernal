@@ -1,7 +1,8 @@
-import { ArticleTag } from 'server/article-tag/article-tag.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import type { Relation } from 'typeorm'
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { format } from 'date-fns';
+import { ArticleTag } from 'server/article-tag/article-tag.entity';
 
 @Entity()
 export class Article {
@@ -16,7 +17,7 @@ export class Article {
 
   @OneToMany(() => ArticleTag, (articleTag) => articleTag.article)
   @Exclude() // 排除 articleTags 字段
-  articleTags?: ArticleTag[];
+  articleTags?: Relation<ArticleTag>[];
 
   // 计算属性，返回简化后的标签列表
   @Expose() // 暴露 tags 字段

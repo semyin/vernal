@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
+import type { Relation } from 'typeorm'
 import { User } from '../user/user.entity';
 import { Expose, Transform } from 'class-transformer';
 import { format } from 'date-fns';
@@ -54,7 +55,7 @@ export class Comment {
     return null;
   })
   @Expose()
-  user!: User;
+  user!: Relation<User>;
 
   // 子评论
   @OneToMany(() => Comment, (comment) => comment.parent)
@@ -72,10 +73,10 @@ export class Comment {
     return [];
   })
   @Expose()
-  children?: Comment[];
+  children?: Relation<Comment>[];
 
   // 父评论
   @ManyToOne(() => Comment, (comment) => comment.children)
   @JoinColumn({ name: 'parent_comment_id' })
-  parent?: Comment;
+  parent?: Relation<Comment>;
 }

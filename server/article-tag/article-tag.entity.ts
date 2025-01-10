@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import type { Relation } from 'typeorm'
 import { Article } from '../article/article.entity';
 import { Tag } from '../tag/tag.entity';
 
@@ -13,9 +14,9 @@ export class ArticleTag {
 
   @ManyToOne(() => Article, (article) => article.articleTags)
   @JoinColumn({ name: 'article_id' })
-  article!: Article;
+  article!: Relation<Article>;
 
   @ManyToOne(() => Tag, (tag) => tag.articleTags)
   @JoinColumn({ name: 'tag_id' })
-  tag!: Tag;
+  tag!: Relation<Tag>;
 }
