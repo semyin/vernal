@@ -4,7 +4,7 @@ function Page() {
 
 	return (
 		<Center>
-			<p style={{ fontSize: "1.3em" }}>{'Page not found.'}</p>
+			<p style={{ fontSize: "1.3em" }}>Page not found.</p>
 		</Center>
 	);
 }
