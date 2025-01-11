@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from '@nestjs/config';
 import { VpsModule } from "./vps.module";
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from "./common/utils/SnakeNamingStrategy";
 import { ArticleModule } from './article/article.module';
 import { Article } from './article/article.entity';
 import { CategoryModule } from './category/category.module';
@@ -18,11 +19,12 @@ import { BriefModule } from "./brief/brief.module";
 import { Brief } from "./brief/brief.entity";
 import { CommentModule } from "./comment/comment.module";
 import { Comment } from "./comment/comment.entity";
+import { Site } from "./site/site.entity";
+import { SiteModule } from "./site/site.module";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
-import { SnakeNamingStrategy } from "./common/utils/SnakeNamingStrategy";
 
 // 获取当前文件的路径
 const __filename = fileURLToPath(import.meta.url);
@@ -52,6 +54,7 @@ const __dirname = dirname(__filename);
         Like,
         Brief,
         Comment,
+        Site,
       ],
       synchronize: false, // 关闭自动同步，因为我们手动创建了表
     }),
@@ -63,6 +66,7 @@ const __dirname = dirname(__filename);
     LikeModule, // 注册 LikeModule
     BriefModule, // 注册 BriefModule
     CommentModule, // 注册 CommentModule
+    SiteModule, // 注册 SiteModule
   ],
   controllers: [
     AppController
