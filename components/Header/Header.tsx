@@ -2,10 +2,14 @@ export default Header
 
 function Header() {
 
-  const SITE_NAME = import.meta.env.VITE_SITE_NAME
-  console.log(SITE_NAME);
+  const siteName = import.meta.env.VITE_SITE_NAME
 
   return (
-    <header></header>
+    <header>
+      <div className="header-wrapper">
+        <div className="title">{ siteName }</div>
+        <div className="title-desc"></div>
+      </div>
+    </header>
   )
 }
