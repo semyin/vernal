@@ -1,3 +1,5 @@
+import { Transform } from 'class-transformer';
+import { format } from 'date-fns';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('site')
@@ -21,5 +23,6 @@ export class Site {
   icp!: string; // 备案号
 
   @Column({ name: 'run_time', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   runTime!: Date; // 运行时间
 }
