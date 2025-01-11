@@ -6,6 +6,8 @@ export default {
   // favicon
   favicon,
 
+  lang: 'zh-CN',
+
   // Setting to toggle SSR
   ssr: true,
 
