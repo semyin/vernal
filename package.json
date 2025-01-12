@@ -1,5 +1,5 @@
 {
-  "name": "@vavite/example-nestjs-vike",
+  "name": "vernal",
   "private": true,
   "type": "module",
   "scripts": {
@@ -34,7 +34,6 @@
     "@nestjs/platform-express": "^10.4.12",
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/typeorm": "^10.0.2",
-    "@vavite/example-nestjs-vike": "file:",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "date-fns": "^4.1.0",
@@ -48,6 +47,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
+    "vernal": "file:",
     "vike": "^0.4.205",
     "vike-react": "^0.5.11"
   }
