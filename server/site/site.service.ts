@@ -28,10 +28,11 @@ export class SiteService extends BaseService implements OnModuleInit {
     if (!this.siteConfig) {
       this.logger.log('No configuration file, creating...')
       // 如果数据库中没有配置，初始化默认配置
-      const envVars = ['VITE_SITE_URL', 'VITE_SITE_NAME', 'VITE_SITE_DESC', 'VITE_SITE_COPYRIGHT', 'VITE_SITE_ICP'];
+      const envVars = ['VITE_SITE_URL', 'VITE_SITE_NAME', 'VITE_SITE_COPYRIGHT', 'VITE_SITE_ICP'];
+      // 必要配置做校验
       for (const envVar of envVars) {
         if (!process.env[envVar]) {
-          throw new Error(`Environment variable ${envVar} is missing`);
+          throw new Error(`Environment variable ${envVar} is missing in .env file`);
         }
       }
       const { VITE_SITE_URL, VITE_SITE_NAME, VITE_SITE_DESC, VITE_SITE_COPYRIGHT, VITE_SITE_ICP } = process.env;
