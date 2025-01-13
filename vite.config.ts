@@ -13,6 +13,18 @@ export default defineConfig(({ mode }) => {
 		server: {
 			port
 		},
+    resolve: {
+      alias: {
+        "#root": __dirname,
+      }
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler'
+        }
+      }
+    },
 		buildSteps: [
 			{
 				name: "client",
