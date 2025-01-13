@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
+import Header from "#root/components/Header/Header";
+import Footer from "#root/components/Footer/Footer";
 
 export {
   Layout
