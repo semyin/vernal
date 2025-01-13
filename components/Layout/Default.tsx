@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "#root/components/Header/Header";
 import Footer from "#root/components/Footer/Footer";
+import styles from "#root/components/Layout/Default.module.scss"
 
 export {
   Layout
@@ -11,10 +12,12 @@ function Layout(
     { children: React.ReactNode }
 ) {
   return (
-    <div className="default-layout">
-      <Header/>
-      {children}
-      <Footer/>
+    <div className={ styles['default-layout'] }>
+      <div className={ styles['main-wrapper'] }>
+        <Header/>
+        {children}
+        <Footer/>
+      </div>
     </div>
   )
 }
