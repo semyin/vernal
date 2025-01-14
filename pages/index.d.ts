@@ -6,6 +6,7 @@ declare global {
       abortReason:
         | string
         | { notAdmin: true }
+      a: string
     }
   }
 }
