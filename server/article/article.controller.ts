@@ -11,14 +11,16 @@ export class ArticleController {
   @Get()
   findAll(
     @P.Paginate() query: P.PaginateQuery,
-    @Query('title') title: string
+    @Query('title') title: string,
+    @Query('withTags') withTags: boolean,
+    @Query('withMetas') withMetas: boolean
   ): Promise<ArticleDto[]> {
-    return this.articleService.findAllWithTags(query, title);
+    return this.articleService.findAll(query, title, withTags, withMetas);
   }
 
   @Get(':id')
   findOne(@Param('id') id: number): Promise<ArticleDto> {
-    return this.articleService.findOneWithTags(id);
+    return this.articleService.findOneWithTagsAndMetas(id);
   }
 
   @Post()

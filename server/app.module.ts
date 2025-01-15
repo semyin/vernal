@@ -21,6 +21,8 @@ import { CommentModule } from "./comment/comment.module";
 import { Comment } from "./comment/comment.entity";
 import { Site } from "./site/site.entity";
 import { SiteModule } from "./site/site.module";
+import { Meta } from "./meta/meta.entity";
+import { MetaModule } from "./meta/meta.module";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { AppService } from "./app.service";
@@ -55,6 +57,7 @@ const __dirname = dirname(__filename);
         Brief,
         Comment,
         Site,
+        Meta,
       ],
       synchronize: false, // 关闭自动同步，因为我们手动创建了表
     }),
@@ -67,6 +70,7 @@ const __dirname = dirname(__filename);
     BriefModule, // 注册 BriefModule
     CommentModule, // 注册 CommentModule
     SiteModule, // 注册 SiteModule
+    MetaModule, // 注册 MetaModule
   ],
   controllers: [
     AppController

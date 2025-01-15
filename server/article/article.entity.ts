@@ -3,6 +3,7 @@ import type { Relation } from 'typeorm'
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { format } from 'date-fns';
 import { ArticleTag } from 'server/article-tag/article-tag.entity';
+import { Meta } from '../meta/meta.entity';
 
 @Entity()
 export class Article {
@@ -22,10 +23,11 @@ export class Article {
   // 计算属性，返回简化后的标签列表
   @Expose() // 暴露 tags 字段
   get tags() {
+    if (!this.articleTags) return undefined;
     return this.articleTags?.map((articleTag) => ({
       id: articleTag.tag.id,
       name: articleTag.tag.name,
-    })) || [];
+    }));
   }
 
   @Column({ length: 500, nullable: true })
@@ -62,4 +64,7 @@ export class Article {
   @UpdateDateColumn()
   @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   updatedAt!: Date;
+
+  @OneToMany(() => Meta, (meta) => meta.resource)
+  metas?: Relation<Meta[]>;
 }

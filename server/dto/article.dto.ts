@@ -1,12 +1,41 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { format } from 'date-fns'
 
-export class TagDto {
+export class ArticleTagDto {
   @Expose()
   id!: number;
 
   @Expose()
   name!: string;
+}
+
+export class ArticleMetaDto {
+  @Expose()
+  id!: number;
+
+  @Expose()
+  name!: string;
+
+  @Expose()
+  property?: string;
+
+  @Expose()
+  content!: string;
+
+  @Expose()
+  isDefault!: boolean;
+
+  @Expose()
+  resourceType?: string;
+
+  @Expose()
+  resourceId?: number;
+
+  @Expose()
+  createdAt!: Date;
+
+  @Expose()
+  updatedAt!: Date;
 }
 
 export class ArticleDto {
@@ -20,8 +49,12 @@ export class ArticleDto {
   content!: string;
 
   @Expose()
-  @Type(() => TagDto) // 指定 tags 字段的类型
-  tags!: TagDto[];
+  @Type(() => ArticleTagDto) // 指定 tags 字段的类型
+  tags?: ArticleTagDto[];
+
+  @Expose()
+  @Type(() => ArticleMetaDto)
+  metas!: ArticleMetaDto[]; // 定义 metas 字段
 
   @Expose()
   summary?: string;

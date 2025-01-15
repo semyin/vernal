@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException  } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
@@ -11,29 +11,37 @@ export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
-  ) {}
-
-  // 查询所有文章
-  findAll(): Promise<Article[]> {
-    return this.articleRepository.find();
-  }
+  ) { }
 
   // 查询所有文章-带标签
-  async findAllWithTags(
+  async findAll(
     query: P.PaginateQuery,
-    title?: string
+    title?: string,
+    withTags?: boolean,
+    withMetas?: boolean
   ): Promise<ArticleDto[]> {
 
     const queryBuilder = this.articleRepository
       .createQueryBuilder('article')
-      .leftJoinAndSelect('article.articleTags', 'articleTags')
-      .leftJoinAndSelect('articleTags.tag', 'tag')
       .orderBy('article.createdAt', 'DESC');
-      if (title) {
-        queryBuilder.andWhere('article.title LIKE :title', {
-          title: `%${title}%`, // 模糊匹配
-        });
-      }
+    // 动态加载 tags 数据
+    if (withTags) {
+      queryBuilder
+        .leftJoinAndSelect('article.articleTags', 'articleTags')
+        .leftJoinAndSelect('articleTags.tag', 'tag');
+    }
+
+    // 动态加载 metas 数据
+    if (withMetas) {
+      queryBuilder
+        .leftJoinAndSelect('article.metas', 'metas');
+    }
+
+    if (title) {
+      queryBuilder.andWhere('article.title LIKE :title', {
+        title: `%${title}%`, // 模糊匹配
+      });
+    }
 
     const paginatedArticles = await P.paginate<Article>(query, queryBuilder, {
       filterableColumns: { // 指定可过滤的列
@@ -62,10 +70,10 @@ export class ArticleService {
   }
 
   // 查询单篇文章-带标签
-  async findOneWithTags(id: number): Promise<ArticleDto> {
+  async findOneWithTagsAndMetas(id: number): Promise<ArticleDto> {
     const article = await this.articleRepository.findOne({
       where: { id },
-      relations: ['articleTags', 'articleTags.tag'],
+      relations: ['articleTags', 'articleTags.tag', 'metas'],
     });
     if (!article) {
       throw new NotFoundException('文章不存在');
