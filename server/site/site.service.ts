@@ -7,7 +7,7 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class SiteService extends BaseService implements OnModuleInit {
-  private siteConfig!: Site | null; // 内存中的配置
+  private site!: Site | null; // 内存中的配置
 
   constructor(
     @InjectRepository(Site)
@@ -24,8 +24,8 @@ export class SiteService extends BaseService implements OnModuleInit {
   // 从数据库加载配置到内存
   private async loadConfigToMemory(): Promise<void> {
     this.logger.log('Load site configuration from database...')
-    this.siteConfig = await this.siteRepository.findOne({ where: { id: 1 } });
-    if (!this.siteConfig) {
+    this.site = await this.siteRepository.findOne({ where: { id: 1 } });
+    if (!this.site) {
       this.logger.log('No configuration file, creating...')
       // 如果数据库中没有配置，初始化默认配置
       const envVars = ['VITE_SITE_URL', 'VITE_SITE_NAME', 'VITE_SITE_COPYRIGHT', 'VITE_SITE_ICP'];
@@ -36,7 +36,7 @@ export class SiteService extends BaseService implements OnModuleInit {
         }
       }
       const { VITE_SITE_URL, VITE_SITE_NAME, VITE_SITE_DESC, VITE_SITE_COPYRIGHT, VITE_SITE_ICP } = process.env;
-      this.siteConfig = await this.initConfig({
+      this.site = await this.initConfig({
         name: VITE_SITE_NAME,
         description: VITE_SITE_DESC,
         url: VITE_SITE_URL,
@@ -46,7 +46,7 @@ export class SiteService extends BaseService implements OnModuleInit {
       });
     }
     this.logger.log('Site configuration file read successful')
-    this.logger.log('Site configuration:', JSON.stringify(plainToInstance(Site, this.siteConfig)));
+    this.logger.log('Site configuration:', JSON.stringify(plainToInstance(Site, this.site)));
   }
 
   // 初始化配置（仅内部调用）
@@ -56,22 +56,22 @@ export class SiteService extends BaseService implements OnModuleInit {
   }
 
   // 获取内存中的配置
-  getConfig(): Site {
-    if (!this.siteConfig) {
+  getSite(): Site {
+    if (!this.site) {
       throw new NotFoundException('站点配置未加载');
     }
-    return plainToInstance(Site, this.siteConfig);
+    return plainToInstance(Site, this.site);
   }
 
   // 更新配置（同时更新内存和数据库）
   async updateConfig(siteData: Partial<Site>): Promise<Site> {
-    if (!this.siteConfig) {
+    if (!this.site) {
       throw new NotFoundException('站点配置未加载');
     }
     // 更新数据库
     await this.siteRepository.update(1, siteData);
     // 更新内存
-    this.siteConfig = { ...this.siteConfig, ...siteData };
-    return this.siteConfig;
+    this.site = { ...this.site, ...siteData };
+    return this.site;
   }
 }

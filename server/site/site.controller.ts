@@ -8,8 +8,8 @@ export class SiteController {
 
   // 获取内存中的站点配置
   @Get()
-  getConfig(): Site {
-    return this.siteService.getConfig();
+  getSite(): Site {
+    return this.siteService.getSite();
   }
 
   // 更新站点配置
