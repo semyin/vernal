@@ -9,7 +9,9 @@ bootstrap();
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	app.setGlobalPrefix('api'); // 设置全局前缀为 /api
+  const { API_PREFIX = "/api" } = process.env
+  const globalPrefix = API_PREFIX ? API_PREFIX.replace('/', '') : 'api'
+	app.setGlobalPrefix(globalPrefix); // 设置全局前缀 没有读取到设置为 api
 	const reflector = app.get(Reflector); // 获取 Reflector 实例
 	app.useGlobalInterceptors(new TransformInterceptor(reflector)); // 全局注册拦截器
 	app.useGlobalFilters(new HttpExceptionFilter()); // 全局注册异常过滤器

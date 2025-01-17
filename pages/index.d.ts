@@ -1,4 +1,11 @@
 // https://vike.dev/pageContext#typescript
+import { Site } from "#root/types/Site"
+import { Meta } from "#root/types/Meta"
+
+interface SiteConfig {
+  site: Site,
+  metas: Meta[]
+}
 
 declare global {
   namespace Vike {
@@ -6,7 +13,7 @@ declare global {
       abortReason:
         | string
         | { notAdmin: true }
-      a: string
+      siteConfig: SiteConfig
     }
   }
 }
