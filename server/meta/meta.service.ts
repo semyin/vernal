@@ -24,6 +24,16 @@ export class MetaService {
     return plainToInstance(Meta, result);
   }
 
+  // 查询站点默认 meta
+  async getBaseMeta() :Promise<Meta[]> {
+    const result = await this.metaRepository.find({
+      where: {
+        isDefault: true
+      }
+    })
+    return plainToInstance(Meta, result);
+  }
+
   // 根据 resource_type 和 resource_id 查询 meta
   async findByResource(resourceType: string, resourceId: number): Promise<Meta[]> {
     const result = await this.metaRepository.find({

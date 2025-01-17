@@ -9,5 +9,6 @@ import { Article } from './../article/article.entity';
   imports: [TypeOrmModule.forFeature([Meta, Article])],
   providers: [MetaService],
   controllers: [MetaController],
+  exports: [MetaService], // 导出MetaService
 })
 export class MetaModule {}
