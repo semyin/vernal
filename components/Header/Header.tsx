@@ -7,13 +7,16 @@ import { Link } from "../Link/Link"
 function Header() {
 
   const pageContext = usePageContext();
-  const { name } = pageContext.site
+  const { name, description } = pageContext.site
 
   return (
-    <header style={styles}>
-      <div className={ styles.title }>{ name }</div>
-      <div className="title-desc"></div>
-      <Link href="/about">去about</Link>
+    <header>
+      <div className={styles.title}>
+        <Link href='/'>{name}</Link>
+        {
+          true && <span className="title-desc">{'这是一个描述'}</span>
+        }
+      </div>
     </header>
   )
 }

@@ -1,6 +1,7 @@
 export { Head };
 
 import  '../assets/css/reset.css'
+import '../assets/css/app.css'
 
 function Head() {
   return (

@@ -4,6 +4,20 @@ header {
 }
 
 .title {
-  font-size: 32px;
-  font-weight: 700;
+  a {
+    color: var(--heading-color);
+    text-decoration: none;
+    font-size: 32px;
+    font-weight: 700;
+    &:visited {
+      color: var(--heading-color);
+    }
+  }
+  span {
+    vertical-align: middle;
+    color: var(--heading-color);
+    font-weight: bold;
+    margin-left: 6px;
+    font-size: 12px;
+  }
 }
