@@ -23,7 +23,7 @@ export class SiteService extends BaseService implements OnModuleInit {
 
   // 从数据库加载配置到内存
   private async loadConfigToMemory(): Promise<void> {
-    this.logger.log('Load site configuration from database...')
+    this.logger.log('Load site configuration into memory from database...')
     this.site = await this.siteRepository.findOne({ where: { id: 1 } });
     if (!this.site) {
       this.logger.log('No configuration file, creating...')
@@ -45,8 +45,7 @@ export class SiteService extends BaseService implements OnModuleInit {
         runTime: new Date(),
       });
     }
-    this.logger.log('Site configuration file read successful')
-    this.logger.log('Site configuration:', JSON.stringify(plainToInstance(Site, this.site)));
+    this.logger.log('Site configuration file loaded successfully!', JSON.stringify(plainToInstance(Site, this.site)))
   }
 
   // 初始化配置（仅内部调用）

@@ -6,18 +6,30 @@ import { renderPage } from "vike/server";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import devServer from "vavite/http-dev-server";
 
+import { MetaModule } from './meta/meta.module';
+import { SiteModule } from "./site/site.module";
+import { SiteService } from "./site/site.service";
+import { MetaService } from "./meta/meta.service";
+
 const OPTIONS = Symbol.for("vike.options");
 
 interface ViteSsrOptions {
 	root?: string;
 }
 
-@Module({})
+@Module({
+  imports: [
+    MetaModule,
+    SiteModule
+  ]
+})
 export class VpsModule implements OnModuleInit {
 	constructor(
 		private readonly httpAdapterHost: HttpAdapterHost,
 		@Inject(OPTIONS)
 		private readonly viteSsrOptions: ViteSsrOptions,
+    private readonly siteService: SiteService,
+    private readonly metaService: MetaService
 	) {}
 
 	static forRoot(options?: ViteSsrOptions): DynamicModule {
@@ -56,7 +68,9 @@ export class VpsModule implements OnModuleInit {
 
 		app.get("*", async (req: Request, res: Response, next: NextFunction) => {
 			const urlOriginal = req.originalUrl;
-			const pageContext = await renderPage({ urlOriginal });
+      const site = this.siteService.getSite()
+      const metas = this.metaService.getBaseMeta()
+			const pageContext = await renderPage({ urlOriginal, site, metas });
 			const { httpResponse } = pageContext;
 			if (!httpResponse) {
 				next();

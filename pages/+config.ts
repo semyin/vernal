@@ -11,6 +11,9 @@ export default {
   // Setting to toggle SSR
   ssr: true,
 
+  passToClient: [
+    'site', 'metas'
+  ],
 
   extends: [vikeReact]
 }

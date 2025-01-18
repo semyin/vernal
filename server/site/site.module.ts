@@ -12,5 +12,6 @@ import { MetaModule } from '../meta/meta.module';
   ],
   providers: [SiteService], // 注册 SiteService
   controllers: [SiteController], // 注册 SiteController
+  exports: [SiteService], // 导出 SiteService
 })
 export class SiteModule {}

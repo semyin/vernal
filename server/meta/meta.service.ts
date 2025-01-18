@@ -1,50 +1,74 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Meta } from './meta.entity';
 import { plainToInstance } from 'class-transformer';
+import { BaseService } from '../common/service/base.service';
 
 @Injectable()
-export class MetaService {
+export class MetaService extends BaseService implements OnModuleInit {
+  private metaCache: Meta[] = []; // 内存中的 Meta 缓存
+
   constructor(
     @InjectRepository(Meta)
     private readonly metaRepository: Repository<Meta>,
-  ) {}
+  ) {
+    super(MetaService.name)
+  }
+
+  // 项目启动时加载 isDefault = true 的 Meta 数据到内存
+  async onModuleInit() {
+    await this.loadMetaToMemory();
+  }
+
+  // 加载 isDefault = true 的 Meta 数据到内存
+  private async loadMetaToMemory(): Promise<void> {
+    this.logger.log('Load Meta data into memory from database...');
+    this.metaCache = await this.metaRepository.find({ where: { isDefault: true } });
+    this.logger.log('Meta data loaded successfully!', JSON.stringify(plainToInstance(Meta, this.metaCache)));
+  }
+
+  // 获取内存中的 Meta 数据
+  getMetaCache(): Meta[] {
+    return this.metaCache;
+  }
 
   // 创建 meta
   async create(metaData: Partial<Meta>): Promise<Meta> {
     const meta = this.metaRepository.create(metaData);
     const result = await this.metaRepository.save(meta);
+
+    // 如果新创建的 meta 是默认的，更新内存缓存
+    if (metaData.isDefault) {
+      this.metaCache.push(result);
+    }
+
     return plainToInstance(Meta, result);
   }
 
   // 查询所有 meta
   async findAll(): Promise<Meta[]> {
-    const result = await this.metaRepository.find();
-    return plainToInstance(Meta, result);
+    return plainToInstance(Meta, await this.metaRepository.find()); // 从数据库中返回所有数据
   }
 
   // 查询站点默认 meta
-  async getBaseMeta() :Promise<Meta[]> {
-    const result = await this.metaRepository.find({
-      where: {
-        isDefault: true
-      }
-    })
-    return plainToInstance(Meta, result);
+  async getBaseMeta(): Promise<Meta[]> {
+    return plainToInstance(Meta, this.metaCache); // 从内存中返回默认数据
   }
 
   // 根据 resource_type 和 resource_id 查询 meta
   async findByResource(resourceType: string, resourceId: number): Promise<Meta[]> {
-    const result = await this.metaRepository.find({
-      where: { resourceType: resourceType, resourceId: resourceId },
-    });
-    return plainToInstance(Meta, result);
+    return plainToInstance(
+      Meta,
+      await this.metaRepository.find({
+        where: { resourceType, resourceId },
+      }),
+    ); // 从数据库中查询
   }
 
   // 根据 ID 查询 meta
   async findOne(id: number): Promise<Meta> {
-    const meta = await this.metaRepository.findOne({ where: { id } });
+    const meta = await this.metaRepository.findOne({ where: { id } }); // 从数据库中查询
     if (!meta) {
       throw new NotFoundException('Meta not found');
     }
@@ -56,6 +80,20 @@ export class MetaService {
     const meta = await this.findOne(id);
     Object.assign(meta, updateData);
     const result = await this.metaRepository.save(meta);
+
+    // 如果更新后的 meta 是默认的，更新内存缓存
+    if (updateData.isDefault) {
+      const index = this.metaCache.findIndex((m) => m.id === id);
+      if (index !== -1) {
+        this.metaCache[index] = result; // 更新缓存中的记录
+      } else {
+        this.metaCache.push(result); // 添加到缓存
+      }
+    } else {
+      // 如果更新后的 meta 不是默认的，从缓存中移除
+      this.metaCache = this.metaCache.filter((m) => m.id !== id);
+    }
+
     return plainToInstance(Meta, result);
   }
 
@@ -63,5 +101,8 @@ export class MetaService {
   async remove(id: number): Promise<void> {
     const meta = await this.findOne(id);
     await this.metaRepository.remove(meta);
+
+    // 从内存缓存中移除
+    this.metaCache = this.metaCache.filter((m) => m.id !== id);
   }
 }

@@ -13,7 +13,9 @@ declare global {
       abortReason:
         | string
         | { notAdmin: true }
-      siteConfig: SiteConfig
+      // custom
+      site: Site
+      metas: Meta[]
     }
   }
 }
