@@ -12,7 +12,9 @@ function Header() {
   return (
     <header>
       <div className={styles.title}>
-        <Link href='/'>{name}</Link>
+        {
+          name && <Link href='/'>{name}</Link>
+        }
         {
           description && <span className="title-desc">{description}</span>
         }
