@@ -3,7 +3,6 @@ import Header from "#root/components/Header/Header";
 import Footer from "#root/components/Footer/Footer";
 import NavBar from "#root/components/NavBar/NavBar";
 import styles from "#root/components/Layout/Default.module.scss"
-import BackToTop from "#root/components/BackToTop/BackToTop";
 
 export {
   Layout
@@ -18,8 +17,7 @@ function Layout(
       <div className={styles['main-wrapper']}>
         <Header />
         <NavBar />
-        {children}
-        <BackToTop />
+        <main className={styles["content"]}>{children}</main>
         <Footer />
       </div>
     </div>

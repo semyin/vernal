@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import styles from './BackToTop.module.scss'
 
 const BackToTop: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,12 +34,9 @@ const BackToTop: React.FC = () => {
   }
 
   return (
-    <a
-      onClick={scrollToTop}
-      style={{ cursor: "pointer", position: "fixed", bottom: "20px", right: "20px" }}
-    >
-      返回顶部
-    </a>
+    <div className={styles['back-to-top']}>
+      <a onClick={scrollToTop}>返回顶部 ↑</a>
+    </div>
   );
 };
 
