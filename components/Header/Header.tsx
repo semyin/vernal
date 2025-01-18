@@ -14,7 +14,7 @@ function Header() {
       <div className={styles.title}>
         <Link href='/'>{name}</Link>
         {
-          true && <span className="title-desc">{'这是一个描述'}</span>
+          description && <span className="title-desc">{description}</span>
         }
       </div>
     </header>

@@ -52,7 +52,7 @@ export class MetaService extends BaseService implements OnModuleInit {
   }
 
   // 查询站点默认 meta
-  async getBaseMeta(): Promise<Meta[]> {
+  getBaseMeta(): Meta[] {
     return plainToInstance(Meta, this.metaCache); // 从内存中返回默认数据
   }
 
