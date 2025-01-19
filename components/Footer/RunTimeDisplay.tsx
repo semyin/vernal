@@ -52,9 +52,9 @@ const RunTimeDisplay: React.FC<RunTimeDisplayProps> = ({ runTime }) => {
   }, [runTime]);
 
   return (
-    <span>
-      已运行：{timeDiff.days}天{timeDiff.hours}时{timeDiff.minutes}分{timeDiff.seconds}秒
-    </span>
+    <i>
+      Running For:{timeDiff.days}[d],{timeDiff.hours}[h],{timeDiff.minutes}[m],{timeDiff.seconds}[s]
+    </i>
   );
 };
 

@@ -1,7 +1,7 @@
 export { Page };
 
 function Page() {
-  const arr = new Array(1).fill('ok')
+  const arr = new Array(100).fill('ok')
 	return (
 		<>
       { arr.map((item, index) => {

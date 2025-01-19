@@ -13,10 +13,10 @@ function Head() {
       {
         metas.map(item => {
           if (item.name && item.content) {
-            return  <meta name={item.name} content={item.content} />
+            return  <meta key={item.id} name={item.name} content={item.content} />
           }
           if (item.property && item.content) {
-            return <meta property={item.property} content={item.content} />
+            return <meta key={item.id} property={item.property} content={item.content} />
           }
           return null
         })
