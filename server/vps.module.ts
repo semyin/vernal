@@ -14,7 +14,7 @@ import { MetaService } from "./meta/meta.service";
 const OPTIONS = Symbol.for("vike.options");
 
 interface ViteSsrOptions {
-	root?: string;
+  root?: string;
 }
 
 @Module({
@@ -24,65 +24,65 @@ interface ViteSsrOptions {
   ]
 })
 export class VpsModule implements OnModuleInit {
-	constructor(
-		private readonly httpAdapterHost: HttpAdapterHost,
-		@Inject(OPTIONS)
-		private readonly viteSsrOptions: ViteSsrOptions,
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    @Inject(OPTIONS)
+    private readonly viteSsrOptions: ViteSsrOptions,
     private readonly siteService: SiteService,
     private readonly metaService: MetaService
-	) {}
+  ) { }
 
-	static forRoot(options?: ViteSsrOptions): DynamicModule {
-		options ??= {
-			root: fileURLToPath(new URL("../client", import.meta.url)),
-		};
+  static forRoot(options?: ViteSsrOptions): DynamicModule {
+    options ??= {
+      root: fileURLToPath(new URL("../client", import.meta.url)),
+    };
 
-		const imports: DynamicModule[] = [];
-		if (!devServer) {
-			imports.push(
-				ServeStaticModule.forRoot({
-					rootPath: options.root,
-					serveRoot: "/",
-				}),
-			);
-		}
+    const imports: DynamicModule[] = [];
+    if (!devServer) {
+      imports.push(
+        ServeStaticModule.forRoot({
+          rootPath: options.root,
+          serveRoot: "/",
+        }),
+      );
+    }
 
-		return {
-			module: VpsModule,
-			imports,
-			providers: [{ provide: OPTIONS, useValue: options }],
-		};
-	}
+    return {
+      module: VpsModule,
+      imports,
+      providers: [{ provide: OPTIONS, useValue: options }],
+    };
+  }
 
-	async onModuleInit() {
-		if (!this.httpAdapterHost) {
-			throw new Error(
-				"httpAdapterHost is undefined, no decorator metadata available",
-			);
-		}
-		const httpAdapter = this.httpAdapterHost.httpAdapter;
-		if (!httpAdapter) {
-			return;
-		}
-		const app = httpAdapter.getInstance();
+  async onModuleInit() {
+    if (!this.httpAdapterHost) {
+      throw new Error(
+        "httpAdapterHost is undefined, no decorator metadata available",
+      );
+    }
+    const httpAdapter = this.httpAdapterHost.httpAdapter;
+    if (!httpAdapter) {
+      return;
+    }
+    const app = httpAdapter.getInstance();
 
-		app.get("*", async (req: Request, res: Response, next: NextFunction) => {
-			const urlOriginal = req.originalUrl;
+    app.get("*", async (req: Request, res: Response, next: NextFunction) => {
+      const urlOriginal = req.originalUrl;
       const headersOriginal = req.headers;
       const site = this.siteService.getSite()
       const metas = this.metaService.getBaseMeta()
-			const pageContext = await renderPage({ urlOriginal, headersOriginal, site, metas });
-			const { httpResponse } = pageContext;
+      const pageContext = await renderPage({ urlOriginal, headersOriginal, site, metas });
+      const { httpResponse } = pageContext;
       httpResponse.pipe(res)
       // if not use html streaming
-			// if (!httpResponse) {
-			// 	next();
-			// 	return;
-			// }
-			// const { body, statusCode, headers } = httpResponse;
-			// headers.forEach(([name, value]) => res.header(name, value));
-			// res.status(statusCode);
-			// res.send(body);
-		});
-	}
+      // if (!httpResponse) {
+      // 	next();
+      // 	return;
+      // }
+      // const { body, statusCode, headers } = httpResponse;
+      // headers.forEach(([name, value]) => res.header(name, value));
+      // res.status(statusCode);
+      // res.send(body);
+    });
+  }
 }
