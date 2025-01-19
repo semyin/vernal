@@ -10,11 +10,12 @@ const Articles = withFallback(
     const result = useSuspenseQuery({
       queryKey: ['articles'],
       queryFn: () =>
-        fetchArticles()
+        fetchArticles({ title: 'fdjshfk' })
     })
-    const articles = result.data
+    const articles = result.data || []
 
     return (
+      articles.length ?
       <ul className={styles['article-list']}>
         {
           articles.map(item => {
@@ -26,16 +27,16 @@ const Articles = withFallback(
             )
           })
         }
-      </ul>
+      </ul> : <div className={styles['center-block']}><i>No data here</i></div>
     )
   },
-  () => <div>Loading articles</div>,
+  () => <div className={styles['center-block']}>Loading articles</div>,
   // The props `retry` and `error` are provided by vike-react-query
   // Other props, such as `code`, are provied by the parent component
   ({ retry, error }) => (
-    <div>
-      Failed to load articles
-      <button onClick={() => retry()}>Retry</button>
+    <div className={styles['center-block']}>
+      Failed to load articles with: { error.message }
+      <a onClick={() => retry()}>Retry</a>
     </div>
   )
 )
