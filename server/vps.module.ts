@@ -74,6 +74,7 @@ export class VpsModule implements OnModuleInit {
 			const pageContext = await renderPage({ urlOriginal, headersOriginal, site, metas });
 			const { httpResponse } = pageContext;
       httpResponse.pipe(res)
+      // if not use html streaming
 			// if (!httpResponse) {
 			// 	next();
 			// 	return;
