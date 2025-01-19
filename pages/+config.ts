@@ -4,6 +4,8 @@ import vikeReactQuery from 'vike-react-query/config'
 
 export default {
 
+  stream: true,
+
   // favicon
   favicon,
 
