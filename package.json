@@ -35,6 +35,7 @@
     "@nestjs/platform-express": "^10.4.12",
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/typeorm": "^10.0.2",
+    "@tanstack/react-query": "^5.64.1",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "classnames": "^2.5.1",
@@ -51,6 +52,7 @@
     "typeorm": "^0.3.20",
     "vernal": "file:",
     "vike": "^0.4.205",
-    "vike-react": "^0.5.11"
+    "vike-react": "^0.5.11",
+    "vike-react-query": "^0.1.3"
   }
 }

@@ -72,6 +72,7 @@ export class VpsModule implements OnModuleInit {
       const metas = this.metaService.getBaseMeta()
 			const pageContext = await renderPage({ urlOriginal, site, metas });
 			const { httpResponse } = pageContext;
+      httpResponse.pipe(res)
 			if (!httpResponse) {
 				next();
 				return;

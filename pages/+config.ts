@@ -1,5 +1,6 @@
 import vikeReact from 'vike-react/config'
 import favicon from '../assets/favicon-256.png'
+import vikeReactQuery from 'vike-react-query/config'
 
 export default {
 
@@ -15,5 +16,5 @@ export default {
     'site', 'metas'
   ],
 
-  extends: [vikeReact]
+  extends: [vikeReact, vikeReactQuery]
 }
