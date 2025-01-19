@@ -1,0 +1,14 @@
+.article-list {
+  li {
+    display: flex;
+    line-height: 1.6;
+    span {
+      flex: 0 0 110px;
+    }
+    a {
+      &:visited {
+        color: var(--visited-color);;
+      }
+    }
+  }
+}
