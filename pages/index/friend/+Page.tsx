@@ -3,7 +3,7 @@ export { Page };
 function Page() {
   return (
     <>
-      <h1>Friend</h1>
+      <h1>友情链接</h1>
     </>
   );
 }
