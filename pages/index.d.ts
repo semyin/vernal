@@ -2,11 +2,6 @@
 import { Site } from "#root/types/Site"
 import { Meta } from "#root/types/Meta"
 
-interface SiteConfig {
-  site: Site,
-  metas: Meta[]
-}
-
 declare global {
   namespace Vike {
     interface PageContext {
