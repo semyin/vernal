@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, Patch, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { Article } from './article.entity';
-import { ArticleDto } from '../dto/article.dto';
+import { ArticleDto } from './dto/article.dto';
 import * as P from 'nestjs-paginate'
 
 @Controller('articles')

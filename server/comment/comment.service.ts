@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
-import { CreateCommentDto, UpdateCommentDto } from '../dto/comment.dto';
+import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()

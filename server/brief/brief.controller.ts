@@ -9,7 +9,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { BriefService } from './brief.service';
-import { CreateBriefDto, UpdateBriefDto } from '../dto/brief.dto';
+import { CreateBriefDto, UpdateBriefDto } from './dto/brief.dto';
 
 @Controller('briefs')
 export class BriefController {

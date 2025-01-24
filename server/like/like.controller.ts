@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Delete, Query, Get } from '@nestjs/common';
 import { LikeService } from './like.service';
-import { CreateLikeDto } from '../dto/create-like.dto';
+import { CreateLikeDto } from './dto/create-like.dto';
 
 @Controller('likes')
 export class LikeController {

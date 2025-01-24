@@ -2,7 +2,7 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Like } from './like.entity';
-import { CreateLikeDto } from '../dto/create-like.dto';
+import { CreateLikeDto } from './dto/create-like.dto';
 
 @Injectable()
 export class LikeService {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brief } from './brief.entity';
-import { CreateBriefDto, UpdateBriefDto } from '../dto/brief.dto';
+import { CreateBriefDto, UpdateBriefDto } from './dto/brief.dto';
 
 @Injectable()
 export class BriefService {

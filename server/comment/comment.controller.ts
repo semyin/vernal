@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CreateCommentDto, UpdateCommentDto } from '../dto/comment.dto';
+import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 
 @Controller('comments')
 export class CommentController {

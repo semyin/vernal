@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import * as P from 'nestjs-paginate'
 import { Article } from './article.entity';
-import { ArticleDto } from '../dto/article.dto';
+import { ArticleDto } from './dto/article.dto';
 
 @Injectable()
 export class ArticleService {
