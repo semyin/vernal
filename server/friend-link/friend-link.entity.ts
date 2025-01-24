@@ -1,3 +1,5 @@
+import { Transform } from 'class-transformer';
+import { format } from 'date-fns';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('friend_link')
@@ -27,8 +29,10 @@ export class FriendLink {
   isVisible!: boolean;
 
   @CreateDateColumn({ name: 'created_at', comment: '创建时间' })
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   createdAt!: Date;
 
   @UpdateDateColumn({ name: 'updated_at', comment: '更新时间' })
+  @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   updatedAt!: Date;
 }

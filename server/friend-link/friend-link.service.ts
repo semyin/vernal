@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { FriendLink } from './friend-link.entity';
 import { CreateFriendLinkDto } from './dto/create-friend-link.dto';
 import { UpdateFriendLinkDto } from './dto/update-friend-link.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class FriendLinkService {
@@ -15,23 +16,27 @@ export class FriendLinkService {
   // 创建友链
   async create(createFriendLinkDto: CreateFriendLinkDto): Promise<FriendLink> {
     const friendLink = this.friendLinkRepository.create(createFriendLinkDto);
-    return this.friendLinkRepository.save(friendLink);
+    const result = this.friendLinkRepository.save(friendLink);
+    return plainToInstance(FriendLink, result);
   }
 
   // 查询所有友链
   async findAll(): Promise<FriendLink[]> {
-    return this.friendLinkRepository.find();
+    const result = await this.friendLinkRepository.find();
+    return plainToInstance(FriendLink, result);
   }
 
   // 查询单个友链
   async findOne(id: number): Promise<FriendLink | null> {
-    return this.friendLinkRepository.findOne({ where: { id } });
+    const result = this.friendLinkRepository.findOne({ where: { id } });
+    return plainToInstance(FriendLink, result);
   }
 
   // 更新友链
   async update(id: number, updateFriendLinkDto: UpdateFriendLinkDto): Promise<FriendLink | null> {
     await this.friendLinkRepository.update(id, updateFriendLinkDto);
-    return this.friendLinkRepository.findOne({ where: { id } });
+    const result = this.friendLinkRepository.findOne({ where: { id } });
+    return plainToInstance(FriendLink, result);
   }
 
   // 删除友链

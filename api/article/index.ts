@@ -6,4 +6,5 @@ export interface ArticleQuery {
   withTags?: boolean
   withMetas?: boolean
 }
+
 export const fetchArticles = async (params?: ArticleQuery): Promise<Article[]> => request.get('/articles', { params })

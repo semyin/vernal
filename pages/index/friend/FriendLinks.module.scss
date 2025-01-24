@@ -1,0 +1,13 @@
+.friend-link-list {
+  width: 100%;
+  .item {
+    margin-top: 24px;
+    display: flex;
+    .right-info {
+      margin-left: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+}
