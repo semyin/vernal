@@ -3,6 +3,8 @@
   --heading-color: #222;
   --link-color: #3273dc;
   --visited-color: #8b6fcb;
+  --text-color: #444;
+  --heading-color: #222
 
   --font-yahei: Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, "PingFangSC-Regular", "Hiragino Sans GB", "Lantinghei SC", "Microsoft Yahei", "Source Han Sans CN", "WenQuanYi Micro Hei", SimSun, sans-serif;
   --font-fangsong: Baskerville, "Times New Roman", "Liberation Serif", STFangsong, FangSong, FangSong_GB2312, "CWTEX\-F", serif;
@@ -20,4 +22,9 @@ a {
   &:hover {
     text-decoration: underline;
   }
+  
+}
+
+a.is-active {
+  text-decoration: underline;
 }
