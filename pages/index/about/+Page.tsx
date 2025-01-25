@@ -1,11 +1,12 @@
+import { About } from "./About";
 import "./code.css";
 
 export { Page };
 
 function Page() {
-	return (
-		<>
-			<h1>About</h1>
-		</>
-	);
+  return (
+    <>
+      <About />
+    </>
+  );
 }

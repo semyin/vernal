@@ -12,7 +12,7 @@ const Articles = withFallback(
   () => {
     const result = useSuspenseQuery({
       queryKey: ["articles"],
-      queryFn: () => fetchArticles({ title: "fdjshfk" }),
+      queryFn: () => fetchArticles(),
     });
     const articles = result.data || [];
 

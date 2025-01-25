@@ -16,6 +16,9 @@ export class Article {
   @Column('text')
   content!: string;
 
+  @Column({ length: 50, default: 'article' }) // 新增 type 字段
+  type!: string; // 'article' 表示普通文章，'about' 表示关于页面，'privacy' 表示隐私政策
+
   @OneToMany(() => ArticleTag, (articleTag) => articleTag.article)
   @Exclude() // 排除 articleTags 字段
   articleTags?: Relation<ArticleTag>[];
