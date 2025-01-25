@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
 		],
 		ssr: {
 			external: ["reflect-metadata"],
-      noExternal: ["react-syntax-highlighter"]
+      noExternal: ["react-markdown", "react-syntax-highlighter"]
 		},
 		esbuild: false,
 		plugins: [
