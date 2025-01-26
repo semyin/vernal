@@ -8,3 +8,6 @@ export interface ArticleQuery {
 }
 
 export const fetchArticles = async (params?: ArticleQuery): Promise<Article[]> => request.get('/articles', { params })
+
+export const fetchArticleDetail = async (id: number): Promise<Article> => request.get(`/articles/${id}`)
+

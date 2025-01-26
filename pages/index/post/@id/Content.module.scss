@@ -1,0 +1,15 @@
+.article-content {
+  width: 100%;
+  h1 {
+    margin-bottom: 21px;
+  }
+  .article-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--text-color);
+    .article-time {
+      margin-left: 8px;
+    }
+  }
+}
