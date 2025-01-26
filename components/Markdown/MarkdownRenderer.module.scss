@@ -3,6 +3,7 @@
   font-size: 16px; /* 设置字体大小 */
   line-height: 1.6; /* 设置行高 */
   color: var(--text-color); /* 设置字体颜色 */
+  font-family: var(--font-yahei);
 }
 
 .markdown h1,
@@ -26,12 +27,12 @@ h6 {
     margin: 10px 0;
 }
 
-.markdown ul li {
+.markdown ul li, .markdown ol li {
     list-style: inherit;
     margin-left: 24px;
 }
 
-.markdown ul>li {
+.markdown ul>li, .markdown ol>li {
    margin-top: 4px;
 }
 
@@ -41,11 +42,19 @@ h6 {
 }
 
 .markdown code {
-    // padding: 0.2em 0.4em;
     padding: 0;
-    font-size: 13px;
+    font-size: 16px;
+    background-color: inherit;
+    font-family: Menlo, "Roboto Mono", "Courier New", Courier, monospace, "Inter", sans-serif;
+    line-height: 1;
 }
 
+.markdown .alone-code {
+  padding: .15rem .3rem;
+  font-weight: 600;
+  background-color: #ececec;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
 /* 代码块容器 */
 .code-block {
     position: relative;
@@ -74,7 +83,6 @@ h6 {
   
   /* 复制按钮 */
   .code-header button {
-    // background-color: #007bff;
     color: white;
     border: none;
     background: none;
