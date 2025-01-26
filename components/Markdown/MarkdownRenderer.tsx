@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import ReactMarkdown from "react-markdown";
-import { PrismAsyncLight as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow as theme } from "react-syntax-highlighter/dist/esm/styles/prism";
 import CopyToClipboard from "react-copy-to-clipboard";
 import styles from "./MarkdownRenderer.module.scss";
+import CodeHighlight from "./CodeHighlight";
 
 // 定义 code 组件的属性类型
 interface CodeProps {
@@ -66,15 +65,10 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
                       </button>
                     </CopyToClipboard>
                   </div>
-                  <SyntaxHighlighter
-                    style={theme}
+                  <CodeHighlight
+                    code={String(children).replace(/\n$/, "")}
                     language={match[1]}
-                    PreTag="div"
-                    customStyle={{ margin: 0, padding: "12px" }}
-                    {...props}
-                  >
-                    {String(children).replace(/\n$/, "")}
-                  </SyntaxHighlighter>
+                  />
                 </div>
               ) : (
                 <code className={styles["alone-code"]} {...props}>
