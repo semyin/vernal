@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tag } from './tag.entity';
+import { Article } from '../article/article.entity';
 
 @Injectable()
 export class TagService {
@@ -21,15 +22,28 @@ export class TagService {
     return this.tagRepository.find();
   }
 
-  // 查询单个标签
-  async findOne(id: number): Promise<Tag> {
-    const tag = await this.tagRepository.findOne({ where: { id } });
+  // 查询单个标签及其关联的文章
+  async findOne(id: number): Promise<Tag & { articles: Article[] }> {
+    const tag = await this.tagRepository.findOne({
+      where: { id },
+      relations: ['articleTags', 'articleTags.article'], // 加载关联的 ArticleTag 和 Article
+    });
+
     if (!tag) {
       throw new NotFoundException('标签不存在');
     }
-    return tag;
-  }
 
+    // 提取与标签关联的文章
+    const articles = tag.articleTags.map((articleTag) => articleTag.article);
+
+    // 排除 articleTags 字段
+    const { articleTags, ...rest } = tag;
+
+    return {
+      ...tag,
+      articles, // 将文章列表添加到返回对象中
+    };
+  }
   // 更新标签
   async update(id: number, name: string): Promise<Tag> {
     const tag = await this.findOne(id);

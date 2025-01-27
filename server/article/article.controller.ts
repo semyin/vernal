@@ -11,14 +11,14 @@ import {
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { Article } from "./article.entity";
-import { ArticleDto } from "./dto/article.dto";
+import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import * as P from "nestjs-paginate";
 
 @Controller("articles")
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
-  @Get()
+  @Get("manage")
   findAll(
     @P.Paginate() query: P.PaginateQuery,
     @Query("title") title: string,
@@ -26,6 +26,11 @@ export class ArticleController {
     @Query("withMetas") withMetas: boolean
   ): Promise<ArticleDto[]> {
     return this.articleService.findAll(query, title, withTags, withMetas);
+  }
+
+  @Get()
+  findList(): Promise<ArticleListDto[]> {
+    return this.articleService.findList()
   }
 
   @Get("about")

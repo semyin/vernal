@@ -40,6 +40,23 @@ export class ArticleMetaDto {
   updatedAt!: Date;
 }
 
+export class ArticleListDto {
+  
+  @Expose()
+  id!: number;
+
+  @Expose()
+  title!: string;
+
+  @Expose()
+  @Transform(({ value }) => format(new Date(value), "yyyy-MM-dd HH:mm:ss")) // 转换为本地时间字符串
+  createdAt!: Date;
+
+  @Expose()
+  @Transform(({ value }) => format(new Date(value), "yyyy-MM-dd HH:mm:ss")) // 转换为本地时间字符串
+  updatedAt!: Date;
+}
+
 export class ArticleDto {
   @Expose()
   id!: number;

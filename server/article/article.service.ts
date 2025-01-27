@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import * as P from "nestjs-paginate";
 import { Article } from "./article.entity";
-import { ArticleDto } from "./dto/article.dto";
+import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 
 @Injectable()
 export class ArticleService {
@@ -17,6 +17,20 @@ export class ArticleService {
     private articleRepository: Repository<Article>
   ) {
     this.initAboutPage();
+  }
+
+  async findList(): Promise<ArticleListDto[]> {
+    const result = await this.articleRepository
+      .createQueryBuilder('article')
+      .select([
+        'article.id', // 选择 id 字段
+        'article.title', // 选择 title 字段
+        'article.createdAt', // 选择 createdAt 字段
+        'article.updatedAt', // 选择 updatedAt 字段
+      ])
+      .orderBy("article.createdAt", "DESC")
+      .getMany();
+      return plainToInstance(ArticleListDto, result);
   }
 
   // 查询所有文章-带标签
