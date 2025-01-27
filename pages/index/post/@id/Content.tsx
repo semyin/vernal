@@ -26,7 +26,7 @@ const Content = withFallback(
             {tags?.map((item, index) => {
               return (
                 <span key={item.id}>
-                  <Link href={`/tags/${item.id}`}>{item.name}</Link>
+                  <Link href={`/tag/${item.id}`}>{item.name}</Link>
                   <span> </span>
                   <span>·</span>
                 </span>
