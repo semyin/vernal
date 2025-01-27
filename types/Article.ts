@@ -6,6 +6,7 @@ export interface Article {
   title: string
   content: string
   tags?: Tag[]
+  type: string
   metas?: Meta[]
   summary?: string
   authorId: number

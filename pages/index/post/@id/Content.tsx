@@ -11,7 +11,7 @@ import useDateFormat from "#root/hooks/useDateFormat";
 const Content = withFallback(
   ({ id }) => {
     const result = useSuspenseQuery({
-      queryKey: ["article", "id"],
+      queryKey: ["article", id],
       queryFn: () => fetchArticleDetail(id),
     });
     const detail = result.data;
