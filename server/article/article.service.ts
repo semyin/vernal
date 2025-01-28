@@ -28,6 +28,7 @@ export class ArticleService {
         'article.createdAt', // 选择 createdAt 字段
         'article.updatedAt', // 选择 updatedAt 字段
       ])
+      .where("article.type = :type", { type: "article" })
       .orderBy("article.createdAt", "DESC")
       .getMany();
       return plainToInstance(ArticleListDto, result);
