@@ -1,12 +1,11 @@
 import { fetchArticles } from "#root/api/article";
-import { Link } from "#root/components/Link/Link";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { withFallback } from "vike-react-query";
 import { Error } from "#root/components/Query/Error";
 import { Loading } from "#root/components/Query/Loading";
 import { NoData } from "#root/components/Query/NoData";
-import styles from "./Articles.module.scss";
+import { ArticleList } from "#root/components/ArticleList/ArticleList";
+
 
 const Articles = withFallback(
   () => {
@@ -17,22 +16,7 @@ const Articles = withFallback(
     const articles = result.data || [];
 
     return articles.length ? (
-      <ul className={styles["article-list"]}>
-        {articles.map((item) => {
-          return (
-            <li key={item.id}>
-              <span>
-                <i>
-                  <time dateTime={item.updatedAt}>
-                    {format(item.createdAt, "yyyy-MM-dd")}
-                  </time>
-                </i>
-              </span>
-              <Link href={`/post/${item.id}`}>{item.title}</Link>
-            </li>
-          );
-        })}
-      </ul>
+      <ArticleList articles={articles} />
     ) : (
       <NoData text="No Article" />
     );

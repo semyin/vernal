@@ -26,7 +26,7 @@ export class TagService {
 
   // 查询单个标签及其关联的文章
   async findOne(id: number): Promise<Tag & { articleCount: number }> {
-    
+
     const tag = await this.tagRepository
       .createQueryBuilder("tag")
       .leftJoinAndSelect('tag.articleTags', 'articleTags')
@@ -37,7 +37,7 @@ export class TagService {
         'tag.createdAt', 
         'tag.updatedAt', // 主表字段
         'articleTags.articleId', // 关联表 ArticleTags 的字段
-        'articleTags.tag',
+        'articleTags.tagId',
         'article.title',  // 关联表 Article 的字段
         'article.id',  // 关联表 Article 的字段
         'article.createdAt',
@@ -46,7 +46,7 @@ export class TagService {
       .loadRelationCountAndMap('tag.articleCount', 'tag.articleTags') // 计算关联文章的数目
       .where('tag.id = :id', { id })
       .getOne();
-    
+      
     if (!tag) {
       throw new NotFoundException('标签不存在');
     }
