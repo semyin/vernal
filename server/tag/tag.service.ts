@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tag } from './tag.entity';
 import { Article } from '../article/article.entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TagService {
@@ -19,30 +20,37 @@ export class TagService {
 
   // 查询所有标签
   async findAll(): Promise<Tag[]> {
-    return this.tagRepository.find();
+    const result = await this.tagRepository.find()
+    return plainToInstance(Tag, result)
   }
 
   // 查询单个标签及其关联的文章
-  async findOne(id: number): Promise<Tag & { articles: Article[] }> {
-    const tag = await this.tagRepository.findOne({
-      where: { id },
-      relations: ['articleTags', 'articleTags.article'], // 加载关联的 ArticleTag 和 Article
-    });
-
+  async findOne(id: number): Promise<Tag> {
+    
+    const tag = await this.tagRepository
+      .createQueryBuilder("tag")
+      .leftJoinAndSelect('tag.articleTags', 'articleTags')
+      .leftJoinAndSelect('articleTags.article', 'article')
+      .select([
+        'tag.id', 
+        'tag.name', 
+        'tag.createdAt', 
+        'tag.updatedAt', // 主表字段
+        'articleTags.articleId', // 关联表 ArticleTags 的字段
+        'articleTags.tag',
+        'article.title',  // 关联表 Article 的字段
+        'article.id',  // 关联表 Article 的字段
+        'article.createdAt',
+        'article.updatedAt',
+      ])
+      .where('tag.id = :id', { id })
+      .getOne();
+    
     if (!tag) {
       throw new NotFoundException('标签不存在');
     }
-
-    // 提取与标签关联的文章
-    const articles = tag.articleTags.map((articleTag) => articleTag.article);
-
-    // 排除 articleTags 字段
-    const { articleTags, ...rest } = tag;
-
-    return {
-      ...tag,
-      articles, // 将文章列表添加到返回对象中
-    };
+    
+    return plainToInstance(Tag, tag)
   }
   // 更新标签
   async update(id: number, name: string): Promise<Tag> {
