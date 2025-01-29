@@ -25,6 +25,7 @@ import { Meta } from "./meta/meta.entity";
 import { MetaModule } from "./meta/meta.module";
 import { FriendLink } from "./friend-link/friend-link.entity";
 import { FriendLinkModule } from "./friend-link/friend-link.module";
+import { AuthModule } from "./auth/auth.module";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { AppService } from "./app.service";
@@ -48,7 +49,7 @@ const __dirname = dirname(__filename);
       username: process.env.DATABASE_USER, // 从环境变量中读取
       password: process.env.DATABASE_PASSWORD, // 从环境变量中读取
       database: process.env.DATABASE_NAME, // 从环境变量中读取
-      logging: true, // 启用日志
+      // logging: true, // 启用日志
       namingStrategy: new SnakeNamingStrategy(),
       entities: [
         Article,
@@ -76,6 +77,7 @@ const __dirname = dirname(__filename);
     SiteModule, // 注册 SiteModule
     MetaModule, // 注册 MetaModule
     FriendLinkModule, // 注册 FriendLinkModule
+    AuthModule, // 注册 AuthModule
   ],
   controllers: [
     AppController

@@ -27,6 +27,14 @@ export class UserService {
     return this.userRepository.findOne({ where: { username } });
   }
 
+  async validateUser(username: string, password: string): Promise<User | null> {
+    const user = await this.findByUsername(username);
+    if (user && await bcrypt.compare(password, user.passwordHash)) {
+      return user;
+    }
+    return null;
+  }
+
   // 根据邮箱查找用户
   async findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { email } });
