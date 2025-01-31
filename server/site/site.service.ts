@@ -4,6 +4,13 @@ import { Repository } from 'typeorm';
 import { Site } from './site.entity';
 import { BaseService } from 'server/common/service/base.service';
 import { plainToInstance } from 'class-transformer';
+import { MetaService } from '../meta/meta.service';
+import { Meta } from '../meta/meta.entity';
+
+export interface SiteWithBaseMeta {
+  site: Site
+  meta: Meta[]
+}
 
 @Injectable()
 export class SiteService extends BaseService implements OnModuleInit {
@@ -12,6 +19,7 @@ export class SiteService extends BaseService implements OnModuleInit {
   constructor(
     @InjectRepository(Site)
     private readonly siteRepository: Repository<Site>,
+    private readonly metaService: MetaService, // 注入 MetaService
   ) {
     super(SiteService.name); // 调用基类构造函数，传入当前类名
   }
@@ -19,6 +27,16 @@ export class SiteService extends BaseService implements OnModuleInit {
   // 应用启动时加载配置到内存
   async onModuleInit() {
     await this.loadConfigToMemory();
+  }
+
+  // 新增方法：获取站点配置和 Meta 数据
+  async getSiteWithBaseMeta(): Promise<SiteWithBaseMeta> {
+    const site = this.getSite(); // 获取站点配置
+    const meta = this.metaService.getBaseMeta(); // 获取 Meta 数据
+    return {
+      site,
+      meta,
+    };
   }
 
   // 从数据库加载配置到内存

@@ -1,3 +1,5 @@
+import { Meta } from "./Meta"
+
 export interface Site {
   id: number
   name: string
@@ -6,4 +8,9 @@ export interface Site {
   copyright: string
   icp: string
   runTime: string
+}
+
+export interface SiteWithBaseMeta {
+  site: Site
+  meta: Meta[]
 }

@@ -1,13 +1,12 @@
 export default Header
 
-import { usePageContext } from 'vike-react/usePageContext'
 import styles from "./Header.module.scss"
 import { Link } from "../Link/Link"
+import { Site } from '#root/types/Site'
 
-function Header() {
+function Header({ site }: {site: Site}) {
 
-  const pageContext = usePageContext();
-  const { name, description } = pageContext.site
+  const { name, description } = site
 
   return (
     <header>

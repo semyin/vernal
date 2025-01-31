@@ -1,14 +1,13 @@
 export default Footer
 
-import { usePageContext } from "vike-react/usePageContext"
 import styles from "./Footer.module.scss"
 import RunTimeDisplay from "./RunTimeDisplay"
 import BackToTop from "./BackToTop"
+import { Site } from "#root/types/Site"
 
-function Footer() {
+function Footer({ site }: {site : Site}) {
 
-  const pageContext = usePageContext()
-  const { copyright, icp, runTime } = pageContext.site
+  const { copyright, icp, runTime } = site
 
   return (
     <footer>

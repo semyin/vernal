@@ -24,7 +24,7 @@ export default {
   },
 
   passToClient: [
-    'site', 'metas'
+    'site', 'meta'
   ],
 
   extends: [vikeReact, vikeReactQuery]

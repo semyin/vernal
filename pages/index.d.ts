@@ -5,13 +5,11 @@ import { Meta } from "#root/types/Meta"
 declare global {
   namespace Vike {
     interface PageContext {
-      abortReason:
-        | string
-        | { notAdmin: true }
+      abortReason: string | { notAdmin: true };
       // custom
-      site: Site
-      metas: Meta[]
+      site: Site;
+      meta: Meta[];
     }
   }
 }
-export {}
+export {};

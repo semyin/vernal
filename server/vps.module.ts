@@ -8,8 +8,6 @@ import devServer from "vavite/http-dev-server";
 
 import { MetaModule } from './meta/meta.module';
 import { SiteModule } from "./site/site.module";
-import { SiteService } from "./site/site.service";
-import { MetaService } from "./meta/meta.service";
 
 const OPTIONS = Symbol.for("vike.options");
 
@@ -28,8 +26,6 @@ export class VpsModule implements OnModuleInit {
     private readonly httpAdapterHost: HttpAdapterHost,
     @Inject(OPTIONS)
     private readonly viteSsrOptions: ViteSsrOptions,
-    private readonly siteService: SiteService,
-    private readonly metaService: MetaService
   ) { }
 
   static forRoot(options?: ViteSsrOptions): DynamicModule {
@@ -69,13 +65,16 @@ export class VpsModule implements OnModuleInit {
     app.get("*", async (req: Request, res: Response, next: NextFunction) => {
       const urlOriginal = req.originalUrl;
       const headersOriginal = req.headers;
-      const site = this.siteService.getSite()
-      const metas = this.metaService.getBaseMeta()
-      const pageContext = await renderPage({ urlOriginal, headersOriginal, site, metas });
+      const pageContext = await renderPage({ urlOriginal, headersOriginal });
       const { httpResponse } = pageContext;
-      const { statusCode, headers } = httpResponse;
+      if (!httpResponse) {
+      	next();
+      	return;
+      }
+      const { statusCode, headers, earlyHints } = httpResponse;
+      // res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
       headers.forEach(([name, value]) => res.header(name, value));
-      res.status(statusCode);
+      // res.status(statusCode);
       httpResponse.pipe(res)
       // if not use html streaming
       // if (!httpResponse) {
