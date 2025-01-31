@@ -11,6 +11,8 @@ export function useSiteConfig() {
       return fetchSiteConfig();
     },
   });
+  console.log(pageContext.sources);
+  
   pageContext.site = siteConfig.data.site
   pageContext.meta = siteConfig.data.meta
 
