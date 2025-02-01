@@ -1,0 +1,35 @@
+.admin-layout {
+  .logo {
+    height: 32px;
+    margin: 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    padding-left: 16px;
+    transition: all linear 0.1s;
+    a {
+      color: white;
+      font-size: 20px;
+    }
+  }
+  .logo-collapsed {
+    font-size: 16px;
+    padding-left: 0;
+    justify-content: center;
+    transition: all linear 0.1s;
+    a {
+      color: white;
+      font-size: 16px;
+    }
+  }
+  a {
+    font-size: 14px;
+  }
+  .to-site {
+    color: rgba(0, 0, 0, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

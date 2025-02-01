@@ -9,6 +9,7 @@ declare global {
       // custom
       site: Site;
       meta: Meta[];
+      isLogin: boolean
     }
   }
 }

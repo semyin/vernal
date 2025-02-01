@@ -8,11 +8,13 @@ import {
   Delete,
   Patch,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import * as P from "nestjs-paginate";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller("articles")
 export class ArticleController {
@@ -28,12 +30,8 @@ export class ArticleController {
     return this.articleService.getAboutPage();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: number): Promise<ArticleDto> {
-    return this.articleService.findOneWithTagsAndMetas(id);
-  }
-
-  @Get("manage")
+  @Get("/manage")
+  @UseGuards(JwtAuthGuard)
   findAll(
     @P.Paginate() query: P.PaginateQuery,
     @Query("title") title: string,
@@ -41,6 +39,11 @@ export class ArticleController {
     @Query("withMetas") withMetas: boolean
   ): Promise<ArticleDto[]> {
     return this.articleService.findAll(query, title, withTags, withMetas);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: number): Promise<ArticleDto> {
+    return this.articleService.findOneWithTagsAndMetas(id);
   }
 
   @Patch("manage/about")

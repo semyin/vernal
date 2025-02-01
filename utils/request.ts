@@ -1,5 +1,6 @@
+import { navigate } from "vike/client/router";
 import { API_PREFIX, HOST, isSSR, PORT } from "./environment";
-import { render } from "vike/abort"
+import { redirect, render } from "vike/abort"
 
 // 定义接口返回的数据结构
 interface ApiResponse<T = any> {
@@ -52,6 +53,9 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
   const responseInterceptor = async (response: Response) => {
     // 对响应数据做一些处理
     if (!response.ok) {
+      if (response.status === 401) {
+        return navigate('/admin/login')
+      }
       throw new Error(`HTTP Error: ${response.status}`);
     }
 

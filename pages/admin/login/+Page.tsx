@@ -2,17 +2,23 @@ export { Page };
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input } from "antd";
 import styles from "./Login.module.scss";
-import request from "#root/utils/request";
+import { navigate } from 'vike/client/router'
+import { login } from "#root/api/auth";
 
 type FieldType = {
-  username?: string;
-  password?: string;
+  username: string;
+  password: string;
   remember?: string;
 };
 
 function Page() {
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
+    const { remember, ...other } = values
+    login(other).then(async() => {
+      await navigate("/admin")
+    }).catch(e => {
+      console.log(e);
+    })
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
