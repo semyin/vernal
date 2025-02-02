@@ -1,6 +1,7 @@
 import { navigate } from "vike/client/router";
 import { API_PREFIX, HOST, isSSR, PORT } from "./environment";
-import { redirect, render } from "vike/abort"
+import { redirect, render } from "vike/abort";
+import { usePageContext } from "vike-react/usePageContext";
 
 // 定义接口返回的数据结构
 interface ApiResponse<T = any> {
@@ -10,7 +11,7 @@ interface ApiResponse<T = any> {
 }
 
 // 定义请求配置
-interface RequestConfig extends RequestInit {
+export interface RequestConfig extends RequestInit {
   baseURL?: string;
   timeout?: number;
   params?: Record<string, string | number> | {}; // 新增 params 字段
@@ -54,9 +55,14 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
     // 对响应数据做一些处理
     if (!response.ok) {
       if (response.status === 401) {
-        return navigate('/admin/login')
+        // 服务端需要这样处理
+        if (isSSR) {
+          throw render("/admin/login");
+        } else {
+        }
+      } else {
+        throw new Error(`HTTP Error: ${response.status}`);
       }
-      throw new Error(`HTTP Error: ${response.status}`);
     }
 
     const data: ApiResponse = await response.json();
@@ -64,16 +70,34 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
 
     if (code !== 200) {
       // 处理业务逻辑错误
-      throw new Error(`API Error: ${message}`);
+      if (code === 401) {
+        navigate("/admin/login");
+      } else {
+        throw new Error(`API Error: ${message}`);
+      }
     }
 
     return data.data; // 直接返回数据部分
   };
 
   // 统一的请求方法
-  const request = async <T = any>(url: string, config: RequestConfig = {}): Promise<T> => {
+  const request = async <T = any>(
+    url: string,
+    config: RequestConfig = {}
+  ): Promise<T> => {
+    let header;
+    if (isSSR) {
+      const pageContext = usePageContext();
+      header = pageContext.headers;
+    } else {
+      header = {};
+    }
+
     try {
-      const { fullUrl, newConfig, timeoutId } = await requestInterceptor(url, config);
+      const { fullUrl, newConfig, timeoutId } = await requestInterceptor(url, {
+        headers: { ...header },
+        ...config,
+      });
 
       const response = await fetch(fullUrl, newConfig);
       clearTimeout(timeoutId); // 清除超时定时器
@@ -95,20 +119,28 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
     get: <T = any>(url: string, config?: RequestConfig) =>
       request<T>(url, { method: "GET", ...config }),
     post: <T = any>(url: string, data?: any, config?: RequestConfig) =>
-      request<T>(url, { method: "POST", body: JSON.stringify(data), ...config }),
+      request<T>(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        ...config,
+      }),
     put: <T = any>(url: string, data?: any, config?: RequestConfig) =>
       request<T>(url, { method: "PUT", body: JSON.stringify(data), ...config }),
     delete: <T = any>(url: string, config?: RequestConfig) =>
       request<T>(url, { method: "DELETE", ...config }),
     patch: <T = any>(url: string, data?: any, config?: RequestConfig) =>
-      request<T>(url, { method: "PATCH", body: JSON.stringify(data), ...config }),
+      request<T>(url, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        ...config,
+      }),
   };
 };
 
-const domain = isSSR ? `http://${HOST}:${PORT}`: ""
+const domain = isSSR ? `http://${HOST}:${PORT}` : "";
 const baseURL = domain + API_PREFIX;
 
-console.log('baseURL', baseURL);
+console.log("baseURL", baseURL);
 
 // 创建实例
 const request = createFetch({

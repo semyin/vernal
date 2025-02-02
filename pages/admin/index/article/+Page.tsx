@@ -1,21 +1,20 @@
 export { Page };
 
-import { fetchManageArticles } from "#root/api/article";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { usePageContext } from "vike-react/usePageContext";
+import { fetchManageArticles } from "#root/api/article";
 
 function Page() {
 
-  
-  
-
-  const articles = useSuspenseQuery({
+  const { data, error } = useSuspenseQuery({
     queryKey: ["admin-articles"],
-    queryFn: () => fetchManageArticles()
+    queryFn: () => fetchManageArticles({})
   });
+
+  // console.log(articles.data);
+  
   function getArticles() {
-    fetchManageArticles();
+    fetchManageArticles({});
   }
   useEffect(() => {});
 

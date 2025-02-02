@@ -12,7 +12,7 @@ const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
 
   pageContext.isLogin = isLogin
 
-  // if (!isLogin) {
-  //   throw render("/admin/login");
-  // }
+  if (!isLogin) {
+    throw render("/admin/login");
+  }
 };
