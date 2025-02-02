@@ -1,27 +1,40 @@
-export { Page };
-
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { fetchManageArticles } from "#root/api/article";
+import { withFallback } from "vike-react-query";
 
-function Page() {
+const Page = withFallback(
+  () => {
+    const result = useSuspenseQuery({
+      queryKey: ["admin-articles"],
+      queryFn: () =>
+        fetchManageArticles({
+          withMetas: true,
+          withTags: true,
+        }),
+    });
 
-  const { data, error } = useSuspenseQuery({
-    queryKey: ["admin-articles"],
-    queryFn: () => fetchManageArticles({})
-  });
+    return <>{JSON.stringify(result.data.items)}</>;
+  },
+  () => "",
+  () => ""
+);
 
-  // console.log(articles.data);
-  
-  function getArticles() {
-    fetchManageArticles({});
-  }
-  useEffect(() => {});
+export { Page };
 
-  return (
-    <>
-      article
-      <button onClick={getArticles}>getArticles</button>
-    </>
-  );
-}
+// function Page() {
+
+//   // console.log(articles.data);
+
+//   function getArticles() {
+//     fetchManageArticles({});
+//   }
+//   useEffect(() => {});
+
+//   return (
+//     <>
+//       article
+//       <button onClick={getArticles}>getArticles</button>
+//     </>
+//   );
+// }

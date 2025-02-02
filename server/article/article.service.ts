@@ -6,7 +6,11 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { plainToInstance } from "class-transformer";
-import * as P from "nestjs-paginate";
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from "nestjs-typeorm-paginate";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 
@@ -21,35 +25,53 @@ export class ArticleService {
 
   async findList(): Promise<ArticleListDto[]> {
     const result = await this.articleRepository
-      .createQueryBuilder('article')
+      .createQueryBuilder("article")
       .select([
-        'article.id', // 选择 id 字段
-        'article.title', // 选择 title 字段
-        'article.createdAt', // 选择 createdAt 字段
-        'article.updatedAt', // 选择 updatedAt 字段
+        "article.id", // 选择 id 字段
+        "article.title", // 选择 title 字段
+        "article.createdAt", // 选择 createdAt 字段
+        "article.updatedAt", // 选择 updatedAt 字段
       ])
       .where("article.type = :type", { type: "article" })
       .orderBy("article.createdAt", "DESC")
       .getMany();
-      return plainToInstance(ArticleListDto, result);
+    return plainToInstance(ArticleListDto, result);
   }
 
   // 查询所有文章-带标签
   async findAll(
-    query: P.PaginateQuery,
+    options: IPaginationOptions,
     title?: string,
-    withTags?: boolean,
-    withMetas?: boolean
-  ): Promise<ArticleDto[]> {
+    withTags: boolean = false,
+    withMetas: boolean = false
+  ): Promise<Pagination<ArticleDto>> {
     const queryBuilder = this.articleRepository
       .createQueryBuilder("article")
+      .select([
+        "article.id",
+        "article.title",
+        "article.type",
+        "article.summary",
+        "article.authorId",
+        "article.categoryId",
+        "article.coverImage",
+        "article.isPublished",
+        "article.isTop",
+        "article.viewCount",
+        "article.likeCount",
+        "article.commentCount",
+        "article.createdAt",
+        "article.updatedAt",
+      ])
       .where("article.type = :type", { type: "article" }) // 只查询普通文章
       .orderBy("article.createdAt", "DESC");
+
     // 动态加载 tags 数据
     if (withTags) {
       queryBuilder
         .leftJoinAndSelect("article.articleTags", "articleTags")
-        .leftJoinAndSelect("articleTags.tag", "tag");
+        .leftJoinAndSelect("articleTags.tag", "tag")
+        .distinct(); // DISTINCT 会确保每个文章 (article.id) 只返回一次，即使它有多个关联的 tag
     }
 
     // 动态加载 metas 数据
@@ -63,22 +85,14 @@ export class ArticleService {
       });
     }
 
-    const paginatedArticles = await P.paginate<Article>(query, queryBuilder, {
-      filterableColumns: {
-        // 指定可过滤的列
-        title: true, // 允许对 title 列进行过滤
-        isPublished: true, // 允许对 isPublished 列进行过滤
-      },
-      sortableColumns: ["createdAt"], // 可排序的列
-      defaultSortBy: [["createdAt", "DESC"]], // 默认排序规则
-      maxLimit: 100, // 每页最大记录数
-    });
+    const result = await paginate<Article>(queryBuilder, options);
 
-    const items = plainToInstance(ArticleDto, paginatedArticles.data, {
-      excludeExtraneousValues: true,
-    });
-
-    return items;
+    return {
+      ...result,
+      items: plainToInstance(ArticleDto, result.items, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   async getAboutPage(): Promise<ArticleDto> {

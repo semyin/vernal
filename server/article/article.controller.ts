@@ -9,12 +9,15 @@ import {
   Patch,
   Query,
   UseGuards,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Req,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
-import * as P from "nestjs-paginate";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { Pagination } from "nestjs-typeorm-paginate";
 
 @Controller("articles")
 export class ArticleController {
@@ -22,7 +25,7 @@ export class ArticleController {
 
   @Get()
   findList(): Promise<ArticleListDto[]> {
-    return this.articleService.findList()
+    return this.articleService.findList();
   }
 
   @Get("about")
@@ -33,35 +36,35 @@ export class ArticleController {
   @Get("/manage")
   @UseGuards(JwtAuthGuard)
   findAll(
-    @P.Paginate() query: P.PaginateQuery,
+    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query("limit", new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
     @Query("title") title: string,
-    @Query("withTags") withTags: boolean,
-    @Query("withMetas") withMetas: boolean
-  ): Promise<ArticleDto[]> {
-    return this.articleService.findAll(query, title, withTags, withMetas);
+    @Query("withTags") withTags: boolean = false,
+    @Query("withMetas") withMetas: boolean = false,
+    @Req() req: Request // 获取请求对象
+  ): Promise<Pagination<ArticleDto>> {
+    return this.articleService.findAll(
+      { page, limit, route: req.url },
+      title,
+      withTags,
+      withMetas
+    );
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: number): Promise<ArticleDto> {
-    return this.articleService.findOneWithTagsAndMetas(id);
-  }
-
-  @Patch("manage/about")
-  updateAboutPage(@Body() article: Partial<Article>): Promise<ArticleDto> {
-    return this.articleService.updateAboutPage(article);
-  }
-
-  @Get("privacy")
-  findPrivacyPage(): Promise<ArticleDto> {
-    return this.articleService.findPrivacyPage();
-  }
-
-  @Post("manage")
+  @Post("/manage")
+  @UseGuards(JwtAuthGuard)
   create(@Body() article: Partial<Article>): Promise<Article> {
     return this.articleService.create(article);
   }
 
-  @Put("manage/:id")
+  @Get(":id")
+  @UseGuards(JwtAuthGuard)
+  getOne(@Param("id") id: number): Promise<ArticleDto> {
+    return this.articleService.findOneWithTagsAndMetas(id);
+  }
+
+  @Put("/manage/:id")
+  @UseGuards(JwtAuthGuard)
   update(
     @Param("id") id: string,
     @Body() article: Partial<Article>
@@ -69,9 +72,25 @@ export class ArticleController {
     return this.articleService.update(+id, article);
   }
 
-  @Delete("manage/:id")
+  @Delete("/manage/:id")
+  @UseGuards(JwtAuthGuard)
   remove(@Param("id") id: string): Promise<void> {
     return this.articleService.remove(+id);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: number): Promise<ArticleDto> {
+    return this.articleService.findOneWithTagsAndMetas(id);
+  }
+
+  @Patch("/manage/about")
+  updateAboutPage(@Body() article: Partial<Article>): Promise<ArticleDto> {
+    return this.articleService.updateAboutPage(article);
+  }
+
+  @Get("privacy")
+  findPrivacyPage(): Promise<ArticleDto> {
+    return this.articleService.findPrivacyPage();
   }
 
   @Patch(":id/view")

@@ -1,10 +1,12 @@
 import { Article } from "#root/types/Article";
 import request from "#root/utils/request";
+import { Pagination } from "nestjs-typeorm-paginate";
 
 export interface ArticleQuery {
   title?: string;
   withTags?: boolean;
   withMetas?: boolean;
+  [key: string]: any;
 }
 
 export const fetchArticles = async (
@@ -16,4 +18,4 @@ export const fetchArticleDetail = async (id: number): Promise<Article> =>
 
 export const fetchManageArticles = async (
   params?: ArticleQuery
-): Promise<Article[]> => request.get("/articles/manage", { params });
+): Promise<Pagination<Article>> => request.get("/articles/manage", { params });

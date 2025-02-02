@@ -1,10 +1,10 @@
 import { navigate } from "vike/client/router";
 import { API_PREFIX, HOST, isSSR, PORT } from "./environment";
-import { redirect, render } from "vike/abort";
+import { render } from "vike/abort";
 import { usePageContext } from "vike-react/usePageContext";
 
 // 定义接口返回的数据结构
-interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> {
   code: number;
   message: string;
   data: T;
