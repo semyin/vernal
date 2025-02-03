@@ -8,7 +8,7 @@ import { FindOptionsWhere, Like, Repository } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
-import { Pagination, PaginationOptions } from "../common/interfaces/pagination.interface";
+import { Pagination, PaginationOptions } from "../../types/pagination.interface";
 import { createPagination } from "../common/utils/pagination";
 
 @Injectable()

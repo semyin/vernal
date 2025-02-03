@@ -20,7 +20,7 @@ import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
-import { Pagination } from "../common/interfaces/pagination.interface";
+import { Pagination } from "../../types/pagination.interface";
 
 export function TransformBoolean(): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {

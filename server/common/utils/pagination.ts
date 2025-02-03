@@ -2,7 +2,7 @@ import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
 import {
   Pagination,
   PaginationOptions,
-} from "../interfaces/pagination.interface";
+} from "../../../types/pagination.interface";
 
 export function createPagination<T>(
   items: T[],
