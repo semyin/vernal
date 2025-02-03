@@ -18,9 +18,9 @@ import { ArticleService } from "./article.service";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { Pagination } from "nestjs-typeorm-paginate";
 import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
+import { Pagination } from "../common/interfaces/pagination.interface";
 
 export function TransformBoolean(): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
@@ -61,7 +61,7 @@ export class ArticleController {
     @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean
   ): Promise<Pagination<ArticleDto>> {
     return this.articleService.findAll(
-      { page, limit, route: req.url },
+      { page, limit },
       title,
       isPublished,
       isTop,

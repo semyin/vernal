@@ -1,6 +1,6 @@
 import { Article } from "#root/types/Article";
 import request from "#root/utils/request";
-import { Pagination } from "nestjs-typeorm-paginate";
+import { Pagination } from "#root/server/common/interfaces/pagination.interface";
 
 export interface ArticleQuery {
   title?: string;

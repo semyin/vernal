@@ -4,15 +4,12 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsWhere, Like, Repository } from "typeorm";
 import { plainToInstance } from "class-transformer";
-import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from "nestjs-typeorm-paginate";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
+import { Pagination, PaginationOptions } from "../common/interfaces/pagination.interface";
+import { createPagination } from "../common/utils/pagination";
 
 @Injectable()
 export class ArticleService {
@@ -40,73 +37,69 @@ export class ArticleService {
 
   // 查询所有文章-带标签
   async findAll(
-    options: IPaginationOptions,
+    options: PaginationOptions,
     title?: string,
     isPublished?: boolean,
     isTop?: boolean,
     withTags?: boolean,
     withMetas?: boolean
   ): Promise<Pagination<ArticleDto>> {
-    const queryBuilder = this.articleRepository
-      .createQueryBuilder("article")
-      .select([
-        "article.id",
-        "article.title",
-        "article.type",
-        "article.summary",
-        "article.authorId",
-        "article.categoryId",
-        "article.coverImage",
-        "article.isPublished",
-        "article.isTop",
-        "article.viewCount",
-        "article.likeCount",
-        "article.commentCount",
-        "article.createdAt",
-        "article.updatedAt",
-      ])
-      .where("article.type = :type", { type: "article" }) // 只查询普通文章
-      .orderBy("article.createdAt", "DESC");
-
-    // 动态加载 tags 数据
-    if (withTags) {
-      queryBuilder
-        .leftJoinAndSelect("article.articleTags", "articleTags")
-        .leftJoinAndSelect("articleTags.tag", "tag")
-        .distinct(); // DISTINCT 会确保每个文章 (article.id) 只返回一次，即使它有多个关联的 tag
-    }
-
-    // 动态加载 metas 数据
-    if (withMetas) {
-      queryBuilder.leftJoinAndSelect("article.metas", "metas");
-    }
+    const where: FindOptionsWhere<Article> = {
+      type: "article",
+    };
 
     if (title) {
-      queryBuilder.andWhere("article.title LIKE :title", {
-        title: `%${title}%`, // 模糊匹配
-      });
+      where.title = Like(`%${title}%`);
     }
-    
+
     if (isPublished !== undefined) {
-      queryBuilder.andWhere("article.isPublished = :isPublished", {
-        isPublished: isPublished ? 1: 0
-      });
+      where.isPublished = isPublished;
     }
 
     if (isTop !== undefined) {
-      queryBuilder.andWhere("article.isTop = :isTop", {
-        isTop: isTop ? 1: 0
-      });
+      where.isTop = isTop;
     }
 
-    const result = await paginate<Article>(queryBuilder, options);
+    const select = [
+      "id",
+      "title",
+      "type",
+      "summary",
+      "authorId",
+      "categoryId",
+      "coverImage",
+      "isPublished",
+      "isTop",
+      "viewCount",
+      "likeCount",
+      "commentCount",
+      "createdAt",
+      "updatedAt",
+    ] as (keyof Article)[];
 
-    return {
-      ...result,
-      items: plainToInstance(ArticleDto, result.items, {
-        excludeExtraneousValues: true,
-      }),
-    };
+    const [items, total] = await this.articleRepository.findAndCount({
+      select,
+      where,
+      relations: {
+        articleTags: withTags
+          ? {
+              tag: true,
+            }
+          : false,
+        metas: withMetas,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take: options.limit,
+      skip: (options.page - 1) * options.limit,
+    });
+
+    const _items = plainToInstance(ArticleDto, items, {
+      excludeExtraneousValues: true,
+    });
+
+    return createPagination(_items, total, options);
   }
 
   async getAboutPage(): Promise<ArticleDto> {

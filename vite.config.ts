@@ -41,8 +41,7 @@ export default defineConfig(({ mode }) => {
       external: ["reflect-metadata"],
       noExternal: [
         "react-markdown",
-        "react-syntax-highlighter",
-        "react-spinners",
+        "react-spinners"
       ],
     },
     esbuild: false,

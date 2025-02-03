@@ -18,12 +18,12 @@ import {
   ApartmentOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import { navigate } from "vike/client/router";
 import { Link } from "../Link/Link";
 import { logout } from "#root/api/auth";
 import styles from "./Admin.module.scss";
 import "../../assets/css/reset.css";
 import "../../assets/css/app.css";
-import { navigate } from "vike/client/router";
 
 const { Header, Sider, Content } = AntdLayout;
 
