@@ -42,8 +42,10 @@ export class ArticleService {
   async findAll(
     options: IPaginationOptions,
     title?: string,
-    withTags: boolean = false,
-    withMetas: boolean = false
+    isPublished?: boolean,
+    isTop?: boolean,
+    withTags?: boolean,
+    withMetas?: boolean
   ): Promise<Pagination<ArticleDto>> {
     const queryBuilder = this.articleRepository
       .createQueryBuilder("article")
@@ -82,6 +84,18 @@ export class ArticleService {
     if (title) {
       queryBuilder.andWhere("article.title LIKE :title", {
         title: `%${title}%`, // 模糊匹配
+      });
+    }
+    
+    if (isPublished !== undefined) {
+      queryBuilder.andWhere("article.isPublished = :isPublished", {
+        isPublished: isPublished ? 1: 0
+      });
+    }
+
+    if (isTop !== undefined) {
+      queryBuilder.andWhere("article.isTop = :isTop", {
+        isTop: isTop ? 1: 0
       });
     }
 

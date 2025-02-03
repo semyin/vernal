@@ -45,10 +45,12 @@ export class Article {
   @Column({ length: 255, nullable: true })
   coverImage?: string;
 
-  @Column({ default: false })
+  @Column({ name: "is_published", type: "tinyint", default: 0 })
+  @Transform(({ value }) => Boolean(value))
   isPublished?: boolean;
 
   @Column({ default: false })
+  @Transform(({ value }) => Boolean(value))
   isTop?: boolean;
 
   @Column({ default: 0 })

@@ -12,12 +12,25 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   Req,
+  ParseBoolPipe,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Pagination } from "nestjs-typeorm-paginate";
+import { Transform } from "class-transformer";
+import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
+
+export function TransformBoolean(): PropertyDecorator {
+  return (target: any, propertyKey: string | symbol) => {
+    Transform(({ value }) => {
+      if (value === "true") return true;
+      if (value === "false") return false;
+      return undefined;
+    })(target, propertyKey);
+  };
+}
 
 @Controller("articles")
 export class ArticleController {
@@ -36,16 +49,22 @@ export class ArticleController {
   @Get("/manage")
   @UseGuards(JwtAuthGuard)
   findAll(
+    @Req() req: Request, // 获取请求对象
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query("limit", new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+    @Query("withTags", new DefaultValuePipe(false), ParseBoolPipe)
+    withTags: boolean = false,
+    @Query("withMetas", new DefaultValuePipe(false), ParseBoolPipe)
+    withMetas: boolean = false,
     @Query("title") title: string,
-    @Query("withTags") withTags: boolean = false,
-    @Query("withMetas") withMetas: boolean = false,
-    @Req() req: Request // 获取请求对象
+    @Query("isPublished", ParseOptionalBoolPipe) isPublished?: boolean,
+    @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean
   ): Promise<Pagination<ArticleDto>> {
     return this.articleService.findAll(
       { page, limit, route: req.url },
       title,
+      isPublished,
+      isTop,
       withTags,
       withMetas
     );

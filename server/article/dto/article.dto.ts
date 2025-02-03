@@ -91,9 +91,11 @@ export class ArticleDto {
   coverImage?: string;
 
   @Expose()
+  @Transform(({ value }) => Boolean(value))
   isPublished?: boolean;
 
   @Expose()
+  @Transform(({ value }) => Boolean(value))
   isTop?: boolean;
 
   @Expose()
