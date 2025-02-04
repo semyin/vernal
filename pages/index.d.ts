@@ -5,7 +5,7 @@ import { Meta } from "#root/types/Meta"
 declare global {
   namespace Vike {
     interface PageContext {
-      abortReason: string | { notAdmin: true };
+      abortReason: string
       // custom
       site: Site;
       meta: Meta[];
