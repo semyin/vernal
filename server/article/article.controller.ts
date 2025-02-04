@@ -21,6 +21,7 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
+import { DelayResponse } from "../common/decorators/delay.decorator";
 
 export function TransformBoolean(): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
@@ -47,6 +48,7 @@ export class ArticleController {
   }
 
   @Get("/manage")
+  // @DelayResponse(3000)
   @UseGuards(JwtAuthGuard)
   findAll(
     @Req() req: Request, // 获取请求对象
