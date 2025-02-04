@@ -19,6 +19,7 @@ export default {
       queries: {
         refetchOnWindowFocus: false, // 禁用窗口聚焦时重新请求
         refetchOnMount: false, // 禁用组件重新挂载时重新请求
+        retry: 0, // 失败重试次数为0
       }
     }
   },
