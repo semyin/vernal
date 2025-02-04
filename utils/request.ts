@@ -60,6 +60,10 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
           throw render("/admin/login");
         } else {
         }
+      } else if (response.status === 404) {
+        if (isSSR) {
+          throw render(404);
+        }
       } else {
         throw new Error(`HTTP Error: ${response.status}`);
       }
@@ -72,6 +76,8 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
       // 处理业务逻辑错误
       if (code === 401) {
         navigate("/admin/login");
+      } else if (code === 404) {
+        navigate("/_error");
       } else {
         throw new Error(`API Error: ${message}`);
       }
