@@ -28,8 +28,11 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
 
     // 处理查询参数
     if (config.params) {
+      const filteredParams = Object.fromEntries(
+        Object.entries(config.params).filter(([_, value]) => value !== undefined)
+      );
       const queryString = new URLSearchParams(
-        config.params as Record<string, string>
+        filteredParams as Record<string, string>
       ).toString();
       fullUrl += `?${queryString}`;
     }

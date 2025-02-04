@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsWhere, Like, Repository } from "typeorm";
+import { FindOptionsWhere, In, Like, Repository } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
@@ -41,8 +41,9 @@ export class ArticleService {
     title?: string,
     isPublished?: boolean,
     isTop?: boolean,
+    tagIds?: number[],
     withTags?: boolean,
-    withMetas?: boolean
+    withMetas?: boolean,
   ): Promise<Pagination<ArticleDto>> {
     const where: FindOptionsWhere<Article> = {
       type: "article",
@@ -58,6 +59,12 @@ export class ArticleService {
 
     if (isTop !== undefined) {
       where.isTop = isTop;
+    }
+
+    if (tagIds && tagIds.length > 0) {
+      where.articleTags = {
+        tag: In(tagIds), // 通过 tagIds 过滤文章
+      };
     }
 
     const select = [

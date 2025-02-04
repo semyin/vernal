@@ -22,6 +22,7 @@ import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
 import { DelayResponse } from "../common/decorators/delay.decorator";
+import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
 
 export function TransformBoolean(): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
@@ -58,17 +59,19 @@ export class ArticleController {
     withTags: boolean = false,
     @Query("withMetas", new DefaultValuePipe(false), ParseBoolPipe)
     withMetas: boolean = false,
-    @Query("title") title: string,
+    @Query("title") title: string | undefined,
     @Query("isPublished", ParseOptionalBoolPipe) isPublished?: boolean,
-    @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean
+    @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean,
+    @Query("tagIds", ParseOptionalArrayPipe) tagIds?: number[] // 新增 tagIds 参数
   ): Promise<Pagination<ArticleDto>> {
     return this.articleService.findAll(
       { page, limit },
       title,
       isPublished,
       isTop,
+      tagIds,
       withTags,
-      withMetas
+      withMetas,
     );
   }
 

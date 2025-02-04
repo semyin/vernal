@@ -24,11 +24,13 @@ import { logout } from "#root/api/auth";
 import styles from "./Admin.module.scss";
 import "../../assets/css/reset.css";
 import "../../assets/css/app.css";
+import { withFallback } from "vike-react-query";
+import { useMountedStyles } from "#root/hooks/useMountedStyles";
 
 const { Header, Sider, Content } = AntdLayout;
 
-function Layout({ children }: { children: React.ReactNode }) {
-  const pageContext = usePageContext();  
+const Layout = withFallback(({ children }: { children: React.ReactNode }) => {
+  const pageContext = usePageContext();
 
   const { site, meta } = useSiteConfig();
 
@@ -211,8 +213,10 @@ function Layout({ children }: { children: React.ReactNode }) {
       return { title: <Link href={url}>{breadcrumbTitle}</Link> };
     });
 
+  const _s = useMountedStyles();
+
   return (
-    <div className={styles["admin-layout"]}>
+    <div className={styles["admin-layout"]} style={_s}>
       <AntdLayout style={{ minHeight: "100vh" }}>
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div
@@ -291,6 +295,6 @@ function Layout({ children }: { children: React.ReactNode }) {
       </AntdLayout>
     </div>
   );
-}
+});
 
 export { Layout };
