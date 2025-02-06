@@ -19,3 +19,7 @@ export const fetchArticleDetail = async (id: number): Promise<Article> =>
 export const fetchManageArticles = async (
   params?: ArticleQuery
 ): Promise<Pagination<Article>> => request.get("/articles/manage", { params });
+
+export const createArticle = async (
+  data: Partial<Article>
+): Promise<Pagination<Article>> => request.post("/articles/manage", data);
