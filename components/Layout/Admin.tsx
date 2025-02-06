@@ -1,5 +1,5 @@
 import { useSiteConfig } from "#root/hooks/useSiteConfig";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePageContext } from "vike-react/usePageContext";
 import { Layout as AntdLayout, Menu, Breadcrumb, Dropdown, Avatar } from "antd";
 import {
@@ -24,12 +24,12 @@ import { logout } from "#root/api/auth";
 import styles from "./Admin.module.scss";
 import "../../assets/css/reset.css";
 import "../../assets/css/app.css";
-import { withFallback } from "vike-react-query";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
+import { SiteConfigHead } from "./SiteConfigHead";
 
 const { Header, Sider, Content } = AntdLayout;
 
-const Layout = withFallback(({ children }: { children: React.ReactNode }) => {
+function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext();
 
   const { site, meta } = useSiteConfig();
@@ -216,85 +216,102 @@ const Layout = withFallback(({ children }: { children: React.ReactNode }) => {
   const _s = useMountedStyles();
 
   return (
-    <div className={styles["admin-layout"]} style={_s}>
-      <AntdLayout style={{ minHeight: "100vh" }}>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
-          <div
-            className={`${styles["logo"]} ${
-              collapsed ? styles["logo-collapsed"] : ""
-            }`}
-          >
-            <Link href="/">{site.name}</Link>
-          </div>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={selectedKeys}
-            openKeys={openKeys}
-            onOpenChange={handleOpenChange}
-            items={menuItems}
-          />
-        </Sider>
-        <AntdLayout>
-          <Header
-            style={{
-              padding: 0,
-              background: "#fff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingLeft: 16,
-              paddingRight: 16,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {collapsed ? (
-                <MenuUnfoldOutlined
-                  onClick={toggleCollapse}
-                  style={{ fontSize: "18px", cursor: "pointer" }}
-                />
-              ) : (
-                <MenuFoldOutlined
-                  onClick={toggleCollapse}
-                  style={{ fontSize: "18px", cursor: "pointer" }}
-                />
-              )}
-              <Breadcrumb style={{ marginLeft: 16 }} items={breadcrumbItems} />
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              {isFullscreen ? (
-                <FullscreenExitOutlined
-                  onClick={toggleFullscreen}
-                  style={{ fontSize: "18px", cursor: "pointer" }}
-                />
-              ) : (
-                <FullscreenOutlined
-                  onClick={toggleFullscreen}
-                  style={{ fontSize: "18px", cursor: "pointer" }}
-                />
-              )}
-              <a className={styles["to-site"]} href={site.url} target="_blank">
-                <LinkOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
-              </a>
-              <Dropdown menu={userMenu}>
-                <Avatar style={{ cursor: "pointer" }} icon={<UserOutlined />} />
-              </Dropdown>
-            </div>
-          </Header>
-          <Content
-            style={{
-              margin: "16px",
-              padding: 24,
-              background: "#fff",
-              minHeight: 280,
-            }}
-          >
-            {children}
-          </Content>
-        </AntdLayout>
-      </AntdLayout>
-    </div>
+    <>
+      <SiteConfigHead site={site} meta={meta} titleSuffix="-管理后台" />
+      <Suspense>
+        <div className={styles["admin-layout"]} style={_s}>
+          <AntdLayout style={{ minHeight: "100vh" }}>
+            <Sider trigger={null} collapsible collapsed={collapsed}>
+              <div
+                className={`${styles["logo"]} ${
+                  collapsed ? styles["logo-collapsed"] : ""
+                }`}
+              >
+                <Link href="/">{site.name}</Link>
+              </div>
+              <Menu
+                theme="dark"
+                mode="inline"
+                selectedKeys={selectedKeys}
+                openKeys={openKeys}
+                onOpenChange={handleOpenChange}
+                items={menuItems}
+              />
+            </Sider>
+            <AntdLayout>
+              <Header
+                style={{
+                  padding: 0,
+                  background: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingLeft: 16,
+                  paddingRight: 16,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {collapsed ? (
+                    <MenuUnfoldOutlined
+                      onClick={toggleCollapse}
+                      style={{ fontSize: "18px", cursor: "pointer" }}
+                    />
+                  ) : (
+                    <MenuFoldOutlined
+                      onClick={toggleCollapse}
+                      style={{ fontSize: "18px", cursor: "pointer" }}
+                    />
+                  )}
+                  <Breadcrumb
+                    style={{ marginLeft: 16 }}
+                    items={breadcrumbItems}
+                  />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  {isFullscreen ? (
+                    <FullscreenExitOutlined
+                      onClick={toggleFullscreen}
+                      style={{ fontSize: "18px", cursor: "pointer" }}
+                    />
+                  ) : (
+                    <FullscreenOutlined
+                      onClick={toggleFullscreen}
+                      style={{ fontSize: "18px", cursor: "pointer" }}
+                    />
+                  )}
+                  <a
+                    className={styles["to-site"]}
+                    href={site.url}
+                    target="_blank"
+                  >
+                    <LinkOutlined
+                      style={{ fontSize: "18px", cursor: "pointer" }}
+                    />
+                  </a>
+                  <Dropdown menu={userMenu}>
+                    <Avatar
+                      style={{ cursor: "pointer" }}
+                      icon={<UserOutlined />}
+                    />
+                  </Dropdown>
+                </div>
+              </Header>
+              <Content
+                style={{
+                  margin: "16px",
+                  padding: 24,
+                  background: "#fff",
+                  minHeight: 280,
+                }}
+              >
+                {children}
+              </Content>
+            </AntdLayout>
+          </AntdLayout>
+        </div>
+      </Suspense>
+    </>
   );
-});
+}
 
 export { Layout };

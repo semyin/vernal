@@ -7,6 +7,7 @@ import { useState, startTransition, Suspense, useEffect } from "react";
 import "antd/dist/reset.css";
 import { withFallback } from "vike-react-query";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
+import { navigate } from "vike/client/router";
 
 interface Filters {
   title?: string;
@@ -169,6 +170,10 @@ const SearchForm = withFallback(({ onSearch }: SearchFormProps) => {
     });
   };
 
+  const handleAdd = () => {
+    navigate("/admin/article/upsert"); // 跳转到添加文章的页面
+  };
+
   const _s = useMountedStyles();
 
   return (
@@ -208,6 +213,11 @@ const SearchForm = withFallback(({ onSearch }: SearchFormProps) => {
       <Form.Item>
         <Button type="primary" onClick={handleSearch}>
           搜索
+        </Button>
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" onClick={handleAdd}>
+          添加
         </Button>
       </Form.Item>
     </Form>

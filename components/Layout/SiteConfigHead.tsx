@@ -1,13 +1,25 @@
-export { SiteMeta };
+export { SiteConfigHead };
 
 import { Head } from "vike-react/Head";
 import { Config } from "vike-react/Config";
 import { SiteWithBaseMeta } from "#root/types/Site";
 
-function SiteMeta({ site, meta }: SiteWithBaseMeta) {
+interface Props extends SiteWithBaseMeta {
+  titlePrefix?: string;
+  titleSuffix?: string;
+}
+
+function SiteConfigHead({ site, meta, titlePrefix, titleSuffix }: Props) {
+  let title = site?.name;
+  if (titlePrefix) {
+    title = titlePrefix + title
+  }
+  if (titleSuffix) {
+    title = title + titleSuffix
+  }
   return (
     <>
-      <Config title={`${site.name}`} />
+      <Config title={title} />
       <Head>
         {meta.map((item) => {
           if (item.name && item.content) {
