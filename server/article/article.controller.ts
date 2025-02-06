@@ -81,7 +81,7 @@ export class ArticleController {
     return this.articleService.create(article);
   }
 
-  @Get(":id")
+  @Get("/manage/:id")
   @UseGuards(JwtAuthGuard)
   getOne(@Param("id") id: number): Promise<ArticleDto> {
     return this.articleService.findOneWithTagsAndMetas(id);
