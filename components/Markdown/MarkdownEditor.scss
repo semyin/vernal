@@ -1,0 +1,17 @@
+.custom-md-editor .w-md-editor-toolbar {
+  padding: 8px;
+}
+
+.custom-md-editor .w-md-editor-toolbar button {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.custom-md-editor .w-md-editor-toolbar li {
+  margin: 0 4px;
+}

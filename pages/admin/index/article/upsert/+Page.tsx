@@ -1,9 +1,14 @@
 import { useState } from "react";
+import { clientOnly } from "vike-react/clientOnly";
+import { navigate } from "vike/client/router";
 import { Form, Input, Button, Select, Upload, message, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { createArticle } from "#root/api/article";
-import { navigate } from "vike/client/router";
 import { Article } from "#root/types/Tag";
+
+const MarkdownEditor = clientOnly(
+  () => import("#root/components/Markdown/MarkdownEditor")
+);
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -14,6 +19,8 @@ function Page() {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const onFinish = async (values: Article) => {
+    console.log(values);
+    return;
     setLoading(true);
     try {
       await createArticle(values);
@@ -50,7 +57,8 @@ function Page() {
         name="content"
         rules={[{ required: true, message: "请输入内容" }]}
       >
-        <TextArea rows={10} placeholder="请输入文章内容" />
+        <MarkdownEditor fallback={<div>loading...</div>} />
+        {/* <TextArea rows={10} placeholder="请输入文章内容" /> */}
       </Form.Item>
 
       <Form.Item label="摘要" name="summary">

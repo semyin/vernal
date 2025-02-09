@@ -29,7 +29,9 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
     // 处理查询参数
     if (config.params) {
       const filteredParams = Object.fromEntries(
-        Object.entries(config.params).filter(([_, value]) => value !== undefined)
+        Object.entries(config.params).filter(
+          ([_, value]) => value !== undefined
+        )
       );
       const queryString = new URLSearchParams(
         filteredParams as Record<string, string>
@@ -45,10 +47,19 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
       ...config,
       signal: controller.signal,
       headers: {
-        "Content-Type": "application/json",
         ...config.headers,
       },
     };
+
+    // FormData的时候不要手动设置Content-Type
+    if (config.body instanceof FormData) {
+      
+    } else {
+      newConfig.headers = {
+        "Content-Type": "application/json",
+        ...newConfig.headers
+      }
+    }
 
     return { fullUrl, newConfig, timeoutId };
   };
@@ -130,7 +141,7 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
     post: <T = any>(url: string, data?: any, config?: RequestConfig) =>
       request<T>(url, {
         method: "POST",
-        body: JSON.stringify(data),
+        body: data instanceof FormData ? data : JSON.stringify(data),
         ...config,
       }),
     put: <T = any>(url: string, data?: any, config?: RequestConfig) =>
