@@ -7,11 +7,12 @@ import {
   Delete,
   Get,
   Query,
+  Body,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileService } from "./file.service";
 import { File } from "./file.entity";
-import type { Express } from "express";
+import { Multer } from "multer";
 
 @Controller("files")
 export class FileController {
@@ -21,18 +22,15 @@ export class FileController {
   @UseInterceptors(
     FileInterceptor("file", {
       limits: {
-        fileSize: 1024 * 1024 * 5, // 5MB
+        fileSize: 1024 * 1024 * 10, // 10MB
       },
     })
   )
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    // @Query("type") type: string
-  ): Promise<null> {
-    console.log(file);
-
-    return null;
-    // return this.fileService.uploadFile(file, type);
+    @Body("type") type: string
+  ): Promise<File> {
+    return this.fileService.uploadFile(file, type);
   }
 
   @Delete(":id")

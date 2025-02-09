@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { File } from "./file.entity";
 import { CosService } from "./cos.service";
+import { Multer } from "multer"
 
 @Injectable()
 export class FileService {
@@ -14,15 +15,19 @@ export class FileService {
     private readonly cosService: CosService
   ) {}
 
-  async uploadFile(file: Multer.File, type: string): Promise<File> {
-    const cosKey = `uploads/${Date.now()}_${file.originalname}`;
+  async uploadFile(file: Express.Multer.File, type: string): Promise<File> {
+    const now = Date.now()
+    const cosKey = `uploads/${now}_${file.originalname}`;
     const url = await this.cosService.uploadFile(
       cosKey,
       file.buffer
     );
 
+    // 如果 file.filename 是 undefined,手动生成一个文件名
+    const filename = file.filename || `${now}_${file.originalname}`;
+    
     const newFile = this.fileRepository.create({
-      filename: file.filename,
+      filename,
       originalname: file.originalname,
       mimetype: file.mimetype,
       size: file.size,
