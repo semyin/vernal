@@ -1,6 +1,6 @@
 import { withFallback } from "vike-react-query"
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { clientOnly } from "vike-react/clientOnly";
 import { navigate } from "vike/client/router";
 import { Form, Input, Button, Select, Upload, message, UploadFile } from "antd";
@@ -28,16 +28,17 @@ const UpsertArticle = withFallback(
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const _s = useMountedStyles();
 
-    let detail: Article
+    const { data: detail } = id ? useSuspenseQuery({
+      queryKey: ["admin-article-detail", id],
+      queryFn: () => getArticleDetail(id),
+    }) : { data: null };
 
-    if (id) {
-      const data = useSuspenseQuery({
-        queryKey: ["admin-article-detail"],
-        queryFn: () => getArticleDetail(id),
-      });
-      detail = data.data
-      form.setFieldsValue({...detail})
-    }
+    useEffect(() => {
+      if (detail) {
+        const { tags = [], ...others } = detail
+        form.setFieldsValue({ ...others, tags: tags.map(item => item.id) });
+      }
+    }, [detail, form]);
 
     const { data: tags } = useSuspenseQuery({
       queryKey: ["admin-tags"],
