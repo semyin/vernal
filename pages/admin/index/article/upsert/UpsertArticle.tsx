@@ -8,6 +8,8 @@ import { UploadOutlined } from "@ant-design/icons";
 import { createArticle } from "#root/api/article";
 import { Article } from "#root/types/Tag";
 import { fetchTags } from "#root/api/tag";
+import { fetchCategories } from "#root/api/category";
+import { uploadFile } from "#root/api/files";
 
 const MarkdownEditor = clientOnly(
   () => import("#root/components/Markdown/MarkdownEditor")
@@ -25,6 +27,11 @@ const UpsertArticle = withFallback(() => {
   const { data: tags } = useSuspenseQuery({
     queryKey: ["admin-tags"],
     queryFn: () => fetchTags(),
+  });
+
+  const { data: categories } = useSuspenseQuery({
+    queryKey: ["admin-categories"],
+    queryFn: () => fetchCategories(),
   });
 
   const onFinish = async (values: Article) => {
@@ -45,6 +52,36 @@ const UpsertArticle = withFallback(() => {
     setFileList(fileList);
   };
 
+  const handleBeforeUpload = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "article");
+
+      // 调用上传接口
+      const uploadResponse = await uploadFile(formData);
+
+      // 更新 fileList
+      setFileList([
+        {
+          uid: file.name,
+          name: file.name,
+          status: "done",
+          url: uploadResponse.url,
+        },
+      ]);
+
+      // 更新表单数据中的封面图片 URL
+      form.setFieldsValue({ coverImage: uploadResponse.url });
+
+      message.success("文件上传成功");
+    } catch (error) {
+      message.error("文件上传失败");
+    }
+
+    return false; // 阻止默认上传行为
+  };
+
   return (
     <Form
       form={form}
@@ -52,7 +89,7 @@ const UpsertArticle = withFallback(() => {
       layout="horizontal"
       onFinish={onFinish}
       labelAlign="left"
-      initialValues={{ type: "article", isPublished: false, isTop: false }}
+      initialValues={{ type: "article", isPublished: false, isTop: false, authorId: 1 }}
     >
       <Form.Item
         label="标题"
@@ -67,7 +104,7 @@ const UpsertArticle = withFallback(() => {
       </Form.Item>
 
       <Form.Item
-        wrapperCol={{ span: 12 }}
+        wrapperCol={{ span: 8 }}
         label="标签"
         name="tags"
         rules={[{ required: true, message: "请选择标签" }]}
@@ -90,7 +127,13 @@ const UpsertArticle = withFallback(() => {
         rules={[{ required: true, message: "请选择分类" }]}
       >
         <Select allowClear placeholder="请选择分类">
-          { }
+          {categories.map((item) => {
+            return (
+              <Select.Option key={item.id} value={item.id}>
+                {item.name}
+              </Select.Option>
+            );
+          })}
         </Select>
       </Form.Item>
 
@@ -129,21 +172,13 @@ const UpsertArticle = withFallback(() => {
         </Select>
       </Form.Item>
 
-      <Form.Item
-        label="作者ID"
-        wrapperCol={{ span: 4 }}
-        name="authorId"
-        rules={[{ required: true, message: "请输入作者ID" }]}
-      >
-        <Input disabled type="number" placeholder="请输入作者ID" />
-      </Form.Item>
-
       <Form.Item label="封面图片" name="coverImage">
         <Upload
           listType="picture"
           fileList={fileList}
+          maxCount={1}
           onChange={handleUploadChange}
-          beforeUpload={() => false} // 阻止自动上传
+          beforeUpload={handleBeforeUpload}
         >
           <Button icon={<UploadOutlined />}>上传封面图片</Button>
         </Upload>
@@ -163,7 +198,6 @@ const UpsertArticle = withFallback(() => {
       </Form.Item>
     </Form>
   );
-  return <></>
-})
+}, () => "", () => "")
 
 export { UpsertArticle };

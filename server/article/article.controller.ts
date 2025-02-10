@@ -18,11 +18,13 @@ import { ArticleService } from "./article.service";
 import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { User } from "../common/decorators/user.decorator";
 import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
 import { DelayResponse } from "../common/decorators/delay.decorator";
 import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
+import { JwtPayload } from "../common/interfaces/jwt-payload.interface";
 
 export function TransformBoolean(): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
@@ -77,8 +79,8 @@ export class ArticleController {
 
   @Post("/manage")
   @UseGuards(JwtAuthGuard)
-  create(@Body() article: Partial<Article>): Promise<Article> {
-    return this.articleService.create(article);
+  create(@Body() article: Partial<Article>, @User() user: JwtPayload ): Promise<Article> {
+    return this.articleService.create(article, user.userId);
   }
 
   @Get("/manage/:id")

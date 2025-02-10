@@ -200,11 +200,14 @@ export class ArticleService {
   }
 
   // 创建文章
-  async create(article: Partial<Article>): Promise<Article> {
+  async create(article: Partial<Article>, userId: number): Promise<Article> {
     if (article.type === "about") {
       throw new BadRequestException("关于页面不能直接创建，请使用更新接口");
     }
-    const newArticle = this.articleRepository.create(article);
+    const newArticle = this.articleRepository.create({
+      ...article,
+      authorId: userId
+    });
     return this.articleRepository.save(newArticle);
   }
 
