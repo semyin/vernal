@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import "./MarkdownEditor.scss";
 import { message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -14,8 +14,14 @@ const MarkdownEditor = forwardRef<HTMLDivElement, MarkdownEditorProps>(
   ({ value, onChange }, ref) => {
     const [editorValue, setEditorValue] = useState(value || "");
     const [loading, setLoading] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+      setIsMounted(true); // 标记组件已加载完成
+    }, []);
 
     const handleChange = (newValue: string | undefined) => {
+      if (!isMounted) return; // 如果组件未加载完成，不触发更新
       const updatedValue = newValue || "";
       setEditorValue(updatedValue);
       if (onChange) {
