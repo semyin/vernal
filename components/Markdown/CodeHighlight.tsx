@@ -24,6 +24,11 @@ const CodeHighlight: React.FC<CodeHighlightProps> = ({ code, language }) => {
       }
 
       try {
+        // 加载 typescript 和 jsx 模块
+        if (language === "tsx") {
+          await import("prismjs/components/prism-typescript");
+          await import("prismjs/components/prism-jsx");
+        }
         // 动态导入所需的语言模块
         await import(`prismjs/components/prism-${language}`);
         loadedLanguages.add(language); // 将语言添加到缓存
