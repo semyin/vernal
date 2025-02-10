@@ -23,3 +23,7 @@ export const fetchManageArticles = async (
 export const createArticle = async (
   data: Partial<Article>
 ): Promise<Pagination<Article>> => request.post("/articles/manage", data);
+
+export const getArticleDetail = async (
+  id: number
+): Promise<Article> => request.get(`/articles/manage/${id}`);
