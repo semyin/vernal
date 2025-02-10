@@ -2,23 +2,26 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) {}
+  ) { }
 
   // 创建分类
   async create(name: string, description?: string): Promise<Category> {
-    const category = this.categoryRepository.create({ name, description });
-    return this.categoryRepository.save(category);
+    const category = await this.categoryRepository.create({ name, description });
+    await this.categoryRepository.save(category);
+    return plainToInstance(Category, category)
   }
 
   // 查询所有分类
   async findAll(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    const result = await this.categoryRepository.find();
+    return plainToInstance(Category, result)
   }
 
   // 查询单个分类
@@ -27,17 +30,18 @@ export class CategoryService {
     if (!category) {
       throw new NotFoundException('分类不存在');
     }
-    return category;
+    return plainToInstance(Category, category);
   }
 
   // 更新分类
   async update(id: number, name: string, description?: string): Promise<Category> {
     const category = await this.findOne(id);
     category.name = name;
-    if(description) {
-        category.description = description;
+    if (description) {
+      category.description = description;
     }
-    return this.categoryRepository.save(category);
+    await this.categoryRepository.save(category);
+    return plainToInstance(Category, category);
   }
 
   // 删除分类
