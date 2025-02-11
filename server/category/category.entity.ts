@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { format } from 'date-fns';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, Relation } from 'typeorm';
+import { Article } from '../article/article.entity';
 
 @Entity('category')
 export class Category {
@@ -12,6 +13,9 @@ export class Category {
 
   @Column({ type: 'text', nullable: true })
   description!: string;
+
+  @OneToMany(() => Article, (article) => article.category)
+  articles?: Relation<Article>[];
 
   @CreateDateColumn()
   @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串

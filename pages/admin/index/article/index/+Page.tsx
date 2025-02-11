@@ -79,9 +79,9 @@ const ArticlesTable = withFallback(
         key: "summary",
       },
       {
-        title: "分类ID",
-        dataIndex: "categoryId",
-        key: "categoryId",
+        title: "分类",
+        dataIndex: "categoryName",
+        key: "categoryName",
       },
       {
         title: "标签",

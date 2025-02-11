@@ -96,6 +96,10 @@ export class ArticleDto {
   categoryId?: number;
 
   @Expose()
+  @Transform(({ obj }) => obj.category?.name || null) 
+  categoryName?: string;
+
+  @Expose()
   coverImage?: string;
 
   @Expose()

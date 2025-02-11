@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable, ManyToOne, JoinColumn } from 'typeorm';
 import type { Relation } from 'typeorm'
 import { Transform } from 'class-transformer';
 import { format } from 'date-fns';
 import { Meta } from '../meta/meta.entity';
 import { Tag } from '../tag/tag.entity';
+import { Category } from '../category/category.entity';
 
 @Entity()
 export class Article {
@@ -31,6 +32,10 @@ export class Article {
 
   @Column({ nullable: true })
   categoryId?: number;
+
+  @ManyToOne(() => Category, (category) => category.articles)
+  @JoinColumn({ name: 'categoryId' })
+  category?: Relation<Category>;
 
   @Column({ length: 255, nullable: true })
   coverImage?: string;

@@ -37,6 +37,7 @@ export class ArticleService {
       .getMany();
     return plainToInstance(ArticleListDto, result);
   }
+  
   async findAll(
     options: PaginationOptions,
     title?: string,
@@ -49,6 +50,7 @@ export class ArticleService {
   ): Promise<Pagination<ArticleDto>> {
     const queryBuilder = this.articleRepository
       .createQueryBuilder('article')
+      .leftJoin('article.category', 'category')
       .where('article.type = :type', { type: 'article' });
 
     if (title) {
@@ -80,6 +82,7 @@ export class ArticleService {
       'article.summary',
       'article.authorId',
       'article.categoryId',
+      'category.name',
       'article.coverImage',
       'article.isPublished',
       'article.isTop',
@@ -115,19 +118,23 @@ export class ArticleService {
 
   // 查询单篇文章-带标签-带meta
   async findOne(id: number): Promise<ArticleDto> {
-    const article = await this.articleRepository.findOne({
-      where: { id },
-      relations: ["tags", "metas"],
-    });
+    const article = await this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.tags', 'tags')
+      .leftJoinAndSelect('article.metas', 'metas')
+      .leftJoinAndSelect('article.category', 'category')
+      .where('article.id = :id', { id })
+      .getOne();
+  
     if (!article) {
       throw new NotFoundException("文章不存在");
     }
-
+  
     return plainToInstance(ArticleDto, article, {
       excludeExtraneousValues: true,
     });
   }
-
+  
   // 创建文章
   async create(article: Partial<Article>, userId: number, tagIds?: number[]): Promise<Article> {
     if (article.type === "about") {
