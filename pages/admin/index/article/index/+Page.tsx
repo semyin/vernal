@@ -1,13 +1,15 @@
-import { fetchManageArticles } from "#root/api/article";
+import { deleteArticle, fetchManageArticles } from "#root/api/article";
 import { fetchTags } from "#root/api/tag";
 import { Tag } from "#root/types/Tag";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Table, Tag as AntdTag, Form, Input, Select, Button } from "antd";
-import { useState, startTransition, Suspense, useEffect } from "react";
+import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
+import { Table, Tag as AntdTag, Form, Input, Select, Button, message, Popconfirm } from "antd";
+import { useState, startTransition } from "react";
 import "antd/dist/reset.css";
 import { withFallback } from "vike-react-query";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { navigate } from "vike/client/router";
+import { Article } from "#root/types/Article";
+import { ColumnType } from "antd/es/table";
 
 interface Filters {
   title?: string;
@@ -26,6 +28,9 @@ interface ArticlesTableProps {
 
 const ArticlesTable = withFallback(
   ({ page, limit, setPage, setLimit, filters }: ArticlesTableProps) => {
+
+    const queryClient = useQueryClient();
+
     const result = useSuspenseQuery({
       queryKey: ["admin-articles", page, limit, filters],
       queryFn: () =>
@@ -41,7 +46,21 @@ const ArticlesTable = withFallback(
         }),
     });
 
-    const columns = [
+    const handleDelete = async (id: number) => {
+      try {
+        await deleteArticle(id);
+        message.success("删除成功");
+        queryClient.invalidateQueries({ queryKey: ["admin-articles"] }); // 刷新表格数据
+      } catch (error) {
+        message.error("删除失败");
+      }
+    };
+
+    const handleEdit = (id: number) => {
+      navigate(`/admin/article/upsert/${id}`); // 跳转到编辑页面
+    };
+
+    const columns: ColumnType<Article>[] = [
       {
         title: "ID",
         dataIndex: "id",
@@ -57,11 +76,6 @@ const ArticlesTable = withFallback(
         title: "摘要",
         dataIndex: "summary",
         key: "summary",
-      },
-      {
-        title: "作者ID",
-        dataIndex: "authorId",
-        key: "authorId",
       },
       {
         title: "分类ID",
@@ -120,6 +134,29 @@ const ArticlesTable = withFallback(
         dataIndex: "updatedAt",
         key: "updatedAt",
         width: 160,
+      },
+      {
+        title: "操作",
+        key: "action",
+        fixed: "right", // 固定在右侧
+        width: 156, // 设置操作列宽度
+        render: (_: unknown, record: { id: number }) => (
+          <div>
+            <Button type="link" onClick={() => handleEdit(record.id)}>
+              编辑
+            </Button>
+            <Popconfirm
+              title="确定删除吗？"
+              onConfirm={() => handleDelete(record.id)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button type="link" danger>
+                删除
+              </Button>
+            </Popconfirm>
+          </div>
+        ),
       },
     ];
 

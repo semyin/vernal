@@ -5,7 +5,7 @@ import { clientOnly } from "vike-react/clientOnly";
 import { navigate } from "vike/client/router";
 import { Form, Input, Button, Select, Upload, message, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { createArticle, getArticleDetail } from "#root/api/article";
+import { createArticle, getArticleDetail, updateArticle } from "#root/api/article";
 import { Article } from "#root/types/Article";
 import { fetchTags } from "#root/api/tag";
 import { fetchCategories } from "#root/api/category";
@@ -53,12 +53,16 @@ const UpsertArticle = withFallback(
     const onFinish = async (values: Article) => {
       setLoading(true);
       try {
-        await createArticle(values);
-        message.success("文章创建成功").then(() => {
+        if (id) {
+          await createArticle(values);
+        } else {
+          await updateArticle(id, values);
+        }
+        message.success("保存成功").then(() => {
           navigate("/admin/article");
         })
       } catch (error) {
-        message.error("文章创建失败");
+        message.error("保存失败");
       } finally {
         setLoading(false);
       }

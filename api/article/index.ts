@@ -27,3 +27,12 @@ export const createArticle = async (
 export const getArticleDetail = async (
   id: number
 ): Promise<Article> => request.get(`/articles/manage/${id}`);
+
+export const updateArticle = async (
+  id: number,
+  data: Partial<Article>
+): Promise<null> => request.put(`/articles/manage/${id}`, data)
+
+export const deleteArticle = async (
+  id: number
+): Promise<null> => request.delete(`/articles/manage/${id}`)
