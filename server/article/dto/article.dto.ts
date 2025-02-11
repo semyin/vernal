@@ -1,14 +1,6 @@
 import { Expose, Transform, Type } from "class-transformer";
 import { format } from "date-fns";
 
-export class ArticleTagDto {
-  @Expose()
-  id!: number;
-
-  @Expose()
-  name!: string;
-}
-
 export class ArticleMetaDto {
   @Expose()
   id!: number;
@@ -41,12 +33,28 @@ export class ArticleMetaDto {
 }
 
 export class ArticleListDto {
-  
+
   @Expose()
   id!: number;
 
   @Expose()
   title!: string;
+
+  @Expose()
+  @Transform(({ value }) => format(new Date(value), "yyyy-MM-dd HH:mm:ss")) // 转换为本地时间字符串
+  createdAt!: Date;
+
+  @Expose()
+  @Transform(({ value }) => format(new Date(value), "yyyy-MM-dd HH:mm:ss")) // 转换为本地时间字符串
+  updatedAt!: Date;
+}
+
+export class TagDto {
+  @Expose()
+  id!: number;
+
+  @Expose()
+  name!: string;
 
   @Expose()
   @Transform(({ value }) => format(new Date(value), "yyyy-MM-dd HH:mm:ss")) // 转换为本地时间字符串
@@ -68,15 +76,15 @@ export class ArticleDto {
   content!: string;
 
   @Expose()
-  type!: string; // 新增 type 字段
+  type!: string;
 
   @Expose()
-  @Type(() => ArticleTagDto) // 指定 tags 字段的类型
-  tags?: ArticleTagDto[];
+  @Type(() => TagDto)
+  tags?: TagDto[];
 
   @Expose()
   @Type(() => ArticleMetaDto)
-  metas!: ArticleMetaDto[]; // 定义 metas 字段
+  metas!: ArticleMetaDto[];
 
   @Expose()
   summary?: string;

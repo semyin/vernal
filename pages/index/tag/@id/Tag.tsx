@@ -15,9 +15,7 @@ const Tag = withFallback(
 
     const tag = result.data;
 
-    const articles = tag.articleTags.map((item) => {
-      return item.article;
-    });
+    const articles = tag.articles
 
     return (
       <div className={styles.tag}>

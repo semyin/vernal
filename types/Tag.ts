@@ -6,15 +6,10 @@ export interface Tag {
 export interface TagDetail {
   id: number
   name: string
-  articleTags: ArticleTag[]
+  articles: Article[]
   createdAt: string
   updatedAt: string
   articleCount: number
-}
-
-export interface ArticleTag {
-  articleId: number
-  article: Article
 }
 
 export interface Article {

@@ -38,7 +38,7 @@ export function TransformBoolean(): PropertyDecorator {
 
 @Controller("articles")
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleService) { }
 
   @Get()
   findList(): Promise<ArticleListDto[]> {
@@ -79,23 +79,28 @@ export class ArticleController {
 
   @Post("/manage")
   @UseGuards(JwtAuthGuard)
-  create(@Body() article: Partial<Article>, @User() user: JwtPayload ): Promise<Article> {
-    return this.articleService.create(article, user.userId);
+  create(
+    @Body() body: { article: Partial<Article>; tagIds?: number[] },
+    @User() user: JwtPayload
+  ): Promise<Article> {
+    const { article, tagIds = [] } = body;
+    return this.articleService.create(article, user.userId, tagIds);
   }
 
   @Get("/manage/:id")
   @UseGuards(JwtAuthGuard)
   getOne(@Param("id") id: number): Promise<ArticleDto> {
-    return this.articleService.findOneWithTagsAndMetas(id);
+    return this.articleService.findOne(id);
   }
 
   @Put("/manage/:id")
   @UseGuards(JwtAuthGuard)
   update(
     @Param("id") id: string,
-    @Body() article: Partial<Article>
+    @Body() body: { article: Partial<Article>; tagIds?: number[] }
   ): Promise<Article> {
-    return this.articleService.update(+id, article);
+    const { article, tagIds = [] } = body;
+    return this.articleService.update(+id, article, tagIds);
   }
 
   @Delete("/manage/:id")
@@ -106,7 +111,7 @@ export class ArticleController {
 
   @Get(":id")
   findOne(@Param("id") id: number): Promise<ArticleDto> {
-    return this.articleService.findOneWithTagsAndMetas(id);
+    return this.articleService.findOne(id);
   }
 
   @Patch("/manage/about")

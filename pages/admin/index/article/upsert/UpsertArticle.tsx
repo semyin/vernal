@@ -36,7 +36,7 @@ const UpsertArticle = withFallback(
     useEffect(() => {
       if (detail) {
         const { tags = [], ...others } = detail
-        form.setFieldsValue({ ...others, tags: tags.map(item => item.id) });
+        form.setFieldsValue({ ...others, tagIds: tags.map(item => item.id) });
       }
     }, [detail, form]);
 
@@ -54,9 +54,9 @@ const UpsertArticle = withFallback(
       setLoading(true);
       try {
         if (id) {
-          await createArticle(values);
-        } else {
           await updateArticle(id, values);
+        } else {
+          await createArticle(values);
         }
         message.success("保存成功").then(() => {
           navigate("/admin/article");
@@ -127,7 +127,7 @@ const UpsertArticle = withFallback(
           <Form.Item
             wrapperCol={{ span: 8 }}
             label="标签"
-            name="tags"
+            name="tagIds"
             rules={[{ required: true, message: "请选择标签" }]}
           >
             <Select mode="multiple" maxTagCount={"responsive"} placeholder="请选择或输入标签" allowClear>

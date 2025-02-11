@@ -8,5 +8,6 @@ import { Tag } from './tag.entity';
   imports: [TypeOrmModule.forFeature([Tag])], // 注册 Tag 实体
   controllers: [TagController],
   providers: [TagService],
+  exports: [TypeOrmModule]
 })
 export class TagModule {}

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { Tag } from './tag.entity';
-import { Article } from '../article/article.entity';
+import { TagWithArticleCountDto } from './dto/tag.dto';
 
 @Controller('tags')
 export class TagController {
@@ -15,7 +15,7 @@ export class TagController {
 
    // 查询单个标签及其关联的文章
    @Get(':id')
-   async findOne(@Param('id') id: number): Promise<Tag> {
+   async findOne(@Param('id') id: number): Promise<TagWithArticleCountDto> {
      return this.tagService.findOne(id);
    }
 
