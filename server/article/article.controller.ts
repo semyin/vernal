@@ -64,7 +64,8 @@ export class ArticleController {
     @Query("title") title: string | undefined,
     @Query("isPublished", ParseOptionalBoolPipe) isPublished?: boolean,
     @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean,
-    @Query("tagIds", ParseOptionalArrayPipe) tagIds?: number[] // 新增 tagIds 参数
+    @Query("tagIds", ParseOptionalArrayPipe) tagIds?: number[],
+    @Query("categoryIds", ParseOptionalArrayPipe) categoryIds?: number[]
   ): Promise<Pagination<ArticleDto>> {
     return this.articleService.findAll(
       { page, limit },
@@ -72,6 +73,7 @@ export class ArticleController {
       isPublished,
       isTop,
       tagIds,
+      categoryIds,
       withTags,
       withMetas,
     );
@@ -80,11 +82,11 @@ export class ArticleController {
   @Post("/manage")
   @UseGuards(JwtAuthGuard)
   create(
-    @Body() body: { article: Partial<Article>; tagIds?: number[] },
+    @Body() body: Partial<Article> & { tagIds?: number[] },
     @User() user: JwtPayload
   ): Promise<Article> {
-    const { article, tagIds = [] } = body;
-    return this.articleService.create(article, user.userId, tagIds);
+    const { tagIds = [], ...others } = body;
+    return this.articleService.create(others, user.userId, tagIds);
   }
 
   @Get("/manage/:id")
@@ -97,10 +99,10 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
   update(
     @Param("id") id: string,
-    @Body() body: { article: Partial<Article>; tagIds?: number[] }
+    @Body() body: Partial<Article> & { tagIds?: number[] },
   ): Promise<Article> {
-    const { article, tagIds = [] } = body;
-    return this.articleService.update(+id, article, tagIds);
+    const { tagIds = [], ...others } = body;
+    return this.articleService.update(+id, others, tagIds);
   }
 
   @Delete("/manage/:id")

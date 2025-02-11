@@ -1,5 +1,5 @@
 import { withFallback } from "vike-react-query"
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { clientOnly } from "vike-react/clientOnly";
 import { navigate } from "vike/client/router";
@@ -27,6 +27,7 @@ const UpsertArticle = withFallback(
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const _s = useMountedStyles();
+    const queryClient = useQueryClient();
 
     const { data: detail } = id ? useSuspenseQuery({
       queryKey: ["admin-article-detail", id],
@@ -58,8 +59,11 @@ const UpsertArticle = withFallback(
         } else {
           await createArticle(values);
         }
-        message.success("保存成功").then(() => {
-          navigate("/admin/article");
+        message.success("保存成功").then(async () => {
+          queryClient.invalidateQueries({ queryKey: ["admin-article-detail"] });
+          const navigationPromise = navigate("/admin/article");
+          await navigationPromise
+          queryClient.invalidateQueries({ queryKey: ["admin-articles"] }); // 刷新表格数据
         })
       } catch (error) {
         message.error("保存失败");

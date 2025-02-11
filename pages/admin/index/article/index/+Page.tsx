@@ -10,6 +10,7 @@ import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { navigate } from "vike/client/router";
 import { Article } from "#root/types/Article";
 import { ColumnType } from "antd/es/table";
+import { fetchCategories } from "#root/api/category";
 
 interface Filters {
   title?: string;
@@ -193,9 +194,15 @@ interface SearchFormProps {
 }
 
 const SearchForm = withFallback(({ onSearch }: SearchFormProps) => {
-  const result = useSuspenseQuery({
+
+  const { data: tags = [] } = useSuspenseQuery({
     queryKey: ["admin-tags"],
     queryFn: () => fetchTags(),
+  });
+
+  const { data: categories = [] } = useSuspenseQuery({
+    queryKey: ["admin-categories"],
+    queryFn: () => fetchCategories(),
   });
 
   const [form] = Form.useForm();
@@ -214,7 +221,11 @@ const SearchForm = withFallback(({ onSearch }: SearchFormProps) => {
   const _s = useMountedStyles();
 
   return (
-    <Form style={{ margin: "20px 0", ..._s }} form={form} layout="inline">
+    <Form style={{
+      margin: "20px 0", display: "flex",
+      flexWrap: "wrap",
+      gap: "16px", ..._s
+    }} form={form} layout="inline">
       <Form.Item name="title">
         <Input placeholder="请输入标题" allowClear />
       </Form.Item>
@@ -226,7 +237,24 @@ const SearchForm = withFallback(({ onSearch }: SearchFormProps) => {
           mode="multiple"
           allowClear
         >
-          {result.data.map((item) => {
+          {tags.map((item) => {
+            return (
+              <Select.Option key={item.id} value={item.id}>
+                {item.name}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+      <Form.Item name="categoryIds">
+        <Select
+          style={{ width: "220px" }}
+          placeholder="请选择分类"
+          maxTagCount={"responsive"}
+          mode="multiple"
+          allowClear
+        >
+          {categories.map((item) => {
             return (
               <Select.Option key={item.id} value={item.id}>
                 {item.name}

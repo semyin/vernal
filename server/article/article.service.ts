@@ -43,6 +43,7 @@ export class ArticleService {
     isPublished?: boolean,
     isTop?: boolean,
     tagIds?: number[],
+    categoryIds?: number[],
     withTags?: boolean,
     withMetas?: boolean,
   ): Promise<Pagination<ArticleDto>> {
@@ -66,6 +67,10 @@ export class ArticleService {
       queryBuilder
         .innerJoin('article.tags', 'tag') // 通过多对多关系连接 tag 表
         .andWhere('tag.id IN (:...tagIds)', { tagIds }); // 过滤 tagIds
+    }
+
+    if (categoryIds && categoryIds.length > 0) {
+      queryBuilder.andWhere('article.categoryId IN (:...categoryIds)', { categoryIds });
     }
 
     const select = [
