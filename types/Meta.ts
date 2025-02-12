@@ -1,11 +1,11 @@
 export interface Meta {
   id: number
-  name: string | null
-  property: string | null
+  name: string
+  property: string
   content: string
   isDefault: boolean
-  resourceType: string | null
-  resourceId: number | null
+  resourceType: string
+  resourceId: number
   createdAt: string
   updatedAt: string
 }
