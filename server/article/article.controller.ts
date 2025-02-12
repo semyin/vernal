@@ -22,9 +22,8 @@ import { User } from "../common/decorators/user.decorator";
 import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
-import { DelayResponse } from "../common/decorators/delay.decorator";
 import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
-import { JwtPayload } from "../common/interfaces/jwt-payload.interface";
+import { JwtPayload } from "#root/server/common/interfaces/jwt-payload.interface";
 
 export function TransformBoolean(): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
@@ -51,16 +50,13 @@ export class ArticleController {
   }
 
   @Get("/manage")
-  // @DelayResponse(3000)
   @UseGuards(JwtAuthGuard)
   findAll(
     @Req() req: Request, // 获取请求对象
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query("limit", new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
-    @Query("withTags", new DefaultValuePipe(false), ParseBoolPipe)
-    withTags: boolean = false,
-    @Query("withMetas", new DefaultValuePipe(false), ParseBoolPipe)
-    withMetas: boolean = false,
+    @Query("withTags", new DefaultValuePipe(false), ParseBoolPipe) withTags: boolean = false,
+    @Query("withMetas", new DefaultValuePipe(false), ParseBoolPipe) withMetas: boolean = false,
     @Query("title") title: string | undefined,
     @Query("isPublished", ParseOptionalBoolPipe) isPublished?: boolean,
     @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean,
