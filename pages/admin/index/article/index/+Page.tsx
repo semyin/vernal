@@ -2,15 +2,15 @@ import { deleteArticle, fetchManageArticles } from "#root/api/article";
 import { fetchTags } from "#root/api/tag";
 import { Tag } from "#root/types/Tag";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
-import { Table, Tag as AntdTag, Form, Input, Select, Button, message, Popconfirm } from "antd";
+import { Table, Tag as AntdTag, Form, Input, Select, Button, message, Popconfirm, Switch } from "antd";
 import { useState, startTransition } from "react";
-import "antd/dist/reset.css";
 import { withFallback } from "vike-react-query";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { navigate } from "vike/client/router";
 import { Article } from "#root/types/Article";
 import { ColumnType } from "antd/es/table";
 import { fetchCategories } from "#root/api/category";
+import { useUpdatePublishStatus, useUpdateTopStatus } from "#root/hooks/useArticleMutations";
 
 interface Filters {
   title?: string;
@@ -31,6 +31,9 @@ const ArticlesTable = withFallback(
   ({ page, limit, setPage, setLimit, filters }: ArticlesTableProps) => {
 
     const queryClient = useQueryClient();
+
+    const { mutate: togglePulish } = useUpdatePublishStatus();
+    const { mutate: toggleTop } = useUpdateTopStatus();
 
     const result = useSuspenseQuery({
       queryKey: ["admin-articles", page, limit, filters],
@@ -98,16 +101,34 @@ const ArticlesTable = withFallback(
           }),
       },
       {
-        title: "是否发布",
-        dataIndex: "isPublished",
-        key: "isPublished",
-        render: (text: boolean) => (text ? "是" : "否"),
+        title: '是否发布',
+        dataIndex: 'isPublished',
+        key: 'isPublished',
+        render: (isPublished: boolean, record: Article) => (
+          <Popconfirm
+            title={`确定${isPublished ? '取消发布' : '发布'}该文章吗？`}
+            onConfirm={() => togglePulish({ id: record.id, value: !record.isPublished })}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Switch checked={isPublished} />
+          </Popconfirm>
+        ),
       },
       {
-        title: "是否置顶",
-        dataIndex: "isTop",
-        key: "isTop",
-        render: (text: boolean) => (text ? "是" : "否"),
+        title: '是否置顶',
+        dataIndex: 'isTop',
+        key: 'isTop',
+        render: (isTop: boolean, record: Article) => (
+          <Popconfirm
+            title={`确定${isTop ? '取消置顶' : '置顶'}该文章吗？`}
+            onConfirm={() => toggleTop({ id: record.id, value: !record.isTop })}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Switch checked={isTop} />
+          </Popconfirm>
+        ),
       },
       {
         title: "浏览量",

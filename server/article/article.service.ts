@@ -37,7 +37,7 @@ export class ArticleService {
       .getMany();
     return plainToInstance(ArticleListDto, result);
   }
-  
+
   async findAll(
     options: PaginationOptions,
     title?: string,
@@ -125,16 +125,16 @@ export class ArticleService {
       .leftJoinAndSelect('article.category', 'category')
       .where('article.id = :id', { id })
       .getOne();
-  
+
     if (!article) {
       throw new NotFoundException("文章不存在");
     }
-  
+
     return plainToInstance(ArticleDto, article, {
       excludeExtraneousValues: true,
     });
   }
-  
+
   // 创建文章
   async create(article: Partial<Article>, userId: number, tagIds?: number[]): Promise<Article> {
     if (article.type === "about") {
@@ -198,6 +198,19 @@ export class ArticleService {
     return plainToInstance(ArticleDto, aboutPage, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async updateStatus(
+    id: number,
+    fieldName: "isTop" | "isPublished",
+    value: boolean
+  ) {
+    const article = await this.articleRepository.findOne({ where: { id } });
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+    article[fieldName] = value;
+    return await this.articleRepository.save(article);
   }
 
   async updateAboutPage(article: Partial<Article>): Promise<ArticleDto> {

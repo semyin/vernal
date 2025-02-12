@@ -111,6 +111,19 @@ export class ArticleController {
     return this.articleService.remove(+id);
   }
 
+  // 发布文章
+  @Patch("/manage/:id/publish")
+  async publishArticle(@Param("id") id: number, @Body("isPublished") isPublished: boolean): Promise<null> {
+    await this.articleService.updateStatus(id, "isPublished", isPublished);
+    return null;
+  }
+
+  @Patch("/manage/:id/top")
+  async topArticle(@Param("id") id: number, @Body("isTop") isTop: boolean): Promise<null> {
+    await this.articleService.updateStatus(id, "isTop", isTop);
+    return null;
+  }
+
   @Get(":id")
   findOne(@Param("id") id: number): Promise<ArticleDto> {
     return this.articleService.findOne(id);

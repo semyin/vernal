@@ -1,5 +1,6 @@
 import { Article } from "#root/types/Article";
 import request from "#root/utils/request";
+import { useMutation } from '@tanstack/react-query';
 import { Pagination } from "#root/types/pagination.interface";
 
 export interface ArticleQuery {
@@ -36,3 +37,13 @@ export const updateArticle = async (
 export const deleteArticle = async (
   id: number
 ): Promise<null> => request.delete(`/articles/manage/${id}`)
+
+export const updatePublishStatus = async (
+  id: number,
+  data: { isPublished: boolean }
+): Promise<null> => request.patch(`/articles/manage/${id}/publish`, data)
+
+export const updateTopStatus = async (
+  id: number,
+  data: { isTop: boolean }
+): Promise<null> => request.patch(`/articles/manage/${id}/top`, data)
