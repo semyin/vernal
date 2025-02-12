@@ -92,13 +92,13 @@ const ArticlesTable = withFallback(
         key: "tags",
         width: 200,
         render: (tags: Tag[]) =>
-          tags.map((item) => {
-            return (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            {tags.map((item) => (
               <AntdTag key={item.id} color="green">
                 {item.name}
               </AntdTag>
-            );
-          }),
+            ))}
+          </div>
       },
       {
         title: '是否发布',
