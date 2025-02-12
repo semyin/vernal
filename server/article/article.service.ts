@@ -33,6 +33,7 @@ export class ArticleService {
         "article.updatedAt", // 选择 updatedAt 字段
       ])
       .where("article.type = :type", { type: "article" })
+      .where("article.isPublished = :isPublished", { isPublished: 1 })
       .orderBy("article.createdAt", "DESC")
       .getMany();
     return plainToInstance(ArticleListDto, result);
@@ -204,13 +205,20 @@ export class ArticleService {
     id: number,
     fieldName: "isTop" | "isPublished",
     value: boolean
-  ) {
-    const article = await this.articleRepository.findOne({ where: { id } });
-    if (!article) {
-      throw new NotFoundException('Article not found');
-    }
-    article[fieldName] = value;
-    return await this.articleRepository.save(article);
+  ): Promise<Article | null> {
+    return await this.articleRepository.manager.transaction(async (manager) => {
+      const article = await manager.findOne(Article, { where: { id } });
+      if (!article) {
+        throw new NotFoundException('Article not found');
+      }
+
+      if (fieldName === 'isTop' && value === true) {
+        await manager.update(Article, { isTop: true }, { isTop: false });
+      }
+
+      article[fieldName] = value;
+      return await manager.save(article);
+    });
   }
 
   async updateAboutPage(article: Partial<Article>): Promise<ArticleDto> {
