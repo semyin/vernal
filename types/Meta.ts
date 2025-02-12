@@ -9,3 +9,12 @@ export interface Meta {
   createdAt: string
   updatedAt: string
 }
+
+export interface MetaData {
+  id: number;
+  name: string;
+  content: string;
+  isDefault: boolean;
+  resourceType: string;
+  resourceId: number;
+}
