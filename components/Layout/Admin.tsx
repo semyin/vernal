@@ -133,15 +133,26 @@ function Layout({ children }: { children: React.ReactNode }) {
           label: <Link href="/admin/article">文章管理</Link>,
         },
         {
-          key: "comment",
-          icon: <CommentOutlined />,
-          label: <Link href="/admin/comment">评论管理</Link>,
+          key: "upsert",
+          icon: <FileTextOutlined />,
+          style: { display: "none" },
+          label: <Link href="/admin/article/upsert">管理文章</Link>,
         },
         {
           key: "tag",
           icon: <TagsOutlined />,
           label: <Link href="/admin/tag">标签管理</Link>,
         },
+        {
+          key: "category",
+          icon: <TagsOutlined />,
+          label: <Link href="/admin/category">分类管理</Link>,
+        },
+        {
+          key: "comment",
+          icon: <CommentOutlined />,
+          label: <Link href="/admin/comment">评论管理</Link>,
+        }
       ],
     },
     // 系统管理
@@ -158,7 +169,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         {
           key: "meta",
           icon: <AppstoreOutlined />,
-          label: <Link href="/admin/meta">分类管理</Link>,
+          label: <Link href="/admin/meta">元数据管理</Link>,
         },
         {
           key: "site",
