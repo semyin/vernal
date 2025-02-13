@@ -1,6 +1,8 @@
-interface JwtPayload {
+interface IJwtPayload {
   userId: number;
   username: string;
 }
 
-export { JwtPayload };
+type JwtPayload = IJwtPayload
+
+export type { JwtPayload };

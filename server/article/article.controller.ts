@@ -22,7 +22,7 @@ import { User } from "../common/decorators/user.decorator";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
 import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
-import { JwtPayload } from "#root/server/common/interfaces/jwt-payload.interface";
+import type { JwtPayload } from "../common/interfaces/jwt-payload.interface";
 
 @Controller("articles")
 export class ArticleController {
@@ -41,7 +41,6 @@ export class ArticleController {
   @Get("/manage")
   @UseGuards(JwtAuthGuard)
   findAll(
-    @Req() req: Request, // 获取请求对象
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query("limit", new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
     @Query("withTags", new DefaultValuePipe(false), ParseBoolPipe) withTags: boolean = false,
