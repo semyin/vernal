@@ -25,16 +25,6 @@ import { Pagination } from "../../types/pagination.interface";
 import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
 import { JwtPayload } from "#root/server/common/interfaces/jwt-payload.interface";
 
-export function TransformBoolean(): PropertyDecorator {
-  return (target: any, propertyKey: string | symbol) => {
-    Transform(({ value }) => {
-      if (value === "true") return true;
-      if (value === "false") return false;
-      return undefined;
-    })(target, propertyKey);
-  };
-}
-
 @Controller("articles")
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) { }

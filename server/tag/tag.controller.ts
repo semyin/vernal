@@ -1,23 +1,25 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { Tag } from './tag.entity';
 import { TagWithArticleCountDto } from './dto/tag.dto';
 
 @Controller('tags')
 export class TagController {
-  constructor(private readonly tagService: TagService) {}
+  constructor(private readonly tagService: TagService) { }
 
   // 查询所有标签
   @Get()
-  async findAll(): Promise<Tag[]> {
-    return this.tagService.findAll();
+  async findAll(
+    @Query("name") name: string | undefined,
+  ): Promise<Tag[]> {
+    return this.tagService.findAll(name);
   }
 
-   // 查询单个标签及其关联的文章
-   @Get(':id')
-   async findOne(@Param('id') id: number): Promise<TagWithArticleCountDto> {
-     return this.tagService.findOne(id);
-   }
+  // 查询单个标签及其关联的文章
+  @Get(':id')
+  async findOne(@Param('id') id: number): Promise<TagWithArticleCountDto> {
+    return this.tagService.findOne(id);
+  }
 
   // 创建标签
   @Post('manage')

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Tag } from './tag.entity';
 import { plainToInstance } from 'class-transformer';
 import { TagWithArticleCountDto } from './dto/tag.dto';
@@ -19,8 +19,16 @@ export class TagService {
   }
 
   // 查询所有标签
-  async findAll(): Promise<Tag[]> {
-    const result = await this.tagRepository.find()
+  async findAll(
+    name?: string
+  ): Promise<Tag[]> {
+    const queryBuilder = this.tagRepository.createQueryBuilder("tag");
+
+    if (name) {
+      queryBuilder.where("tag.name LIKE :name", { name: `%${name}%` })
+    }
+
+    const result = await queryBuilder.getMany()
     return plainToInstance(Tag, result)
   }
 
