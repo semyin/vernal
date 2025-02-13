@@ -24,7 +24,8 @@ export class ArticleService {
   }
 
   async findList(): Promise<ArticleListDto[]> {
-    const result = await this.articleRepository
+    // 查询所有置顶文章
+    const topArticles = await this.articleRepository
       .createQueryBuilder("article")
       .select([
         "article.id", // 选择 id 字段
@@ -33,11 +34,35 @@ export class ArticleService {
         "article.updatedAt", // 选择 updatedAt 字段
       ])
       .where("article.type = :type", { type: "article" })
-      .where("article.isPublished = :isPublished", { isPublished: 1 })
-      .orderBy("article.createdAt", "DESC")
+      .andWhere("article.isPublished = :isPublished", { isPublished: 1 })
+      .andWhere("article.isTop = :isTop", { isTop: true }) // 查询置顶文章
+      .orderBy("article.createdAt", "DESC") // 按创建时间降序排列
       .getMany();
-    return plainToInstance(ArticleListDto, result);
+
+    // 查询普通文章列表
+    const articles = await this.articleRepository
+      .createQueryBuilder("article")
+      .select([
+        "article.id", // 选择 id 字段
+        "article.title", // 选择 title 字段
+        "article.createdAt", // 选择 createdAt 字段
+        "article.updatedAt", // 选择 updatedAt 字段
+      ])
+      .where("article.type = :type", { type: "article" })
+      .andWhere("article.isPublished = :isPublished", { isPublished: 1 })
+      .andWhere("article.isTop = :isTop", { isTop: false }) // 排除置顶文章
+      .orderBy("article.createdAt", "DESC") // 按创建时间降序排列
+      .getMany();
+
+    // 如果有置顶文章，将其插入到列表的开头
+    if (topArticles.length > 0) {
+      articles.unshift(...topArticles); // 将所有置顶文章插入到开头
+    }
+
+    // 返回转换后的 DTO 列表
+    return plainToInstance(ArticleListDto, articles);
   }
+
 
   async findAll(
     options: PaginationOptions,
@@ -210,10 +235,6 @@ export class ArticleService {
       const article = await manager.findOne(Article, { where: { id } });
       if (!article) {
         throw new NotFoundException('Article not found');
-      }
-
-      if (fieldName === 'isTop' && value === true) {
-        await manager.update(Article, { isTop: true }, { isTop: false });
       }
 
       article[fieldName] = value;
