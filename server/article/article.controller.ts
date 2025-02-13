@@ -19,7 +19,6 @@ import { Article } from "./article.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { User } from "../common/decorators/user.decorator";
-import { Transform } from "class-transformer";
 import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
 import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
@@ -99,12 +98,15 @@ export class ArticleController {
 
   // 发布文章
   @Patch("/manage/:id/publish")
+  @UseGuards(JwtAuthGuard)
   async publishArticle(@Param("id") id: number, @Body("isPublished") isPublished: boolean): Promise<null> {
     await this.articleService.updateStatus(id, "isPublished", isPublished);
     return null;
   }
 
+  // 置顶文章
   @Patch("/manage/:id/top")
+  @UseGuards(JwtAuthGuard)
   async topArticle(@Param("id") id: number, @Body("isTop") isTop: boolean): Promise<null> {
     await this.articleService.updateStatus(id, "isTop", isTop);
     return null;
