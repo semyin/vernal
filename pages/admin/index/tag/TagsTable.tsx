@@ -8,10 +8,11 @@ import { useDeleteTag } from "#root/api/tag/hooks";
 
 interface TagsTableProps {
   filters: Filters;
+  handleEdit: (id: number, name: string) => void
 }
 
 const TagsTable = withFallback(
-  ({ filters }: TagsTableProps) => {
+  ({ filters, handleEdit }: TagsTableProps) => {
 
     const result = useSuspenseQuery({
       queryKey: ["admin-tags", filters],
@@ -21,8 +22,6 @@ const TagsTable = withFallback(
     const _s = useMountedStyles()
 
     const { mutate: deleteTag } = useDeleteTag(filters);
-
-    function handleEdit(id: number) { }
 
     const columns: TableColumnType<Tag>[] = [
       {
@@ -54,9 +53,9 @@ const TagsTable = withFallback(
         key: "action",
         fixed: "right", // 固定在右侧
         width: 160, // 设置操作列宽度
-        render: (_: unknown, record: { id: number }) => (
+        render: (_: unknown, record: Tag) => (
           <div>
-            <Button type="link" onClick={() => handleEdit(record.id)}>
+            <Button type="link" onClick={() => handleEdit(record.id, record.name)}>
               编辑
             </Button>
             <Popconfirm
