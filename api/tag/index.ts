@@ -1,4 +1,4 @@
-import { TagDetail, Tag } from "#root/types/Tag";
+import { TagDetail, Tag } from "./type";
 import request from "#root/utils/request";
 
 export const fetchTagDetail = async (id: number): Promise<TagDetail> => request.get(`/tags/${id}`)

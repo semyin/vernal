@@ -1,10 +1,10 @@
 import { withFallback } from "vike-react-query"
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { TableColumnType, Table, Button, Popconfirm, message } from "antd";
-import { Tag } from "#root/types/Tag";
-import { Filters } from "./TagsFilter";
+import { Filters, Tag } from "#root/api/tag/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
-import { deleteTag, fetchTags } from "#root/api/tag";
+import { fetchTags } from "#root/api/tag";
+import { useDeleteTag } from "#root/api/tag/hooks";
 
 interface TagsTableProps {
   filters: Filters;
@@ -20,20 +20,9 @@ const TagsTable = withFallback(
 
     const _s = useMountedStyles()
 
-    const queryClient = useQueryClient();
+    const { mutate: deleteTag } = useDeleteTag(filters);
 
     function handleEdit(id: number) { }
-
-    async function handleDelete(id: number) {
-      try {
-        await deleteTag(id);
-        message.success("删除成功");
-        queryClient.invalidateQueries({ queryKey: ["admin-tags"] });
-        queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
-      } catch (error) {
-        message.error("删除失败");
-      }
-     }
 
     const columns: TableColumnType<Tag>[] = [
       {
@@ -72,7 +61,7 @@ const TagsTable = withFallback(
             </Button>
             <Popconfirm
               title="确定删除吗？"
-              onConfirm={() => handleDelete(record.id)}
+              onConfirm={() => deleteTag(record.id)}
               okText="确定"
               cancelText="取消"
             >

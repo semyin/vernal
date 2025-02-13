@@ -18,3 +18,11 @@ export interface Article {
   createdAt: string
   updatedAt: string
 }
+
+export interface TagsTableProps {
+  filters: Filters;
+}
+
+export interface Filters {
+  name?: string
+}

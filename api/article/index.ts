@@ -1,4 +1,4 @@
-import { Article } from "#root/types/Article";
+import { Article } from "#root/api/article/Article";
 import request from "#root/utils/request";
 import { useMutation } from '@tanstack/react-query';
 import { Pagination } from "#root/types/pagination.interface";

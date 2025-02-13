@@ -6,7 +6,7 @@ import { navigate } from "vike/client/router";
 import { Form, Input, Button, Select, Upload, message, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { createArticle, getArticleDetail, updateArticle } from "#root/api/article";
-import { Article } from "#root/types/Article";
+import { Article } from "#root/api/article/Article";
 import { fetchTags } from "#root/api/tag";
 import { fetchCategories } from "#root/api/category";
 import { uploadFile } from "#root/api/files";

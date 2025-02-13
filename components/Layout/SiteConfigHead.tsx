@@ -2,7 +2,7 @@ export { SiteConfigHead };
 
 import { Head } from "vike-react/Head";
 import { Config } from "vike-react/Config";
-import { SiteWithBaseMeta } from "#root/types/Site";
+import { SiteWithBaseMeta } from "#root/api/site-config/type";
 
 interface Props extends SiteWithBaseMeta {
   titlePrefix?: string;

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Filters, TagsFilter } from "./TagsFilter";
+import { Filters } from "#root/api/tag/type";
+import { TagsFilter } from "./TagsFilter";
 import { TagsTable } from "./TagsTable";
 
 export { Page };

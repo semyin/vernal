@@ -2,7 +2,7 @@ export default Header
 
 import styles from "./Header.module.scss"
 import { Link } from "../Link/Link"
-import { Site } from '#root/types/Site'
+import { Site } from '#root/api/site-config/type'
 
 function Header({ site }: {site: Site}) {
 

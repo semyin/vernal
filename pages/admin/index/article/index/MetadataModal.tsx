@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createMeta, deleteMeta, updateMeta } from "#root/api/meta";
-import { MetaData } from "#root/types/Meta";
+import { MetaData } from "#root/api/meta/type";
 import { Button, Empty, Input, message, Modal, Popconfirm } from "antd";
 
 const MetadataModal = React.memo(

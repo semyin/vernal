@@ -1,8 +1,8 @@
 export { ArticleList };
 
 import { format } from "date-fns";
-import { Article } from "#root/types/Tag";
-import { Link } from "../Link/Link";
+import { Article } from "#root/api/tag/type";
+import { Link } from "#root/components/Link/Link";
 import styles from "./ArticleList.module.scss";
 
 function ArticleList({ articles }: { articles: Article[] }) {

@@ -3,7 +3,7 @@ export default Footer
 import styles from "./Footer.module.scss"
 import RunTimeDisplay from "./RunTimeDisplay"
 import BackToTop from "./BackToTop"
-import { Site } from "#root/types/Site"
+import { Site } from "#root/api/site-config/type"
 
 function Footer({ site }: {site : Site}) {
 

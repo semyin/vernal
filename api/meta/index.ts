@@ -1,4 +1,4 @@
-import { Meta } from "#root/types/Meta";
+import { Meta } from "./type";
 import request from "#root/utils/request";
 
 export const fetchMetaByResource = async (

@@ -1,5 +1,5 @@
-import { Meta } from "./Meta"
-import { Tag } from "./Tag"
+import { Meta } from "../meta/type"
+import { Tag } from "../tag/type"
 
 export interface Article {
   id: number

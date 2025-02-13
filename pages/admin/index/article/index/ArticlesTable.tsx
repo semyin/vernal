@@ -12,15 +12,15 @@ import {
 } from "antd";
 import { ColumnType } from "antd/es/table";
 import { Filters } from "./SearchForm";
-import { MetaData } from "#root/types/Meta";
+import { MetaData } from "#root/api/meta/type";
 import {
   useUpdatePublishStatus,
   useUpdateTopStatus,
 } from "#root/hooks/useArticleMutations";
 import { deleteArticle, fetchManageArticles } from "#root/api/article";
 import { fetchMetaByResource } from "#root/api/meta";
-import { Article } from "#root/types/Article";
-import { Tag } from "#root/types/Tag";
+import { Article } from "#root/api/article/Article";
+import { Tag } from "#root/api/tag/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { MetadataModal } from "./MetadataModal";
 

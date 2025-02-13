@@ -1,6 +1,6 @@
 // https://vike.dev/pageContext#typescript
-import { Site } from "#root/types/Site"
-import { Meta } from "#root/types/Meta"
+import { Site } from "#root/api/site-config/type"
+import { Meta } from "#root/api/meta/type"
 
 declare global {
   namespace Vike {

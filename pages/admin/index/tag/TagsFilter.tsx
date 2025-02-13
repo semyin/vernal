@@ -1,10 +1,7 @@
 import { Button, Form, Input } from "antd";
 import React, { startTransition } from "react"
+import { Filters } from "#root/api/tag/type";
 import { withFallback } from "vike-react-query";
-
-export interface Filters {
-  name?: string
-}
 
 interface TagFilterProps {
   onSearch: (values: Filters) => void;

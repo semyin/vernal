@@ -1,4 +1,4 @@
-import { Meta } from "./Meta"
+import { Meta } from "../meta/type"
 
 export interface Site {
   id: number
