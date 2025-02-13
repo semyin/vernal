@@ -16,10 +16,10 @@ import { MetaData } from "#root/api/meta/type";
 import {
   useUpdatePublishStatus,
   useUpdateTopStatus,
-} from "#root/hooks/useArticleMutations";
+} from "#root/api/article/hooks";
 import { deleteArticle, fetchManageArticles } from "#root/api/article";
 import { fetchMetaByResource } from "#root/api/meta";
-import { Article } from "#root/api/article/Article";
+import { Article } from "#root/api/article/type";
 import { Tag } from "#root/api/tag/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { MetadataModal } from "./MetadataModal";
