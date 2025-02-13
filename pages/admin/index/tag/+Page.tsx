@@ -6,43 +6,40 @@ import { TagModal } from "./TagModal";
 
 export { Page };
 
+interface TagState {
+  id: number;
+  name: string;
+}
+
 function Page() {
   const [filters, setFilters] = useState<Filters>({});
   const [visible, setVisible] = useState(false)
-  const [currentTagId, setCurrentTagId] = useState(0)
-  const [currentTagName, setCurrentTagName] = useState("")
+  const [currentTag, setCurrentTag] = useState<TagState>({ id: 0, name: "" });
 
-  function handleAdd() {
-    setCurrentTagId(0)
-    setCurrentTagName("")
-    setVisible(true)
-  }
+  const handleOpenModal = (id: number = 0, name: string = "") => {
+    setCurrentTag({ id, name });
+    setVisible(true);
+  };
 
   function handleSearch(values: Filters) {
     setFilters(values);
-  }
-
-  function handleEdit(id: number, name: string) {
-    setCurrentTagId(id);
-    setCurrentTagName(name)
-    setVisible(true)
   }
 
   return (
     <>
       <TagsFilter
         onSearch={handleSearch}
-        onAdd={handleAdd}
+        onAdd={() => handleOpenModal()}
       />
       <TagsTable
         filters={filters}
-        handleEdit={(id: number, name: string) => handleEdit(id, name)}
+        onEdit={handleOpenModal}
       />
       <TagModal
         visible={visible}
         onCancel={() => setVisible(false)}
-        currentTagId={currentTagId}
-        currentTagName={currentTagName}
+        currentTagId={currentTag.id}
+        currentTagName={currentTag.name}
       />
     </>
   )
