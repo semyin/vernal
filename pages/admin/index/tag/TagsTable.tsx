@@ -1,11 +1,10 @@
 import { withFallback } from "vike-react-query"
-import { TableColumnType, Table, Button, Popconfirm } from "antd";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { TableColumnType, Table, Button, Popconfirm, message } from "antd";
 import { Tag } from "#root/types/Tag";
 import { Filters } from "./TagsFilter";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { fetchTags } from "#root/api/tag";
-
+import { deleteTag, fetchTags } from "#root/api/tag";
 
 interface TagsTableProps {
   filters: Filters;
@@ -21,9 +20,20 @@ const TagsTable = withFallback(
 
     const _s = useMountedStyles()
 
+    const queryClient = useQueryClient();
+
     function handleEdit(id: number) { }
 
-    function handleDelete(id: number) { }
+    async function handleDelete(id: number) {
+      try {
+        await deleteTag(id);
+        message.success("删除成功");
+        queryClient.invalidateQueries({ queryKey: ["admin-tags"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      } catch (error) {
+        message.error("删除失败");
+      }
+     }
 
     const columns: TableColumnType<Tag>[] = [
       {

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { Tag } from './tag.entity';
 import { TagWithArticleCountDto } from './dto/tag.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('tags')
 export class TagController {
@@ -22,19 +23,22 @@ export class TagController {
   }
 
   // 创建标签
-  @Post('manage')
+  @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body('name') name: string): Promise<Tag> {
     return this.tagService.create(name);
   }
 
   // 更新标签
-  @Put('manage/:id')
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: number, @Body('name') name: string): Promise<Tag> {
     return this.tagService.update(id, name);
   }
 
   // 删除标签
-  @Delete('manage/:id')
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: number): Promise<void> {
     return this.tagService.remove(id);
   }
