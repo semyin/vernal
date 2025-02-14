@@ -11,7 +11,7 @@ import {
   Table,
 } from "antd";
 import { ColumnType } from "antd/es/table";
-import { Filters } from "./SearchForm";
+import { ArticleFilters } from "#root/api/article/type";
 import { MetaData } from "#root/api/meta/type";
 import {
   useUpdatePublishStatus,
@@ -29,7 +29,7 @@ interface ArticlesTableProps {
   limit: number;
   setPage: (value: number) => void;
   setLimit: (value: number) => void;
-  filters: Filters;
+  filters: ArticleFilters;
 }
 
 const ArticlesTable = withFallback(
@@ -55,6 +55,8 @@ const ArticlesTable = withFallback(
           withMetas: true,
           withTags: true,
           tagIds: filters.tagIds,
+          categoryIds: filters.categoryIds,
+          dates: filters.dates,
         }),
     });
 

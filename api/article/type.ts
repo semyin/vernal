@@ -20,3 +20,17 @@ export interface Article {
   createdAt: string
   updatedAt: string
 }
+
+export interface FixedArticleQuery {
+  withMetas?: boolean;
+  withTags?: boolean;
+}
+
+export interface ArticleFilters {
+  title?: string;
+  isPublished?: boolean;
+  isTop?: boolean;
+  tagIds?: number[];
+  categoryIds?: number[],
+  dates?: string[]
+}

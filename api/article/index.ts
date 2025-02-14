@@ -1,24 +1,14 @@
-import { Article } from "#root/api/article/type";
 import request from "#root/utils/request";
-import { useMutation } from '@tanstack/react-query';
-import { Pagination } from "#root/types/pagination.interface";
+import { Article, ArticleFilters, FixedArticleQuery } from "#root/api/article/type";
+import { Pagination, PaginationOptions } from "#root/types/pagination.interface";
 
-export interface ArticleQuery {
-  title?: string;
-  withTags?: boolean;
-  withMetas?: boolean;
-  [key: string]: any;
-}
-
-export const fetchArticles = async (
-  params?: ArticleQuery
-): Promise<Article[]> => request.get("/articles", { params });
+export const fetchArticles = async (): Promise<Article[]> => request.get("/articles");
 
 export const fetchArticleDetail = async (id: number): Promise<Article> =>
   request.get(`/articles/${id}`);
 
 export const fetchManageArticles = async (
-  params?: ArticleQuery
+  params?: ArticleFilters & PaginationOptions & FixedArticleQuery
 ): Promise<Pagination<Article>> => request.get("/articles/manage", { params });
 
 export const createArticle = async (

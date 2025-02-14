@@ -49,8 +49,11 @@ export class ArticleController {
     @Query("isPublished", ParseOptionalBoolPipe) isPublished?: boolean,
     @Query("isTop", ParseOptionalBoolPipe) isTop?: boolean,
     @Query("tagIds", ParseOptionalArrayPipe) tagIds?: number[],
-    @Query("categoryIds", ParseOptionalArrayPipe) categoryIds?: number[]
+    @Query("categoryIds", ParseOptionalArrayPipe) categoryIds?: number[],
+    @Query("dates", ParseOptionalArrayPipe) dates?: string[]
   ): Promise<Pagination<ArticleDto>> {
+    console.log(dates);
+
     return this.articleService.findAll(
       { page, limit },
       title,

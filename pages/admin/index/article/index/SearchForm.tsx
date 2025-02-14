@@ -12,6 +12,7 @@ export interface Filters {
   isPublished?: boolean;
   isTop?: boolean;
   tagIds?: number[];
+  categoryIds?: number[]
 }
 
 interface SearchFormProps {
