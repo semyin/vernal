@@ -9,7 +9,10 @@ import { plainToInstance } from "class-transformer";
 import { Article } from "./article.entity";
 import { Tag } from "../tag/tag.entity";
 import { ArticleDto, ArticleListDto } from "./dto/article.dto";
-import { Pagination, PaginationOptions } from "../../types/pagination.interface";
+import {
+  Pagination,
+  PaginationOptions,
+} from "../../types/pagination.interface";
 import { createPagination } from "../common/utils/pagination";
 
 @Injectable()
@@ -18,7 +21,7 @@ export class ArticleService {
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
     @InjectRepository(Tag)
-    private readonly tagRepository: Repository<Tag>,
+    private readonly tagRepository: Repository<Tag>
   ) {
     this.initAboutPage();
   }
@@ -63,7 +66,6 @@ export class ArticleService {
     return plainToInstance(ArticleListDto, articles);
   }
 
-
   async findAll(
     options: PaginationOptions,
     title?: string,
@@ -73,63 +75,82 @@ export class ArticleService {
     categoryIds?: number[],
     withTags?: boolean,
     withMetas?: boolean,
+    dates?: string[]
   ): Promise<Pagination<ArticleDto>> {
     const queryBuilder = this.articleRepository
-      .createQueryBuilder('article')
-      .leftJoin('article.category', 'category')
-      .where('article.type = :type', { type: 'article' });
+      .createQueryBuilder("article")
+      .leftJoin("article.category", "category")
+      .where("article.type = :type", { type: "article" });
 
     if (title) {
-      queryBuilder.andWhere('article.title LIKE :title', { title: `%${title}%` });
+      queryBuilder.andWhere("article.title LIKE :title", {
+        title: `%${title}%`,
+      });
     }
 
     if (isPublished !== undefined) {
-      queryBuilder.andWhere('article.isPublished = :isPublished', { isPublished });
+      queryBuilder.andWhere("article.isPublished = :isPublished", {
+        isPublished,
+      });
     }
 
     if (isTop !== undefined) {
-      queryBuilder.andWhere('article.isTop = :isTop', { isTop });
+      queryBuilder.andWhere("article.isTop = :isTop", { isTop });
     }
 
     if (tagIds && tagIds.length > 0) {
       queryBuilder
-        .innerJoin('article.tags', 'tag') // 通过多对多关系连接 tag 表
-        .andWhere('tag.id IN (:...tagIds)', { tagIds }); // 过滤 tagIds
+        .innerJoin("article.tags", "tag") // 通过多对多关系连接 tag 表
+        .andWhere("tag.id IN (:...tagIds)", { tagIds }); // 过滤 tagIds
     }
 
     if (categoryIds && categoryIds.length > 0) {
-      queryBuilder.andWhere('article.categoryId IN (:...categoryIds)', { categoryIds });
+      queryBuilder.andWhere("article.categoryId IN (:...categoryIds)", {
+        categoryIds,
+      });
+    }
+
+    if (Array.isArray(dates) && dates.length === 2) {
+      const startDate = dates[0] + " 00:00:00";
+      const endDate = dates[1] + " 23:59:59";
+      queryBuilder.andWhere(
+        "article.createdAt BETWEEN :startDate AND :endDate",
+        {
+          startDate,
+          endDate,
+        }
+      );
     }
 
     const select = [
-      'article.id',
-      'article.title',
-      'article.type',
-      'article.summary',
-      'article.authorId',
-      'article.categoryId',
-      'category.name',
-      'article.coverImage',
-      'article.isPublished',
-      'article.isTop',
-      'article.viewCount',
-      'article.likeCount',
-      'article.commentCount',
-      'article.createdAt',
-      'article.updatedAt',
+      "article.id",
+      "article.title",
+      "article.type",
+      "article.summary",
+      "article.authorId",
+      "article.categoryId",
+      "category.name",
+      "article.coverImage",
+      "article.isPublished",
+      "article.isTop",
+      "article.viewCount",
+      "article.likeCount",
+      "article.commentCount",
+      "article.createdAt",
+      "article.updatedAt",
     ];
 
     queryBuilder.select(select);
 
     if (withTags) {
-      queryBuilder.leftJoinAndSelect('article.tags', 'tags');
+      queryBuilder.leftJoinAndSelect("article.tags", "tags");
     }
 
     if (withMetas) {
-      queryBuilder.leftJoinAndSelect('article.metas', 'metas');
+      queryBuilder.leftJoinAndSelect("article.metas", "metas");
     }
 
-    queryBuilder.orderBy('article.createdAt', 'DESC');
+    queryBuilder.orderBy("article.createdAt", "DESC");
     queryBuilder.take(options.limit);
     queryBuilder.skip((options.page - 1) * options.limit);
 
@@ -145,11 +166,11 @@ export class ArticleService {
   // 查询单篇文章-带标签-带meta
   async findOne(id: number): Promise<ArticleDto> {
     const article = await this.articleRepository
-      .createQueryBuilder('article')
-      .leftJoinAndSelect('article.tags', 'tags')
-      .leftJoinAndSelect('article.metas', 'metas')
-      .leftJoinAndSelect('article.category', 'category')
-      .where('article.id = :id', { id })
+      .createQueryBuilder("article")
+      .leftJoinAndSelect("article.tags", "tags")
+      .leftJoinAndSelect("article.metas", "metas")
+      .leftJoinAndSelect("article.category", "category")
+      .where("article.id = :id", { id })
       .getOne();
 
     if (!article) {
@@ -162,13 +183,17 @@ export class ArticleService {
   }
 
   // 创建文章
-  async create(article: Partial<Article>, userId: number, tagIds?: number[]): Promise<Article> {
+  async create(
+    article: Partial<Article>,
+    userId: number,
+    tagIds?: number[]
+  ): Promise<Article> {
     if (article.type === "about") {
       throw new BadRequestException("关于页面不能直接创建，请使用更新接口");
     }
     const newArticle = this.articleRepository.create({
       ...article,
-      authorId: userId
+      authorId: userId,
     });
 
     // 如果传入了 tagIds，关联对应的 Tag
@@ -187,7 +212,11 @@ export class ArticleService {
   }
 
   // 更新文章
-  async update(id: number, article: Partial<Article>, tagIds?: number[]): Promise<Article> {
+  async update(
+    id: number,
+    article: Partial<Article>,
+    tagIds?: number[]
+  ): Promise<Article> {
     const existingArticle = await this.articleRepository.findOneBy({ id });
     if (!existingArticle) {
       throw new NotFoundException(`Article with ID ${id} not found`);
@@ -234,7 +263,7 @@ export class ArticleService {
     return await this.articleRepository.manager.transaction(async (manager) => {
       const article = await manager.findOne(Article, { where: { id } });
       if (!article) {
-        throw new NotFoundException('Article not found');
+        throw new NotFoundException("Article not found");
       }
 
       article[fieldName] = value;

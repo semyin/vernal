@@ -23,6 +23,7 @@ import { ParseOptionalBoolPipe } from "../common/pipe/parse-optional-bool.pipe";
 import { Pagination } from "../../types/pagination.interface";
 import { ParseOptionalArrayPipe } from "../common/pipe/parse-optional-array.pipe";
 import type { JwtPayload } from "../common/interfaces/jwt-payload.interface";
+import { completeTimeFromDateRange } from "../common/utils";
 
 @Controller("articles")
 export class ArticleController {
@@ -52,8 +53,7 @@ export class ArticleController {
     @Query("categoryIds", ParseOptionalArrayPipe) categoryIds?: number[],
     @Query("dates", ParseOptionalArrayPipe) dates?: string[]
   ): Promise<Pagination<ArticleDto>> {
-    console.log(dates);
-
+    const dateRange = completeTimeFromDateRange(dates)
     return this.articleService.findAll(
       { page, limit },
       title,
@@ -63,6 +63,7 @@ export class ArticleController {
       categoryIds,
       withTags,
       withMetas,
+      dateRange
     );
   }
 
