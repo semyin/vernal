@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from './category.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -9,8 +9,10 @@ export class CategoryController {
 
   // 查询所有分类
   @Get()
-  async findAll(): Promise<Category[]> {
-    return this.categoryService.findAll();
+  async findAll(
+    @Query("name") name: string | undefined
+  ): Promise<Category[]> {
+    return this.categoryService.findAll(name);
   }
 
   // 查询单个分类

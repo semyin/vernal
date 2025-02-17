@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { plainToInstance } from 'class-transformer';
 
@@ -19,8 +19,14 @@ export class CategoryService {
   }
 
   // 查询所有分类
-  async findAll(): Promise<Category[]> {
-    const result = await this.categoryRepository.find();
+  async findAll(
+    name?: string
+  ): Promise<Category[]> {
+    const result = await this.categoryRepository.find({
+      where: name ? {
+        name: Like(`%${name}%`)
+      }: {}
+    });
     return plainToInstance(Category, result)
   }
 
