@@ -11,10 +11,11 @@ export class FriendLinkController {
 
   @Get()
   async findAll(
+    @Query("sortByWeight") sortByWeight: "DESC" | "ASC" = "DESC",
     @Query("name") name: string | undefined,
-    @Query("isVisible", ParseOptionalBoolPipe) isVisible?: boolean,
+    @Query("isVisible", ParseOptionalBoolPipe) isVisible?: boolean
   ) {
-    return this.friendLinkService.findAll(name, isVisible, "DESC");
+    return this.friendLinkService.findAll(name, isVisible, sortByWeight);
   }
 
   @Post()
