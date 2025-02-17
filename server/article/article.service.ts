@@ -111,8 +111,8 @@ export class ArticleService {
     }
 
     if (Array.isArray(dates) && dates.length === 2) {
-      const startDate = dates[0] + " 00:00:00";
-      const endDate = dates[1] + " 23:59:59";
+      const [startDate, endDate] = dates
+
       queryBuilder.andWhere(
         "article.createdAt BETWEEN :startDate AND :endDate",
         {
