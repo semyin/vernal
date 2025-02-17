@@ -14,7 +14,7 @@ export class FriendLinkController {
     @Query("name") name: string | undefined,
     @Query("isVisible", ParseOptionalBoolPipe) isVisible?: boolean,
   ) {
-    return this.friendLinkService.findAll(name, isVisible);
+    return this.friendLinkService.findAll(name, isVisible, "DESC");
   }
 
   @Post()

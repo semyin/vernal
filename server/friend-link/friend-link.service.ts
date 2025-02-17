@@ -5,7 +5,6 @@ import { FriendLink } from './friend-link.entity';
 import { CreateFriendLinkDto } from './dto/create-friend-link.dto';
 import { UpdateFriendLinkDto } from './dto/update-friend-link.dto';
 import { plainToInstance } from 'class-transformer';
-import e from 'express';
 
 @Injectable()
 export class FriendLinkService {
@@ -24,7 +23,8 @@ export class FriendLinkService {
   // 查询所有友链
   async findAll(
     name?: string,
-    isVisible?: boolean
+    isVisible?: boolean,
+    sortByWeight?: 'ASC' | 'DESC'
   ): Promise<FriendLink[]> {
 
     const queryBuilder = this.friendLinkRepository.createQueryBuilder("friendLink")
@@ -39,6 +39,10 @@ export class FriendLinkService {
       queryBuilder.andWhere("friendLink.isVisible = :isVisible", {
         isVisible,
       });
+    }
+
+    if (sortByWeight) {
+      queryBuilder.orderBy("friendLink.sortWeight", sortByWeight)
     }
 
     const result = await queryBuilder.getMany();
