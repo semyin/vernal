@@ -10,3 +10,5 @@ export interface FriendLink {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface FriendLinkFilter { }
