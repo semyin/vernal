@@ -5,13 +5,14 @@ import { FriendLink } from './friend-link.entity';
 import { CreateFriendLinkDto } from './dto/create-friend-link.dto';
 import { UpdateFriendLinkDto } from './dto/update-friend-link.dto';
 import { plainToInstance } from 'class-transformer';
+import e from 'express';
 
 @Injectable()
 export class FriendLinkService {
   constructor(
     @InjectRepository(FriendLink)
     private readonly friendLinkRepository: Repository<FriendLink>,
-  ) {}
+  ) { }
 
   // 创建友链
   async create(createFriendLinkDto: CreateFriendLinkDto): Promise<FriendLink> {
@@ -21,8 +22,26 @@ export class FriendLinkService {
   }
 
   // 查询所有友链
-  async findAll(): Promise<FriendLink[]> {
-    const result = await this.friendLinkRepository.find();
+  async findAll(
+    name?: string,
+    isVisible?: boolean
+  ): Promise<FriendLink[]> {
+
+    const queryBuilder = this.friendLinkRepository.createQueryBuilder("friendLink")
+
+    if (name !== undefined) {
+      queryBuilder.andWhere("friendLink.name LIKE :name", {
+        name: `%${name}%`
+      })
+    }
+
+    if (isVisible !== undefined) {
+      queryBuilder.andWhere("friendLink.isVisible = :isVisible", {
+        isVisible,
+      });
+    }
+
+    const result = await queryBuilder.getMany();
     return plainToInstance(FriendLink, result);
   }
 
