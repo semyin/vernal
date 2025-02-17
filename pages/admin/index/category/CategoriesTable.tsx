@@ -1,10 +1,10 @@
+import { withFallback } from "vike-react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button, Popconfirm, Table, TableColumnType } from "antd";
 import { fetchCategories } from "#root/api/category";
 import { useDeleteCategory } from "#root/api/category/hooks";
 import { Category, CategoryFilters } from "#root/api/category/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Button, Popconfirm, Table, TableColumnType } from "antd";
-import { withFallback } from "vike-react-query";
 
 const columns = (
   onEdit: ({ id, name, description }: Partial<Category>) => void,
