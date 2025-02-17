@@ -246,6 +246,22 @@ export class ArticleService {
     const aboutPage = await this.articleRepository.findOne({
       where: { type: "about" },
       relations: ["metas"],
+      select: [
+        "id",
+        "title",
+        "content",
+        "type",
+        "summary",
+        "authorId",
+        "coverImage",
+        "isPublished",
+        "isTop",
+        "viewCount",
+        "likeCount",
+        "commentCount",
+        "createdAt",
+        "updatedAt"
+      ]
     });
     if (!aboutPage) {
       throw new NotFoundException("关于页面不存在");
