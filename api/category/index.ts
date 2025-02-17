@@ -1,7 +1,9 @@
-import { Category } from "./type";
+import { Category, CategoryFilters } from "./type";
 import request from "#root/utils/request";
 
-export const fetchCategories = async (): Promise<Category[]> => request.get("/categories");
+export const fetchCategories = async (
+  params?: CategoryFilters
+): Promise<Category[]> => request.get("/categories", { params });
 
 export const createCategory = async (
   data: Partial<Category>

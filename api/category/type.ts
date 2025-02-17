@@ -1,11 +1,11 @@
 export interface Category {
   id: number
   name: string
-  description: string | undefined | null
+  description: string | undefined
   createdAt: string
   updatedAt: string
 }
 
-export interface Filters {
+export interface CategoryFilters {
   name?: string
 }
