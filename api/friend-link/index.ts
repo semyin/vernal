@@ -1,9 +1,13 @@
 import request from "#root/utils/request";
-import { FriendLink, FriendLinkFilter } from "./type";
+import { FriendLink, FriendLinkFilters } from "./type";
 
 export const fetchFriendLinks = async (
-  params?: FriendLinkFilter
+  params?: FriendLinkFilters
 ): Promise<FriendLink[]> => request.get('/friend-links', { params })
+
+export const fetchFriendLinkDetail = async (
+  id: number
+): Promise<FriendLink> => request.get("/friend-links/" + id)
 
 export const createFriendLink = async (
   data: Partial<FriendLink>

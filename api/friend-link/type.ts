@@ -11,4 +11,7 @@ export interface FriendLink {
   updatedAt: string;
 }
 
-export interface FriendLinkFilter { }
+export interface FriendLinkFilters {
+  name?: string;
+  isVisible?: boolean
+}
