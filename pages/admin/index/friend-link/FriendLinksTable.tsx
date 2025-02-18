@@ -2,14 +2,14 @@ import { withFallback } from "vike-react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Popconfirm, Switch, Table, TableColumnType } from "antd";
 import { fetchFriendLinks } from "#root/api/friend-link";
-import { useDeleteFriendLink } from "#root/api/friend-link/hooks";
+import { useDeleteFriendLink, useToggleFriendLinkVisible } from "#root/api/friend-link/hooks";
 import { FriendLink, FriendLinkFilters } from "#root/api/friend-link/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 
 const columns = (
   onEdit: ({ id }: Partial<FriendLink>) => void,
   onDelete: (id: number) => void,
-  toggleIsVisible: ({ id, value }: { id: number, value: boolean }) => void
+  toggleVisible: ({ id, value }: { id: number, value: boolean }) => void
 ): TableColumnType<FriendLink>[] => [
     {
       title: "ID",
@@ -54,7 +54,7 @@ const columns = (
       render: (isTop: boolean, record: FriendLink) => (
         <Popconfirm
           title={`确定${isTop ? "取消置顶" : "置顶"}该文章吗？`}
-          onConfirm={() => toggleIsVisible({ id: record.id, value: !record.isVisible })}
+          onConfirm={() => toggleVisible({ id: record.id, value: !record.isVisible })}
           okText="确定"
           cancelText="取消"
         >
@@ -107,8 +107,7 @@ const FriendLinksTable = withFallback(
     });
 
     const { mutate: deleteFriendLink } = useDeleteFriendLink(filters)
-
-    const toggleIsVisible = ({ id, value }: { id: number, value: boolean }) => { }
+    const { mutate: toggleVisible } = useToggleFriendLinkVisible()
 
     const _s = useMountedStyles();
     return <Table
@@ -116,7 +115,7 @@ const FriendLinksTable = withFallback(
       bordered
       loading={result.isFetching}
       dataSource={result.data}
-      columns={columns(onEdit, deleteFriendLink, toggleIsVisible)}
+      columns={columns(onEdit, deleteFriendLink, toggleVisible)}
       rowKey="id"
       scroll={{ x: "max-content" }}
       pagination={false}

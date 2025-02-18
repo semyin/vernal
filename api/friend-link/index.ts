@@ -21,3 +21,8 @@ export const updateFriendLink = async (
 export const deleteFriendLink = async (
   id: number
 ): Promise<FriendLink> => request.delete("/friend-links/" + id)
+
+export const toggleFriendLinkVisible = async (
+  id: number,
+  data: { value: boolean }
+): Promise<null> => request.patch("/friend-links/" + id + "/visible", data)

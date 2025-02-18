@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FriendLink } from './friend-link.entity';
@@ -65,5 +65,19 @@ export class FriendLinkService {
   // 删除友链
   async delete(id: number): Promise<void> {
     await this.friendLinkRepository.delete(id);
+  }
+
+  async toggleVisible(
+    id: number,
+    value: boolean
+  ): Promise<void> {
+    await this.friendLinkRepository.manager.transaction(async (manager) => {
+      const friendLink = await manager.findOne(FriendLink, { where: { id } });
+      if (!friendLink) {
+        throw new NotFoundException("Article not found");
+      }
+      friendLink.isVisible = value;
+      return await manager.save(friendLink);
+    });
   }
 }

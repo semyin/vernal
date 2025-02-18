@@ -26,6 +26,7 @@ export class FriendLink {
   sortWeight!: number;
 
   @Column({ default: true, comment: '是否显示' })
+  @Transform(({ value }) => Boolean(value))
   isVisible!: boolean;
 
   @CreateDateColumn({ name: 'created_at', comment: '创建时间' })

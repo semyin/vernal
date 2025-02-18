@@ -1,4 +1,4 @@
-import { createFriendLink, deleteFriendLink, updateFriendLink } from ".";
+import { createFriendLink, deleteFriendLink, toggleFriendLinkVisible, updateFriendLink } from ".";
 import { useAction } from "../common/useAction";
 import { FriendLink, FriendLinkFilters } from "./type";
 
@@ -20,6 +20,13 @@ export const useCreateFriendLink = () => {
 export const useUpdateFriendLink = () => {
   return useAction<FriendLinkFilters, { id: number, data: Partial<FriendLink> }, FriendLink>({
     fn: ({ id, data }) => updateFriendLink(id, data),
+    queryKey: "admin-friendLinks"
+  });
+};
+
+export const useToggleFriendLinkVisible = () => {
+  return useAction<FriendLinkFilters, { id: number; value: boolean }, null>({
+    fn: ({ id, value }) => toggleFriendLinkVisible(id, { value }),
     queryKey: "admin-friendLinks"
   });
 };

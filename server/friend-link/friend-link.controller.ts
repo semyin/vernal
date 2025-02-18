@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Patch } from '@nestjs/common';
 import { FriendLinkService } from './friend-link.service';
 import { CreateFriendLinkDto } from './dto/create-friend-link.dto';
 import { UpdateFriendLinkDto } from './dto/update-friend-link.dto';
@@ -7,7 +7,7 @@ import { ParseOptionalBoolPipe } from '../common/pipe/parse-optional-bool.pipe';
 
 @Controller('friend-links')
 export class FriendLinkController {
-  constructor(private readonly friendLinkService: FriendLinkService) {}
+  constructor(private readonly friendLinkService: FriendLinkService) { }
 
   @Get()
   async findAll(
@@ -22,6 +22,16 @@ export class FriendLinkController {
   @UseGuards(JwtAuthGuard)
   async create(@Body() createFriendLinkDto: CreateFriendLinkDto) {
     return this.friendLinkService.create(createFriendLinkDto);
+  }
+
+  @Patch(":id/visible")
+  @UseGuards(JwtAuthGuard)
+  async toggleVisible(
+    @Param("id") id: number,
+    @Body("value") value: boolean)
+    : Promise<null> {
+    await this.friendLinkService.toggleVisible(id, value);
+    return null;
   }
 
   @Get(':id')
