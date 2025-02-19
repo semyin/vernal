@@ -85,9 +85,7 @@ export class MetaService extends BaseService implements OnModuleInit {
 
     const [items, total] = await queryBuilder.getManyAndCount();
 
-    const _items = plainToInstance(Meta, items, {
-      excludeExtraneousValues: true,
-    })
+    const _items = plainToInstance(Meta, items);
 
     return createPagination(_items, total, options);
   }
@@ -119,7 +117,12 @@ export class MetaService extends BaseService implements OnModuleInit {
   // 更新 meta
   async update(id: number, updateData: Partial<Meta>): Promise<Meta> {
     const meta = await this.findOne(id);
+    if (updateData.isDefault === true) {
+      updateData.resourceType = null
+      updateData.resourceId = null
+    }
     Object.assign(meta, updateData);
+
     const result = await this.metaRepository.save(meta);
 
     // 如果更新后的 meta 是默认的，更新内存缓存

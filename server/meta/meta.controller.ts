@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Pagination } from '#root/types/pagination.interface';
 import { ParseOptionalBoolPipe } from '../common/pipe/parse-optional-bool.pipe';
 
-@Controller('meta')
+@Controller('metas')
 export class MetaController {
   constructor(private readonly metaService: MetaService) { }
 

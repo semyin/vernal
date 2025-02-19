@@ -19,13 +19,14 @@ export class Meta {
   content!: string;
 
   @Column({ default: false })
+  @Transform(({ value }) => Boolean(value))
   isDefault!: boolean;
 
-  @Column({ length: 50, nullable: true })
-  resourceType?: string;
+  @Column({ type: "varchar", length: 50, nullable: true })
+  resourceType!: string | null;
 
-  @Column({ nullable: true })
-  resourceId?: number;
+  @Column({ type: "int", nullable: true })
+  resourceId!: number | null;
 
   @CreateDateColumn()
   @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
