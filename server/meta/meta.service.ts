@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Meta } from './meta.entity';
 import { plainToInstance } from 'class-transformer';
 import { BaseService } from '../common/service/base.service';
+import { Pagination, PaginationOptions } from '#root/types/pagination.interface';
+import { createPagination } from '../common/utils/pagination';
 
 @Injectable()
 export class MetaService extends BaseService implements OnModuleInit {
@@ -48,12 +50,46 @@ export class MetaService extends BaseService implements OnModuleInit {
 
   // 查询所有 meta
   async findAll(
+    options: PaginationOptions,
     name?: string,
     property?: string,
     isDefault?: boolean,
     resourceType?: string
-  ): Promise<Meta[]> {
-    return plainToInstance(Meta, await this.metaRepository.find()); // 从数据库中返回所有数据
+  ): Promise<Pagination<Meta>> {
+
+    const queryBuilder = this.metaRepository.createQueryBuilder("meta")
+
+    if (name) {
+      queryBuilder.andWhere("meta.name LIKE :name", {
+        name: `%${name}%`,
+      });
+    }
+
+    if (property) {
+      queryBuilder.andWhere("meta.property LIKE :property", {
+        property: `%${property}%`,
+      });
+    }
+
+    if (resourceType) {
+      queryBuilder.andWhere("meta.resourceType = :resourceType", { resourceType });
+    }
+
+    if (isDefault !== undefined) {
+      queryBuilder.andWhere("meta.isDefault = :isDefault", { isDefault })
+    }
+
+    queryBuilder.orderBy("meta.createdAt", "DESC");
+    queryBuilder.take(options.limit);
+    queryBuilder.skip((options.page - 1) * options.limit);
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+
+    const _items = plainToInstance(Meta, items, {
+      excludeExtraneousValues: true,
+    })
+
+    return createPagination(_items, total, options);
   }
 
   // 查询站点默认 meta

@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { MetaService } from './meta.service';
 import { Meta } from './meta.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Pagination } from '#root/types/pagination.interface';
+import { ParseOptionalBoolPipe } from '../common/pipe/parse-optional-bool.pipe';
 
 @Controller('meta')
 export class MetaController {
-  constructor(private readonly metaService: MetaService) {}
+  constructor(private readonly metaService: MetaService) { }
 
   @Get()
-  async findAll(): Promise<Meta[]> {
-    return await this.metaService.findAll();
+  async findAll(
+    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query("limit", new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+    @Query("name") name?: string | undefined,
+    @Query("property") property?: string | undefined,
+    @Query("isDefault", ParseOptionalBoolPipe) isDefault?: boolean,
+    @Query("resourceType") resourceType?: string | undefined,
+  ): Promise<Pagination<Meta>> {
+    return await this.metaService.findAll(
+      { page, limit },
+      name,
+      property,
+      isDefault,
+      resourceType
+    );
   }
 
   @Get(':id')

@@ -19,3 +19,10 @@ export interface MetaData {
   resourceType: string;
   resourceId: number;
 }
+
+export interface MetaFilters {
+  name?: string;
+  property?: string;
+  isDefault?: boolean;
+  resourceType?: string;
+}
