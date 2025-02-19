@@ -22,6 +22,7 @@ const MetadataModal = React.memo(
     const defaultMetaData: MetaData = {
       id: 0,
       name: "",
+      property: "",
       content: "",
       isDefault: false,
       resourceType: "article",
@@ -36,7 +37,9 @@ const MetadataModal = React.memo(
       const { id } = metadata[index];
       setLoading(true);
       try {
-        await deleteMeta(id);
+        if (id) {
+          await deleteMeta(id);
+        }
         const newMetadata = [...metadata];
         newMetadata.splice(index, 1);
         setMetadata(newMetadata);
@@ -50,8 +53,8 @@ const MetadataModal = React.memo(
 
     const handleSaveMetaData = async (index: number) => {
       const { id, ...others } = metadata[index];
-      if (!others.name) {
-        return message.error("请输入name");
+      if (!others.name && !others.property) {
+        return message.error("请输入name或者property");
       }
       if (!others.content) {
         return message.error("请输入content");
@@ -73,7 +76,7 @@ const MetadataModal = React.memo(
 
     const handleChangeMetadata = (
       index: number,
-      field: "name" | "content",
+      field: "name" | "content" | "property",
       newValue: string
     ) => {
       const newMetadata = [...metadata];
@@ -85,7 +88,7 @@ const MetadataModal = React.memo(
       <Modal
         title="元数据管理"
         open={visible}
-        width={600}
+        width={700}
         onCancel={onCancel}
         cancelText="取消"
         loading={loading}
@@ -100,7 +103,8 @@ const MetadataModal = React.memo(
         ) : (
           <div style={{ marginTop: "40px" }}>
             {metadata.map((item, index) => (
-              <div key={index} style={{ display: "flex", marginBottom: 8 }}>
+              <div key={index} style={{ display: "flex", marginBottom: 8, alignItems: "center" }}>
+                <div style={{ marginRight: 10}}>
                 <Input
                   placeholder="name"
                   value={item.name}
@@ -110,7 +114,17 @@ const MetadataModal = React.memo(
                   style={{ marginRight: 8 }}
                 />
                 <Input
+                  placeholder="property"
+                  value={item.property}
+                  onChange={(e) =>
+                    handleChangeMetadata(index, "property", e.target.value)
+                  }
+                  style={{ marginTop: 8 }}
+                />
+                </div>
+                <Input.TextArea
                   placeholder="content"
+                  rows={3}
                   value={item.content}
                   onChange={(e) =>
                     handleChangeMetadata(index, "content", e.target.value)

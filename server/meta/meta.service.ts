@@ -47,7 +47,12 @@ export class MetaService extends BaseService implements OnModuleInit {
   }
 
   // 查询所有 meta
-  async findAll(): Promise<Meta[]> {
+  async findAll(
+    name?: string,
+    property?: string,
+    isDefault?: boolean,
+    resourceType?: string
+  ): Promise<Meta[]> {
     return plainToInstance(Meta, await this.metaRepository.find()); // 从数据库中返回所有数据
   }
 

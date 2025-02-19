@@ -12,7 +12,8 @@ export interface Meta {
 
 export interface MetaData {
   id: number;
-  name: string;
+  name?: string;
+  property?: string;
   content: string;
   isDefault: boolean;
   resourceType: string;

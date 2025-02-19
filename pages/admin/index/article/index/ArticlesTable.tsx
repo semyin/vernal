@@ -76,9 +76,9 @@ const ArticlesTable = withFallback(
         const resourceType = "article";
         const data = await fetchMetaByResource(resourceType, id);
         const metaData: MetaData[] = data.map((item) => {
-          const { id, name, content, isDefault, resourceType, resourceId } =
+          const { id, name, property, content, isDefault, resourceType, resourceId } =
             item;
-          return { id, name, content, isDefault, resourceType, resourceId };
+          return { id, name, property, content, isDefault, resourceType, resourceId };
         });
         setMetadata(metaData);
         setMetadataModalVisible(true);
