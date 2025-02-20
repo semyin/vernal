@@ -4,7 +4,7 @@ import { fetchMetaDetail } from "#root/api/meta";
 import { useCreateMeta, useUpdateMeta } from "#root/api/meta/hooks";
 import { Meta } from "#root/api/meta/type";
 import { Article } from "#root/api/tag/type";
-import { fetchArticles } from "#root/api/article";
+import { fetchManageArticles } from "#root/api/article";
 
 interface Props {
   visible: boolean;
@@ -20,7 +20,7 @@ const MetaModal = React.memo(
   }: Props) => {
     const [loading, setLoading] = useState(false);
     const [buttonLoading, setButtonLoading] = useState(false);
-    const [isDefault, setIsDefault] = useState(false);
+    const [isDefault, setIsDefault] = useState(true);
     const [resourceType, setResourceType] = useState("");
     const [articles, setArticles] = useState<Article[]>([])
 
@@ -56,8 +56,8 @@ const MetaModal = React.memo(
 
     const doFetchArticles = async () => {
       try {
-        const data = await fetchArticles();
-        setArticles(data);
+        const result = await fetchManageArticles({ limit: 1000, page: 1 });
+        setArticles(result.items);
       } catch (error) {
         console.error("Failed to fetch articles:", error);
       }
@@ -95,6 +95,10 @@ const MetaModal = React.memo(
       form.setFieldsValue({ resourceId: null });
     }
 
+    const getRules = (label: string) => {
+      return [{ required: true, message: label + "不能为空" }]
+    }
+
 
     return <Modal
       title="元素据管理"
@@ -112,17 +116,18 @@ const MetaModal = React.memo(
         onFinish={handleOk}
         style={{ marginTop: "20px" }}
         form={form}
+        labelCol={{ span: 5 }}
       >
-        <Form.Item name="name" label="name">
+        <Form.Item name="name" label="name" rules={getRules("name")}>
           <Input placeholder="name" allowClear />
         </Form.Item>
-        <Form.Item name="property" label="property">
+        <Form.Item name="property" label="property" rules={getRules("property")}>
           <Input placeholder="property" allowClear />
         </Form.Item>
-        <Form.Item name="content" label="content">
-          <Input placeholder="content" allowClear />
+        <Form.Item name="content" label="content" rules={getRules("content")}>
+          <Input.TextArea rows={4} placeholder="content" allowClear />
         </Form.Item>
-        <Form.Item name="isDefault" label="是否站点值">
+        <Form.Item name="isDefault" label="是否站点值" rules={getRules("是否站点值")}>
           <Select
             style={{ width: "220px" }}
             placeholder="isDefault"
@@ -137,7 +142,7 @@ const MetaModal = React.memo(
             </Select.Option>
           </Select>
         </Form.Item>
-        {!isDefault && <Form.Item name="resourceType" label="资源类型">
+        {!isDefault && <Form.Item name="resourceType" label="资源类型" rules={getRules("资源类型")}>
           <Select
             style={{ width: "220px" }}
             placeholder="resourceType"
@@ -151,7 +156,7 @@ const MetaModal = React.memo(
         </Form.Item>}
         {
           !isDefault && resourceType === "article" &&
-          <Form.Item name="resourceId" label="选择文章">
+          <Form.Item name="resourceId" label="选择文章" rules={getRules("文章")}>
             <Select
               style={{ width: "220px" }}
               placeholder="resourceId"
