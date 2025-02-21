@@ -1,8 +1,9 @@
-import { Controller, Get, Put, Body } from '@nestjs/common';
+import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
 import { SiteService } from './site.service';
 import { SiteWithBaseMeta } from './site.service';
 import { Site } from './site.entity';
 import { MetaService } from '../meta/meta.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('site')
 export class SiteController {
@@ -16,7 +17,7 @@ export class SiteController {
   getSite(): Site {
     return this.siteService.getSite();
   }
-  
+
   @Get('config')
   async getSiteWithBaseMeta(): Promise<SiteWithBaseMeta> {
     return this.siteService.getSiteWithBaseMeta();
@@ -24,6 +25,7 @@ export class SiteController {
 
   // 更新站点配置
   @Put()
+  @UseGuards(JwtAuthGuard)
   async updateConfig(@Body() siteData: Partial<Site>): Promise<Site> {
     return this.siteService.updateConfig(siteData);
   }
