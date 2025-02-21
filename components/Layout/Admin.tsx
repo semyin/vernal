@@ -17,6 +17,7 @@ import {
   HomeOutlined,
   ApartmentOutlined,
   SettingOutlined,
+  FileSearchOutlined,
 } from "@ant-design/icons";
 import { navigate } from "vike/client/router";
 import { Link } from "../Link/Link";
@@ -175,6 +176,11 @@ function Layout({ children }: { children: React.ReactNode }) {
           key: "site",
           icon: <ApartmentOutlined />,
           label: <Link href="/admin/site">站点管理</Link>,
+        },
+        {
+          key: "file",
+          icon: <FileSearchOutlined />,
+          label: <Link href="/admin/file">文件管理</Link>,
         },
         {
           key: "user",
