@@ -1,12 +1,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Button, Table, TableColumnType } from "antd";
+import { Button, Popconfirm, Table, TableColumnType } from "antd";
 import { withFallback } from "vike-react-query"
 import { fetchUsers, queryKey } from "#root/api/user";
 import { User, UserFilters } from "#root/api/user/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
+import { useDeleteUser } from "#root/api/user/hooks";
 
 const columns = (
-  onEdit: ({ id }: Partial<User>) => void
+  onEdit: ({ id }: Partial<User>) => void,
+  onDelete: (id: number) => void,
 ): TableColumnType<User>[] => [
     {
       title: "ID",
@@ -66,6 +68,11 @@ const columns = (
           <Button type="link" onClick={() => onEdit(record)}>
             编辑
           </Button>
+          <Popconfirm title="确定删除吗？" onConfirm={() => onDelete(record.id)} okText="确定" cancelText="取消">
+            <Button type="link" danger>
+              删除
+            </Button>
+          </Popconfirm>
         </div>
       ),
     },
@@ -89,13 +96,14 @@ const UsersTable = withFallback(
     });
 
     const _s = useMountedStyles();
+    const { mutate: deleteUser } = useDeleteUser(filters)
 
     return <Table
       style={_s}
       bordered
       loading={result.isFetching}
       dataSource={result.data}
-      columns={columns(onEdit)}
+      columns={columns(onEdit, deleteUser)}
       rowKey="id"
       scroll={{ x: "max-content" }}
       pagination={false}

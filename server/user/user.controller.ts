@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } fro
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CreateUserDto } from './dto/user.dto';
+import { UserPayload } from './dto/user.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Controller('users')
@@ -29,7 +29,7 @@ export class UserController {
 
   // 创建用户
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() createUserDto: UserPayload): Promise<User> {
     const user = this.userService.create(createUserDto)
     return plainToInstance(User, user);
   }
@@ -37,7 +37,7 @@ export class UserController {
   // 更新用户
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: number, @Body() user: Partial<User>): Promise<User | null> {
+  async update(@Param('id') id: number, @Body() user: UserPayload): Promise<User | null> {
     return this.userService.update(id, user);
   }
 

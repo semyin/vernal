@@ -17,7 +17,6 @@ export class User {
   email!: string;
 
   @Column({ name: 'password_hash', comment: '密码哈希' })
-  @Exclude()
   passwordHash!: string;
 
   @Column({ name: 'avatar_url', nullable: true, comment: '头像URL' })

@@ -8,6 +8,7 @@ import {
   FilterItemConfig
 } from "#root/components/FilterForm/FilterForm"
 import { UsersTable } from "./UsersTable";
+import { UserModal } from "./UserModal";
 
 
 function Page() {
@@ -49,6 +50,7 @@ function Page() {
 
   const filterFormProps: FilterFormProps<UserFilters> = {
     onFilter: handleSearch,
+    onAdd: handleAdd,
     filterItems: filterItems
   }
 
@@ -57,6 +59,11 @@ function Page() {
     <UsersTable
       filters={filters}
       onEdit={handleOpenModal}
+    />
+    <UserModal
+      visible={visible}
+      currentId={currenId}
+      onCancel={() => setVisible(false)}
     />
   </>
 }

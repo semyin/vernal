@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { User } from './user.entity';
-import { CreateUserDto, UserDto } from '#root/server/user/dto/user.dto';
+import { UserPayload, UserDto } from '#root/server/user/dto/user.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -66,21 +66,27 @@ export class UserService {
     return null;
   }
 
-  // 创建用户
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const { password, ...rest } = createUserDto;
-
+  private async getPasswordHash(password: string): Promise<string> {
     // 对密码进行哈希处理
     const saltRounds = 10; // 哈希强度
     const passwordHash = await bcrypt.hash(password, saltRounds);
+    return passwordHash;
+  }
+
+  // 创建用户
+  async create(createUserDto: UserPayload): Promise<UserDto> {
+    const { password, ...rest } = createUserDto;
+    const passwordHash = await this.getPasswordHash(password)
 
     // 创建用户
     const user = this.userRepository.create({
       ...rest,
-      passwordHash, // 存储哈希后的密码
+      passwordHash
     });
 
-    return this.userRepository.save(user);
+    const result = await this.userRepository.save(user);
+
+    return plainToInstance(UserDto, result)
   }
 
   // 验证密码
@@ -89,9 +95,15 @@ export class UserService {
   }
 
   // 更新用户
-  async update(id: number, user: Partial<User>): Promise<User | null> {
-    await this.userRepository.update(id, user);
-    return this.findById(id);
+  async update(id: number, user: UserPayload): Promise<UserDto | null> {
+    const { password, ...rest } = user
+    const passwordHash = await this.getPasswordHash(password)
+    await this.userRepository.update(id, {
+      ...rest,
+      passwordHash
+    });
+    const result = await this.findById(id);
+    return plainToInstance(UserDto, result)
   }
 
   // 删除用户
