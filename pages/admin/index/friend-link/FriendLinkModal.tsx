@@ -62,7 +62,7 @@ const FriendLinkModal = React.memo(
     };
 
     return <Modal
-      title="分类管理"
+      title="友链管理"
       open={visible}
       onCancel={handleCancel}
       loading={loading}
