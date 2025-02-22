@@ -1,8 +1,8 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
-import { UserService } from "../user/user.service";
 import { InvalidCredentialsException } from "../common/exceptions/invalid-credentials.exception";
+import { UserService } from "../user/user.service";
 
 @Injectable()
 export class AuthService {
