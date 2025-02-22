@@ -1,4 +1,6 @@
 export { Page };
+
+import { useQueryClient } from "@tanstack/react-query";
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input } from "antd";
 import styles from "./Login.module.scss";
@@ -12,9 +14,13 @@ type FieldType = {
 };
 
 function Page() {
+
+  const queryClient = useQueryClient();
+
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     const { remember, ...other } = values
     login(other).then(async() => {
+      queryClient.clear();
       await navigate("/admin")
     }).catch(e => {
       console.log(e);
