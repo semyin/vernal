@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { User } from './user.entity';
-import { CreateUserDto } from '#root/server/user/dto/user.dto';
+import { CreateUserDto, UserDto } from '#root/server/user/dto/user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -13,13 +14,43 @@ export class UserService {
   ) { }
 
   // 查询所有用户
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findAll(
+    username?: string,
+    email?: string,
+    phone?: string
+  ): Promise<UserDto[]> {
+
+    const queryBuilder = this.userRepository.createQueryBuilder("user")
+
+    if (username) {
+      queryBuilder.andWhere("user.username LIKE :username", {
+        username: `%${username}%`
+      })
+    }
+
+    if (email) {
+      queryBuilder.andWhere("user.email = :email", {
+        email
+      })
+    }
+
+    if (phone) {
+      queryBuilder.andWhere("user.phone = :phone", {
+        phone
+      })
+    }
+
+    queryBuilder.orderBy("user.createdAt", "DESC");
+
+    const result = await queryBuilder.getMany()
+
+    return plainToInstance(UserDto, result);
   }
 
   // 根据ID查找用户
-  async findById(id: number): Promise<User | null> {
-    return this.userRepository.findOne({ where: { id } });
+  async findById(id: number): Promise<UserDto> {
+    const result = await this.userRepository.findOne({ where: { id } });
+    return plainToInstance(UserDto, result);
   }
 
   // 根据用户名查找用户
@@ -33,11 +64,6 @@ export class UserService {
       return user;
     }
     return null;
-  }
-
-  // 根据邮箱查找用户
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
   }
 
   // 创建用户

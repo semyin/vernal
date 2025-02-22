@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { CreateUserDto } from '#root/server/user/dto/user.dto';
-import { plainToClass } from 'class-transformer';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CreateUserDto } from './dto/user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('users')
 export class UserController {
@@ -10,12 +11,18 @@ export class UserController {
 
   // 查询所有用户
   @Get()
-  async findAll(): Promise<User[]> {
-    return this.userService.findAll();
+  @UseGuards(JwtAuthGuard)
+  async findAll(
+    @Query("username") username: string | undefined,
+    @Query("email") email: string | undefined,
+    @Query("phone") phone: string | undefined,
+  ): Promise<User[]> {
+    return this.userService.findAll(username, email, phone);
   }
 
   // 获取用户详情
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async findById(@Param('id') id: number): Promise<User | null> {
     return this.userService.findById(id);
   }
@@ -24,11 +31,12 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const user = this.userService.create(createUserDto)
-    return plainToClass(User, user);
+    return plainToInstance(User, user);
   }
 
   // 更新用户
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: number, @Body() user: Partial<User>): Promise<User | null> {
     return this.userService.update(id, user);
   }
