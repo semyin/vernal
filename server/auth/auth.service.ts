@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
 import { UserService } from "../user/user.service";
+import { InvalidCredentialsException } from "../common/exceptions/invalid-credentials.exception";
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
   async login(username: string, password: string) {
     const user = await this.userService.validateUser(username, password);
     if (!user) {
-      throw new UnauthorizedException("Invalid credentials");
+      throw new InvalidCredentialsException("用户名密码错误");
     }
     const payload = { username: user.username, sub: user.id };
     const token = this.jwtService.sign(payload);

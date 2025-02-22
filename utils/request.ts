@@ -1,7 +1,10 @@
 import { navigate } from "vike/client/router";
+import { message } from "antd";
 import { API_PREFIX, HOST, isSSR, PORT } from "./environment";
 import { render } from "vike/abort";
 import { usePageContext } from "vike-react/usePageContext";
+
+const { error: showErrorMessage } = message
 
 // 定义接口返回的数据结构
 export interface ApiResponse<T = any> {
@@ -53,7 +56,7 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
 
     // FormData的时候不要手动设置Content-Type
     if (config.body instanceof FormData) {
-      
+
     } else {
       newConfig.headers = {
         "Content-Type": "application/json",
@@ -78,6 +81,8 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
         if (isSSR) {
           throw render(404);
         }
+      } else if (response.status === 403) {
+
       } else {
         throw new Error(`HTTP Error: ${response.status}`);
       }
@@ -93,6 +98,7 @@ const createFetch = (baseConfig: RequestConfig = {}) => {
       } else if (code === 404) {
         navigate("/_error");
       } else {
+        showErrorMessage(message)
         throw new Error(`API Error: ${message}`);
       }
     }
