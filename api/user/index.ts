@@ -1,10 +1,10 @@
 import request from "#root/utils/request";
-import { User, UserFilter } from "./type"
+import { User, UserFilters } from "./type"
 
 export const queryKey = "admin-users"
 
 export const fetchUsers = async (
-  params: UserFilter
+  params: UserFilters
 ): Promise<User[]> => request.get("/users", { params })
 
 export const createUser = async (

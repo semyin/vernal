@@ -1,9 +1,9 @@
 import { createUser, deleteUser, updateUser, queryKey } from ".";
 import { useAction } from "../common/useAction";
-import { User, UserFilter } from "./type";
+import { User, UserFilters } from "./type";
 
-export const useDeleteUser = (filters: UserFilter) => {
-  return useAction<UserFilter, number, User>({
+export const useDeleteUser = (filters: UserFilters) => {
+  return useAction<UserFilters, number, User>({
     fn: (id) => deleteUser(id),
     queryKey,
     filters
@@ -11,14 +11,14 @@ export const useDeleteUser = (filters: UserFilter) => {
 };
 
 export const useCreateUser = () => {
-  return useAction<UserFilter, Partial<User>, User>({
+  return useAction<UserFilters, Partial<User>, User>({
     fn: (data) => createUser(data),
     queryKey
   });
 };
 
 export const useUpdateUser = () => {
-  return useAction<UserFilter, { id: number, data: Partial<User> }, User>({
+  return useAction<UserFilters, { id: number, data: Partial<User> }, User>({
     fn: ({ id, data }) => updateUser(id, data),
     queryKey
   });

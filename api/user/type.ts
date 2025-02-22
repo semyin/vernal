@@ -11,7 +11,7 @@ export interface User {
   phone?: string
 }
 
-export interface UserFilter {
+export interface UserFilters {
   username?: string;
   email?: string
   phone?: string
