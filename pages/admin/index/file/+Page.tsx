@@ -1,5 +1,13 @@
 export { Page };
 
+import { FilesTable } from "./FilesTable";
+import { FileModal } from "./FileModal";
+
 function Page() {
-  return <>文件管理</>;
+  return (
+    <>
+      <FilesTable />
+      <FileModal />
+    </>
+  );
 }
