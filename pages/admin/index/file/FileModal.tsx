@@ -1,7 +1,7 @@
 import React from "react";
 
 const FileModal = React.memo(() => {
-  return <></>;
+  return <>file modal</>;
 });
 
 export { FileModal };
