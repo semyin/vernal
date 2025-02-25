@@ -11,3 +11,9 @@ Clone with:
 ```bash
 npx degit cyco130/vavite/examples/nestjs-vike
 ```
+
+### change logs
+update vite verison: ^5.4.11 =>  ^6.1.1
+update vike version: ^0.4.205 => ^0.4.212
+update package script: `"dev": "vite optimize --force && vavite serve"` => `vavite serve`
+
