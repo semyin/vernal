@@ -5,7 +5,7 @@ FROM node:20.18.1
 WORKDIR /app
 
 # 先复制包文件（利用Docker缓存层）
-COPY .env .env
+COPY .env .
 COPY package*.json ./
 
 # 安装依赖
