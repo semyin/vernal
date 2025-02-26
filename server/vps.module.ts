@@ -6,21 +6,13 @@ import { renderPage } from "vike/server";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import devServer from "vavite/http-dev-server";
 
-import { MetaModule } from './meta/meta.module';
-import { SiteModule } from "./site/site.module";
-
 const OPTIONS = Symbol.for("vike.options");
 
 interface ViteSsrOptions {
   root?: string;
 }
 
-@Module({
-  imports: [
-    MetaModule,
-    SiteModule
-  ]
-})
+@Module({})
 export class VpsModule implements OnModuleInit {
   constructor(
     private readonly httpAdapterHost: HttpAdapterHost,

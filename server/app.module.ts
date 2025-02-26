@@ -41,7 +41,6 @@ const __dirname = dirname(__filename);
     ConfigModule.forRoot({ // 加载 .env 文件
       isGlobal: true, // 全局可用
     }),
-    VpsModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST, // 从环境变量中读取
@@ -78,6 +77,7 @@ const __dirname = dirname(__filename);
     FriendLinkModule, // 注册 FriendLinkModule
     AuthModule, // 注册 AuthModule
     FileModule, // 注册 FileModule
+    VpsModule.forRoot(),
   ],
   controllers: [
     AppController
