@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vavite serve",
     "build": "vavite build",
-    "start": "cross-env NODE_ENV=production node dist/server/index.mjs"
+    "start": "cross-env HOST=0.0.0.0 NODE_ENV=production node dist/server/index.mjs"
   },
   "files": [
     "dist"
