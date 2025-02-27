@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import CopyToClipboard from "react-copy-to-clipboard";
 import styles from "./MarkdownRenderer.module.scss";
 import CodeHighlight from "./CodeHighlight";
@@ -61,6 +62,7 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
     <div className={styles["markdown"]}>
       <Suspense fallback={<div>加载中...</div>}>
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
             code({ node, inline, className, children, ...props }: CodeProps) {
               const match = /language-(\w+)/.exec(className || "");
@@ -75,6 +77,26 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
                   {children}
                 </code>
               );
+            },
+            table: ({ node, ...props }) => (
+              <div className={styles["table-container"]}>
+                <table {...props} />
+              </div>
+            ),
+            th: ({ node, ...props }) => <th style={{ textAlign: 'left' }} {...props} />,
+            tr: ({ node, ...props }) => <tr {...props} />,
+            td: ({ node, ...props }) => <td {...props} />,
+
+            blockquote: ({ node, children, ...props }) => (
+              <blockquote className={styles.blockquote} {...props}>
+                {children}
+              </blockquote>
+            ),
+            li: ({ node, className, ...props }) => {
+              if (className === 'task-list-item') {
+                return <li className={styles[className]} {...props} />;
+              }
+              return <li className={className} {...props} />;
             },
           }}
         >
