@@ -1,11 +1,16 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import CodeHighlight from "./CodeHighlight";
-import styles from "./MarkdownRenderer.module.scss";
 
+export interface CodeProps {
+  node?: any;
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
 
 const CodeBlockWrapper = memo(
-  ({ code, language }: { code: string; language: string }) => {
+  ({ code, language, styles }: { code: string; language: string, styles: CSSModuleClasses }) => {
     const [copied, setCopied] = useState(false);
     const timerRef = useRef<NodeJS.Timeout>();
 

@@ -1,12 +1,10 @@
 import { Suspense, memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { CodeBlockWrapper } from "./CodeBlockWrapper";
-import styles from "./MarkdownRenderer.module.scss";
-import { CodeProps } from "./types";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { CodeBlockWrapper, CodeProps } from "./CodeBlockWrapper";
 import "react-photo-view/dist/react-photo-view.css";
-
+import styles from "./MarkdownRenderer.module.scss";
 
 const ImageComponent = memo(({ src, alt }: { src?: string; alt?: string }) => {
   return (
@@ -40,9 +38,9 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
               ),
               code({ node, inline, className, children, ...props }: CodeProps) {
                 const match = /language-(\w+)/.exec(className || "");
-                const codeKey = String(children);
                 return !inline && match ? (
                   <CodeBlockWrapper
+                    styles={styles}
                     code={String(children).replace(/\n$/, "")}
                     language={match[1]}
                   />
