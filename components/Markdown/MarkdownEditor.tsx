@@ -20,6 +20,11 @@ const MarkdownEditor = forwardRef<HTMLDivElement, MarkdownEditorProps>(
       setIsMounted(true); // 标记组件已加载完成
     }, []);
 
+    useEffect(() => {
+      setEditorValue(value || "");
+    }, [value]);
+
+
     const handleChange = (newValue: string | undefined) => {
       if (!isMounted) return; // 如果组件未加载完成，不触发更新
       const updatedValue = newValue || "";
@@ -41,7 +46,7 @@ const MarkdownEditor = forwardRef<HTMLDivElement, MarkdownEditorProps>(
         if (data.url) {
           // 将图片 URL 插入到编辑器中
           const markdownImage = `![${file.name}](${data.url})`;
-          const newValue = value ? `${value}\n${markdownImage}` : markdownImage;
+          const newValue = editorValue ? `${editorValue}\n${markdownImage}` : markdownImage;
           onChange?.(newValue);
           message.success("图片上传成功!");
         } else {

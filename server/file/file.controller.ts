@@ -24,6 +24,11 @@ export class FileController {
       limits: {
         fileSize: 1024 * 1024 * 10, // 10MB
       },
+      fileFilter: (req, file, cb) => {
+        // 修复文件名编码（内存操作，占用极低）
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        cb(null, true);
+      },
     })
   )
   async uploadFile(

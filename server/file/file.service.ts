@@ -7,33 +7,29 @@ import { Multer } from "multer"
 
 @Injectable()
 export class FileService {
-  
 
   constructor(
     @InjectRepository(File)
     private readonly fileRepository: Repository<File>,
     private readonly cosService: CosService
-  ) {}
+  ) { }
 
   async uploadFile(file: Express.Multer.File, type: string): Promise<File> {
-    const now = Date.now()
-    const cosKey = `uploads/${now}_${file.originalname}`;
-    const url = await this.cosService.uploadFile(
-      cosKey,
-      file.buffer
-    );
+    // 确保文件名已从 latin1 转换为 utf8
+    const originalname = file.originalname;
 
-    // 如果 file.filename 是 undefined,手动生成一个文件名
-    const filename = file.filename || `${now}_${file.originalname}`;
-    
+    const cosKey = `uploads/${Date.now()}_${originalname}`;
+
+    const url = await this.cosService.uploadFile(cosKey, file.buffer);
+
     const newFile = this.fileRepository.create({
-      filename,
-      originalname: file.originalname,
+      filename: originalname, // 存储编码后的文件名
+      originalname: originalname, // 存储原始文件名（已修复编码）
       mimetype: file.mimetype,
       size: file.size,
       type,
       url,
-      cosKey: cosKey,
+      cosKey,
     });
 
     return this.fileRepository.save(newFile);
