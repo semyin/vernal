@@ -5,68 +5,97 @@ import React, {
   Suspense,
   memo,
   useCallback,
+  useMemo,
 } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import CopyToClipboard from "react-copy-to-clipboard";
+import { CodeBlockWrapper } from "./CodeBlockWrapper";
+import { ImagePreview } from "./ImagePreview";
 import styles from "./MarkdownRenderer.module.scss";
-import CodeHighlight from "./CodeHighlight";
-
-// 定义 code 组件的属性类型
-interface CodeProps {
-  node?: any;
-  inline?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-}
-
-const CodeBlockWrapper = memo(
-  ({ code, language }: { code: string; language: string }) => {
-    const [copied, setCopied] = useState(false);
-    const timerRef = useRef<NodeJS.Timeout>();
-
-    const handleCopy = useCallback(() => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-      setCopied(true);
-      timerRef.current = setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    }, []);
-
-    useEffect(() => {
-      return () => {
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-        }
-      };
-    }, []);
-
-    return (
-      <div className={styles["code-block"]}>
-        <div className={styles["code-header"]}>
-          <span className={styles["code-lang"]}>{language}</span>
-          <CopyToClipboard text={code} onCopy={handleCopy}>
-            <button>{copied ? "复制成功" : "复制"}</button>
-          </CopyToClipboard>
-        </div>
-        <CodeHighlight code={code} language={language} />
-      </div>
-    );
-  }
-);
+import { CodeProps } from "./types";
 
 const MarkdownRenderer = ({ content }: { content: string }) => {
+
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null)
+  const imagesRef = useRef<string[]>([])
+
+  useEffect(() => {
+    imagesRef.current = []
+  }, [content])
+
+  useEffect(() => {
+    if (previewIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [previewIndex]);
+
+  const handlePrev = useCallback(() => {
+    setPreviewIndex(prev => Math.max(0, (prev || 0) - 1));
+  }, [])
+
+  const handleNext = useCallback(() => {
+    setPreviewIndex(prev => Math.min(imagesRef.current.length - 1, (prev || 0) + 1));
+  }, [])
+
+  const ImageComponent = useMemo(() => memo(({ src, alt }: { src?: string; alt?: string }) => {
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    useEffect(() => {
+      if (src && !imagesRef.current.includes(src)) {
+        imagesRef.current = [...imagesRef.current, src];
+      }
+    }, [src]);
+
+    useEffect(() => {
+      const img = imgRef.current;
+      if (img) {
+        const handleLoad = () => img.classList.add(styles.loaded);
+        if (img.complete) handleLoad();
+        img.addEventListener("load", handleLoad);
+        return () => img.removeEventListener("load", handleLoad);
+      }
+    }, []);
+
+    const handleClick = () => {
+      const currentIndex = imagesRef.current.indexOf(src!);
+      if (currentIndex !== -1) setPreviewIndex(currentIndex);
+    };
+
+    return (
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt || ""}
+        className={styles["markdown-image"]}
+        loading="lazy"
+        onClick={handleClick}
+      />
+    );
+  }), []);
+
   return (
     <div className={styles["markdown"]}>
+      {previewIndex !== null && (
+        <ImagePreview
+          images={imagesRef.current}
+          currentIndex={previewIndex}
+          onClose={() => setPreviewIndex(null)}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+      )}
       <Suspense fallback={<div>加载中...</div>}>
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
+            img: ({ node, ...props }) => (
+              <ImageComponent key={props.src} src={props.src} alt={props.alt} />
+            ),
             code({ node, inline, className, children, ...props }: CodeProps) {
               const match = /language-(\w+)/.exec(className || "");
-              const codeKey = String(children); // 使用代码内容作为唯一 key
+              const codeKey = String(children);
               return !inline && match ? (
                 <CodeBlockWrapper
                   code={String(children).replace(/\n$/, "")}
