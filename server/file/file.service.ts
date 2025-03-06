@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Multer } from "multer"
 import { Repository } from "typeorm";
+import { plainToInstance } from "class-transformer";
+import { createPagination } from "../common/utils/pagination";
+import { PaginationOptions } from "../../types/pagination.interface";
+import { Pagination } from "../../types/pagination.interface";
 import { File } from "./file.entity";
 import { CosService } from "./cos.service";
-import { Multer } from "multer"
 
 @Injectable()
 export class FileService {
@@ -47,5 +51,29 @@ export class FileService {
 
   async getFilesByType(type: string): Promise<File[]> {
     return this.fileRepository.find({ where: { type } });
+  }
+
+  async getFileList(
+    options: PaginationOptions,
+    type?: string
+  ): Promise<Pagination<File>> {
+    const queryBuilder = this.fileRepository
+      .createQueryBuilder("file")
+      .orderBy("file.createdAt", "DESC");
+
+    if (type) {
+      queryBuilder.andWhere("file.type = :type", { type });
+    }
+
+    const [data, total] = await queryBuilder
+      .skip((options.page - 1) * options.limit)
+      .take(options.limit)
+      .getManyAndCount();
+
+    const _data = plainToInstance(File, data, {
+      excludeExtraneousValues: true,
+    });
+
+    return createPagination<File>(_data, total, options);
   }
 }

@@ -1,4 +1,4 @@
-export interface UploadResponse {
+export interface File {
   id: number;
   filename: string;
   originalname: string;
@@ -9,4 +9,8 @@ export interface UploadResponse {
   cosKey: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface fileFilters {
+  type: string;
 }
