@@ -11,12 +11,12 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { Multer } from "multer";
 import { FileService } from "./file.service";
 import { File } from "./file.entity";
 import { DefaultValuePipe, ParseIntPipe } from "@nestjs/common";
 import { Pagination } from "../../types/pagination.interface";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { Multer } from "multer";
 
 @Controller("files")
 export class FileController {

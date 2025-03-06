@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Multer } from "multer"
 import { Repository } from "typeorm";
+import { plainToInstance } from "class-transformer";
+import { createPagination } from "../common/utils/pagination";
 import { PaginationOptions } from "../../types/pagination.interface";
 import { Pagination } from "../../types/pagination.interface";
 import { File } from "./file.entity";
 import { CosService } from "./cos.service";
-import { Multer } from "multer"
-import { createPagination } from "../common/utils/pagination";
 
 @Injectable()
 export class FileService {
@@ -69,6 +70,10 @@ export class FileService {
       .take(options.limit)
       .getManyAndCount();
 
-    return createPagination<File>(data, total, options);
+    const _data = plainToInstance(File, data, {
+      excludeExtraneousValues: true,
+    });
+
+    return createPagination<File>(_data, total, options);
   }
 }
