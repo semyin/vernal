@@ -238,11 +238,19 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Suspense>
         <div className={styles["admin-layout"]} style={_s}>
           <AntdLayout style={{ minHeight: "100vh" }}>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
+            <Sider
+              trigger={null}
+              collapsible
+              collapsed={collapsed}
+              style={{
+                position: 'sticky',
+                height: "100vh",
+                top: 0,
+                bottom: 0,
+              }}>
               <div
-                className={`${styles["logo"]} ${
-                  collapsed ? styles["logo-collapsed"] : ""
-                }`}
+                className={`${styles["logo"]} ${collapsed ? styles["logo-collapsed"] : ""
+                  }`}
               >
                 <Link href="/">{site.name}</Link>
               </div>
@@ -319,6 +327,8 @@ function Layout({ children }: { children: React.ReactNode }) {
                   padding: 24,
                   background: "#fff",
                   minHeight: 280,
+                  // maxHeight: "calc(100vh - 64px - 36px)",
+                  // overflow: "auto",
                 }}
               >
                 {children}
