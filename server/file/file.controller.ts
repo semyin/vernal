@@ -17,10 +17,11 @@ import { File } from "./file.entity";
 import { DefaultValuePipe, ParseIntPipe } from "@nestjs/common";
 import { Pagination } from "../../types/pagination.interface";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { FileDto } from "./dto/file.dto";
 
 @Controller("files")
 export class FileController {
-  constructor(private readonly fileService: FileService) {}
+  constructor(private readonly fileService: FileService) { }
 
   @Post("upload")
   @UseGuards(JwtAuthGuard)
@@ -49,18 +50,19 @@ export class FileController {
     return this.fileService.deleteFile(id);
   }
 
-  @Get()
+  @Get("type")
   @UseGuards(JwtAuthGuard)
   async getFilesByType(@Query("type") type: string): Promise<File[]> {
     return this.fileService.getFilesByType(type);
   }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   getFileList(
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query("limit", new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
     @Query("type") type?: string
-  ): Promise<Pagination<File>> {
+  ): Promise<Pagination<FileDto>> {
     return this.fileService.getFileList({ page, limit }, type);
   }
 }

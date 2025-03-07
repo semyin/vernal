@@ -8,6 +8,7 @@ import { PaginationOptions } from "../../types/pagination.interface";
 import { Pagination } from "../../types/pagination.interface";
 import { File } from "./file.entity";
 import { CosService } from "./cos.service";
+import { FileDto } from "./dto/file.dto";
 
 @Injectable()
 export class FileService {
@@ -56,7 +57,7 @@ export class FileService {
   async getFileList(
     options: PaginationOptions,
     type?: string
-  ): Promise<Pagination<File>> {
+  ): Promise<Pagination<FileDto>> {
     const queryBuilder = this.fileRepository
       .createQueryBuilder("file")
       .orderBy("file.createdAt", "DESC");
@@ -70,9 +71,10 @@ export class FileService {
       .take(options.limit)
       .getManyAndCount();
 
-    const _data = plainToInstance(File, data, {
-      excludeExtraneousValues: true,
-    });
+    const _data = plainToInstance(FileDto, data);
+
+    console.log(_data);
+
 
     return createPagination<File>(_data, total, options);
   }

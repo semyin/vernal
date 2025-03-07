@@ -3,7 +3,7 @@ import "./MarkdownEditor.scss";
 import { message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import MDEditor, { commands } from "@uiw/react-md-editor";
-import { uploadFile } from "#root/api/files";
+import { uploadFile } from "#root/api/file";
 
 interface MarkdownEditorProps {
   value?: string;

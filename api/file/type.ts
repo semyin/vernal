@@ -12,5 +12,5 @@ export interface File {
 }
 
 export interface fileFilters {
-  type: string;
+  type?: string;
 }

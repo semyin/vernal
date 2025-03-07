@@ -9,7 +9,7 @@ import { createArticle, getArticleDetail, updateArticle } from "#root/api/articl
 import { Article } from "#root/api/article/type";
 import { fetchTags } from "#root/api/tag";
 import { fetchCategories } from "#root/api/category";
-import { uploadFile } from "#root/api/files";
+import { uploadFile } from "#root/api/file";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 
 const MarkdownEditor = clientOnly(
