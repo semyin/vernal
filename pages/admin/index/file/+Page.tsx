@@ -11,14 +11,19 @@ import {
 } from "#root/components/FilterForm/FilterForm";
 
 function Page() {
-
   const [filters, setFilters] = useState<fileFilters>({});
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(20);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleAdd = () => {
+    setModalVisible(true);
+  };
 
-  }
+  const handleUploadSuccess = () => {
+    setModalVisible(false);
+    // 这里可以添加刷新文件列表的逻辑
+  };
 
   const filterItems: FilterItemConfig[] = [
     {
@@ -32,12 +37,10 @@ function Page() {
     setFilters(values);
   };
 
-
   const filterFormProps: FilterFormProps<fileFilters> = {
     onFilter: handleSearch,
     filterItems: filterItems
   }
-
 
   return (
     <>
@@ -49,7 +52,12 @@ function Page() {
         setPage={setPage}
         setLimit={setLimit}
       />
-      <FileModal />
+      <FileModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSuccess={handleUploadSuccess}
+        filters={filters}
+      />
     </>
   );
 }
