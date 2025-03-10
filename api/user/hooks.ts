@@ -14,7 +14,7 @@ export const useCreateUser = () => {
   return useAction<Partial<User>, User>({
     fn: (data) => createUser(data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true,
+    exact: false,
   });
 };
 
@@ -22,6 +22,6 @@ export const useUpdateUser = () => {
   return useAction<{ id: number, data: Partial<User> }, User>({
     fn: ({ id, data }) => updateUser(id, data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true,
+    exact: false,
   });
 };

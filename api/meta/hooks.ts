@@ -14,7 +14,7 @@ export const useCreateMeta = () => {
   return useAction<Partial<Meta>, Meta>({
     fn: (data) => createMeta(data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true
+    exact: false
   });
 };
 
@@ -22,6 +22,6 @@ export const useUpdateMeta = () => {
   return useAction<{ id: number, data: Partial<Meta> }, Meta>({
     fn: ({ id, data }) => updateMeta(id, data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true
+    exact: false
   });
 };

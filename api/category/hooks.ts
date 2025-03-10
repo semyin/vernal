@@ -14,7 +14,7 @@ export const useCreateCategory = () => {
   return useAction<Partial<Category>, Category>({
     fn: (data) => createCategory(data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true,
+    exact: false,
     successMessage: "create successfully",
     errorMessage: "create falied"
   });
@@ -24,7 +24,7 @@ export const useUpdateCategory = () => {
   return useAction<{ id: number; data: Partial<Category> }, Category>({
     fn: ({ id, data }) => updateCategory(id, data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true,
+    exact: false,
     successMessage: "update successfully",
     errorMessage: "update falied"
   });

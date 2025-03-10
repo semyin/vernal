@@ -14,7 +14,7 @@ interface UseActionOptions<Variables, Response> {
 export const useAction = <Variables, Response>({
   fn,
   queryKey,
-  exact = false,
+  exact = true,
   successMessage = "操作成功",
   errorMessage = "操作失败",
   onSuccess,

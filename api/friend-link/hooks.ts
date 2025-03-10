@@ -20,7 +20,7 @@ export const useCreateFriendLink = () => {
   return useAction<Partial<FriendLink>, FriendLink>({
     fn: (data) => createFriendLink(data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true,
+    exact: false,
   });
 };
 
@@ -28,7 +28,7 @@ export const useUpdateFriendLink = () => {
   return useAction<{ id: number, data: Partial<FriendLink> }, FriendLink>({
     fn: ({ id, data }) => updateFriendLink(id, data),
     queryKey: [BASE_QUERY_KEY],
-    exact: true,
+    exact: false,
   });
 };
 
