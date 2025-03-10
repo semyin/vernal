@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Modal, Upload, message, Select, Button } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
-import { uploadFile } from "#root/api/file";
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, InboxOutlined } from '@ant-design/icons';
+import { BASE_QUERY_KEY, uploadFile } from "#root/api/file";
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -18,6 +18,8 @@ const FileModal = React.memo(({ visible, onCancel, onSuccess }: FileModalProps) 
   const [selectedType, setSelectedType] = useState<null | string>(null);
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
   const [isHovering, setIsHovering] = useState(false);
+
+  const queryClient = useQueryClient();
 
   // 添加重置状态
   const resetState = () => {
@@ -38,6 +40,7 @@ const FileModal = React.memo(({ visible, onCancel, onSuccess }: FileModalProps) 
     try {
       setLoading(true);
       await uploadFile(formData);
+      queryClient.invalidateQueries({ queryKey: [BASE_QUERY_KEY], exact: false })
       message.success("文件上传成功");
       onSuccess();
       resetState(); // 上传成功后重置状态
