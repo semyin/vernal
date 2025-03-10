@@ -82,6 +82,7 @@ export interface FilterFormProps<T> {
   filterItems: FilterItemConfig[];
   onFilter: (values: T) => void;
   onAdd?: () => void;
+  addText?: string;
   initialValues?: Partial<T>;
   styles?: React.CSSProperties;
 }
@@ -92,6 +93,7 @@ const FilterForm = React.memo(
       filterItems,
       onFilter,
       onAdd,
+      addText,
       initialValues,
       styles,
     }: FilterFormProps<T>) => {
@@ -263,7 +265,7 @@ const FilterForm = React.memo(
           {onAdd && (
             <Form.Item>
               <Button type="primary" onClick={onAdd}>
-                添加
+                { addText ? addText : "新增" }
               </Button>
             </Form.Item>
           )}
