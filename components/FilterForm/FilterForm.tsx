@@ -1,6 +1,5 @@
 import React, { startTransition } from "react";
 import { Button, Form, Input, Select, FormItemProps, DatePicker } from "antd";
-import { Dayjs } from "dayjs";
 import { withFallback } from "vike-react-query";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 
