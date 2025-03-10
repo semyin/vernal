@@ -73,9 +73,6 @@ export class FileService {
 
     const _data = plainToInstance(FileDto, data);
 
-    console.log(_data);
-
-
     return createPagination<File>(_data, total, options);
   }
 }

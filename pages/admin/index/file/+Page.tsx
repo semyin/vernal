@@ -28,7 +28,7 @@ function Page() {
   const filterItems: FilterItemConfig[] = [
     {
       type: 'input',
-      name: 'name',
+      name: 'type',
       placeholder: '请输入名称',
     }
   ]
@@ -39,12 +39,14 @@ function Page() {
 
   const filterFormProps: FilterFormProps<fileFilters> = {
     onFilter: handleSearch,
-    filterItems: filterItems
+    filterItems: filterItems,
+    addText: '上传',
+    onAdd: handleAdd,
   }
 
   return (
     <>
-      <FilterForm {...filterFormProps} addText="上传" onAdd={handleAdd}/>
+      <FilterForm {...filterFormProps} />
       <FilesTable
         filters={filters}
         page={page}

@@ -6,6 +6,7 @@ import { fetchFiles, queryKey } from "#root/api/file";
 import { File, fileFilters } from "#root/api/file/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { useDeleteFile } from "#root/api/file/hooks";
+import { Modal, Image } from "antd";
 
 const { Paragraph } = Typography;
 
@@ -37,12 +38,31 @@ const columns = (
       width: 80,
     },
     {
+      title: "详情",
+      key: "preview",
+      width: 120,
+      render: (_: unknown, record: File) => {
+        const isImage = record.mimetype?.startsWith('image/');
+        return isImage ? (
+          <Image
+            width={50}
+            src={record.url}
+            preview={{
+              src: record.url,
+            }}
+          />
+        ) : (
+          <span>不支持预览</span>
+        );
+      },
+    },
+    {
       title: "名称",
       dataIndex: "filename",
       key: "filename",
       width: 200, // 添加固定宽度
       ellipsis: true,
-      render: (text) => <DisplayLongText text={text} />,
+      render: (text) => <DisplayLongText copyable={false} text={text} />,
     },
     {
       title: "原始名称",
@@ -50,7 +70,7 @@ const columns = (
       key: "originalname",
       width: 200,
       ellipsis: true,
-      render: (text) => <DisplayLongText text={text} />,
+      render: (text) => <DisplayLongText copyable={false} text={text} />,
     },
     {
       title: "链接",
@@ -75,7 +95,7 @@ const columns = (
       title: "cosKey",
       dataIndex: "cosKey",
       key: "cosKey",
-      render: (text) => <DisplayLongText text={text} />,
+      render: (text) => <DisplayLongText copyable={false} text={text} />,
     },
     {
       title: "上传时间",
