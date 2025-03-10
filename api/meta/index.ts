@@ -2,7 +2,7 @@ import request from "#root/utils/request";
 import { Meta, MetaFilters } from "./type";
 import { Pagination, PaginationOptions } from "#root/types/pagination.interface";
 
-export const queryKey = "admin-metas";
+export const BASE_QUERY_KEY = "admin-metas";
 
 export const fetchMetaByResource = async (
   resourceType: string,

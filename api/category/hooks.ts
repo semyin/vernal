@@ -1,28 +1,30 @@
+import { QueryKey } from "@tanstack/react-query";
 import { useAction } from "../common/useAction";
-import { createCategory, deleteCategory, updateCategory } from "./index";
-import { Category, CategoryFilters } from "./type";
+import { createCategory, deleteCategory, updateCategory, BASE_QUERY_KEY } from ".";
+import { Category } from "./type";
 
-export const useDeleteCategory = (filters: CategoryFilters) => {
-  return useAction<CategoryFilters, number, Category>({
+export const useDeleteCategory = (queryKey: QueryKey) => {
+  return useAction<number, Category>({
     fn: (id: number) => deleteCategory(id),
-    queryKey: "admin-categories",
-    filters
+    queryKey
   });
 };
 
 export const useCreateCategory = () => {
-  return useAction<CategoryFilters, Partial<Category>, Category>({
+  return useAction<Partial<Category>, Category>({
     fn: (data) => createCategory(data),
-    queryKey: "admin-categories",
+    queryKey: [BASE_QUERY_KEY],
+    exact: true,
     successMessage: "create successfully",
     errorMessage: "create falied"
   });
 };
 
 export const useUpdateCategory = () => {
-  return useAction<CategoryFilters, { id: number; data: Partial<Category> }, Category>({
+  return useAction<{ id: number; data: Partial<Category> }, Category>({
     fn: ({ id, data }) => updateCategory(id, data),
-    queryKey: "admin-categories",
+    queryKey: [BASE_QUERY_KEY],
+    exact: true,
     successMessage: "update successfully",
     errorMessage: "update falied"
   });

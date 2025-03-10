@@ -15,8 +15,8 @@ const FriendLinkModal = React.memo(
     const [loading, setLoading] = useState(false);
     const [buttonLoading, setButtonLoading] = useState(false);
 
-    const { mutate: createFriendLink } = useCreateFriendLink()
-    const { mutate: updateFriendLink } = useUpdateFriendLink()
+    const { mutate: createFriendLink } = useCreateFriendLink();
+    const { mutate: updateFriendLink } = useUpdateFriendLink();
 
     const [form] = Form.useForm();
 

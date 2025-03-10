@@ -1,7 +1,7 @@
 import { withFallback } from "vike-react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Table, TableColumnType } from "antd";
-import { fetchSite, queryKey } from "#root/api/site-config";
+import { fetchSite, BASE_QUERY_KEY } from "#root/api/site-config";
 import { Site } from "#root/api/site-config/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 
@@ -66,8 +66,11 @@ interface Props {
 
 const SiteTable = withFallback(
   ({ onEdit }: Props) => {
+
+    const queryKey = [BASE_QUERY_KEY];
+
     const result = useSuspenseQuery({
-      queryKey: [queryKey],
+      queryKey,
       queryFn: () => fetchSite(),
     });
 

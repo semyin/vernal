@@ -1,12 +1,10 @@
+import { QueryKey } from "@tanstack/react-query";
 import { useAction } from "../common/useAction";
-import { deleteFile, queryKey } from "./index";
-import { fileFilters } from "./type";
+import { deleteFile } from "./index";
 
-export const useDeleteFile = (filters: fileFilters) => {
-  return useAction<fileFilters, number, void>({
+export const useDeleteFile = (queryKey: QueryKey) => {
+  return useAction<number, void>({
     fn: (id: number) => deleteFile(id),
-    queryKey,
-    filters
+    queryKey
   });
 };
-

@@ -2,7 +2,7 @@ import { startTransition } from "react";
 import { withFallback } from "vike-react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Popconfirm, Table, TableColumnType } from "antd";
-import { fetchMetas, queryKey } from "#root/api/meta";
+import { BASE_QUERY_KEY, fetchMetas } from "#root/api/meta";
 import { useDeleteMeta } from "#root/api/meta/hooks";
 import { Meta, MetaFilters } from "#root/api/meta/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
@@ -90,8 +90,10 @@ interface Props {
 const MetasTable = withFallback(
   ({ page, limit, setPage, setLimit, filters, onEdit }: Props) => {
 
+    const queryKey = [BASE_QUERY_KEY, page, limit, filters]
+
     const result = useSuspenseQuery({
-      queryKey: [queryKey, filters],
+      queryKey,
       queryFn: () => fetchMetas({
         page,
         limit,
@@ -102,7 +104,7 @@ const MetasTable = withFallback(
       }),
     });
 
-    const { mutate: deleteMeta } = useDeleteMeta(filters)
+    const { mutate: deleteMeta } = useDeleteMeta(queryKey)
 
     const _s = useMountedStyles();
 

@@ -1,6 +1,8 @@
 import { Category, CategoryFilters } from "./type";
 import request from "#root/utils/request";
 
+export const BASE_QUERY_KEY = "admin-categories"
+
 export const fetchCategories = async (
   params?: CategoryFilters
 ): Promise<Category[]> => request.get("/categories", { params });

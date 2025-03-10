@@ -1,25 +1,27 @@
-import { createMeta, deleteMeta, queryKey, updateMeta } from ".";
+import { QueryKey } from "@tanstack/react-query";
+import { createMeta, deleteMeta, BASE_QUERY_KEY, updateMeta } from ".";
 import { useAction } from "../common/useAction";
-import { Meta, MetaFilters } from "./type";
+import { Meta } from "./type";
 
-export const useDeleteMeta = (filters: MetaFilters) => {
-  return useAction<MetaFilters, number, Meta>({
+export const useDeleteMeta = (queryKey: QueryKey) => {
+  return useAction<number, Meta>({
     fn: (id) => deleteMeta(id),
-    queryKey,
-    filters
+    queryKey
   });
 };
 
 export const useCreateMeta = () => {
-  return useAction<MetaFilters, Partial<Meta>, Meta>({
+  return useAction<Partial<Meta>, Meta>({
     fn: (data) => createMeta(data),
-    queryKey,
+    queryKey: [BASE_QUERY_KEY],
+    exact: true
   });
 };
 
 export const useUpdateMeta = () => {
-  return useAction<MetaFilters, { id: number, data: Partial<Meta> }, Meta>({
+  return useAction<{ id: number, data: Partial<Meta> }, Meta>({
     fn: ({ id, data }) => updateMeta(id, data),
-    queryKey,
+    queryKey: [BASE_QUERY_KEY],
+    exact: true
   });
 };

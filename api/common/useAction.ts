@@ -1,32 +1,41 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, QueryKey } from "@tanstack/react-query";
 import { message } from "antd";
 
-interface UseActionOptions<Filters, Variables, Response> {
+interface UseActionOptions<Variables, Response> {
   fn: (variables: Variables) => Promise<Response>;
-  queryKey: string;
-  filters?: Filters;
-  successMessage?: string;
-  errorMessage?: string;
+  queryKey: QueryKey;
+  exact?: boolean;
+  successMessage?: string | false; // 允许禁用提示
+  errorMessage?: string | false;
+  onSuccess?: (data: Response) => void; // 自定义成功回调
+  onError?: (error: unknown) => void; // 自定义错误回调
 }
 
-export const useAction = <Filters,Variables, Response>({
+export const useAction = <Variables, Response>({
   fn,
   queryKey,
-  filters,
+  exact = false,
   successMessage = "操作成功",
   errorMessage = "操作失败",
-}: UseActionOptions<Filters, Variables, Response>) => {
+  onSuccess,
+  onError,
+}: UseActionOptions<Variables, Response>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: fn,
-    onSuccess: () => {
-      message.success(successMessage);
-      const queryKeyWithFilters = filters ? [queryKey, filters] : [queryKey];
-      queryClient.invalidateQueries({ queryKey: queryKeyWithFilters });
+    onSuccess: (data) => {
+      if (successMessage !== false) {
+        message.success(successMessage);
+      }
+      queryClient.invalidateQueries({ queryKey, exact });
+      onSuccess?.(data);
     },
     onError: (error) => {
-      message.error(errorMessage + error);
+      if (errorMessage !== false) {
+        message.error(errorMessage + error);
+      }
+      onError?.(error);
     },
   });
 };

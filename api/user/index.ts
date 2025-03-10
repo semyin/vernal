@@ -1,7 +1,7 @@
 import request from "#root/utils/request";
 import { User, UserFilters } from "./type"
 
-export const queryKey = "admin-users"
+export const BASE_QUERY_KEY = "admin-users"
 
 export const fetchUsers = async (
   params: UserFilters

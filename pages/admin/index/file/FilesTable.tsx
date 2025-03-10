@@ -2,11 +2,11 @@ import { startTransition, Suspense, memo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { withFallback } from "vike-react-query";
 import { Button, Popconfirm, Table, TableColumnType, Tooltip, Typography } from "antd";
-import { fetchFiles, queryKey } from "#root/api/file";
+import { fetchFiles, BASE_QUERY_KEY } from "#root/api/file";
 import { File, fileFilters } from "#root/api/file/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { useDeleteFile } from "#root/api/file/hooks";
-import { Modal, Image } from "antd";
+import { Image } from "antd";
 
 const { Paragraph } = Typography;
 
@@ -131,8 +131,10 @@ interface FilesTableProps {
 const FilesTable = withFallback(
   ({ page, limit, setPage, setLimit, filters }: FilesTableProps) => {
 
+    const queryKey = [BASE_QUERY_KEY, page, limit, filters];
+
     const result = useSuspenseQuery({
-      queryKey: [queryKey, page, limit, filters],
+      queryKey,
       queryFn: () => fetchFiles({
         limit,
         page,
@@ -142,7 +144,7 @@ const FilesTable = withFallback(
 
     const _s = useMountedStyles();
 
-    const { mutate: deleteFile } = useDeleteFile(filters)
+    const { mutate: deleteFile } = useDeleteFile(queryKey)
 
     return <Suspense>
       <Table

@@ -1,6 +1,8 @@
 import request from "#root/utils/request";
 import { FriendLink, FriendLinkFilters } from "./type";
 
+export const BASE_QUERY_KEY = "admin-friendLinks"
+
 export const fetchFriendLinks = async (
   params?: FriendLinkFilters
 ): Promise<FriendLink[]> => request.get('/friend-links', { params })

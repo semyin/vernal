@@ -2,7 +2,7 @@ import request from "#root/utils/request";
 import { Pagination, PaginationOptions } from "#root/types/pagination.interface";
 import { fileFilters, File } from "./type";
 
-export const queryKey = "files";
+export const BASE_QUERY_KEY = "admin-files";
 
 export const uploadFile = async (data: FormData): Promise<File> =>
   request.post("/files/upload", data);

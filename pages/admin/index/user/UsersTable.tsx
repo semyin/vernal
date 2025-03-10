@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Popconfirm, Table, TableColumnType } from "antd";
 import { withFallback } from "vike-react-query"
-import { fetchUsers, queryKey } from "#root/api/user";
+import { fetchUsers, BASE_QUERY_KEY } from "#root/api/user";
 import { User, UserFilters } from "#root/api/user/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
 import { useDeleteUser } from "#root/api/user/hooks";
@@ -86,8 +86,10 @@ interface Props {
 const UsersTable = withFallback(
   ({ filters, onEdit }: Props) => {
 
+    const queryKey = [BASE_QUERY_KEY, filters]
+
     const result = useSuspenseQuery({
-      queryKey: [queryKey, filters],
+      queryKey,
       queryFn: () => fetchUsers({
         username: filters.username,
         email: filters.email,
@@ -96,7 +98,7 @@ const UsersTable = withFallback(
     });
 
     const _s = useMountedStyles();
-    const { mutate: deleteUser } = useDeleteUser(filters)
+    const { mutate: deleteUser } = useDeleteUser(queryKey)
 
     return <Table
       style={_s}

@@ -1,7 +1,7 @@
 import { withFallback } from "vike-react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Popconfirm, Switch, Table, TableColumnType } from "antd";
-import { fetchFriendLinks } from "#root/api/friend-link";
+import { BASE_QUERY_KEY, fetchFriendLinks } from "#root/api/friend-link";
 import { useDeleteFriendLink, useToggleFriendLinkVisible } from "#root/api/friend-link/hooks";
 import { FriendLink, FriendLinkFilters } from "#root/api/friend-link/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
@@ -101,13 +101,16 @@ interface FriendLinksTableProps {
 
 const FriendLinksTable = withFallback(
   ({ filters, onEdit }: FriendLinksTableProps) => {
+
+    const queryKey = [BASE_QUERY_KEY, filters]
+
     const result = useSuspenseQuery({
-      queryKey: ["admin-friendLinks", filters],
+      queryKey,
       queryFn: () => fetchFriendLinks({ name: filters.name, isVisible: filters.isVisible }),
     });
 
-    const { mutate: deleteFriendLink } = useDeleteFriendLink(filters)
-    const { mutate: toggleVisible } = useToggleFriendLinkVisible()
+    const { mutate: deleteFriendLink } = useDeleteFriendLink(queryKey)
+    const { mutate: toggleVisible } = useToggleFriendLinkVisible(queryKey)
 
     const _s = useMountedStyles();
     return <Table

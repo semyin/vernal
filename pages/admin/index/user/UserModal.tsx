@@ -1,7 +1,7 @@
 import { fetchUserDetail } from "#root/api/user";
 import { useCreateUser, useUpdateUser } from "#root/api/user/hooks";
 import { User } from "#root/api/user/type";
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 
 

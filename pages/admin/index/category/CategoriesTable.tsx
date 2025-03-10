@@ -1,7 +1,7 @@
 import { withFallback } from "vike-react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Popconfirm, Table, TableColumnType } from "antd";
-import { fetchCategories } from "#root/api/category";
+import { fetchCategories, BASE_QUERY_KEY } from "#root/api/category";
 import { useDeleteCategory } from "#root/api/category/hooks";
 import { Category, CategoryFilters } from "#root/api/category/type";
 import { useMountedStyles } from "#root/hooks/useMountedStyles";
@@ -66,12 +66,14 @@ interface CategoriesTableProps {
 const CategoriesTable = withFallback(
   ({ filters, onEdit }: CategoriesTableProps) => {
 
+    const queryKey = [BASE_QUERY_KEY, filters];
+
     const result = useSuspenseQuery({
-      queryKey: ["admin-categories", filters],
+      queryKey,
       queryFn: () => fetchCategories({ name: filters.name }),
     });
 
-    const { mutate: deleteCategory } = useDeleteCategory(filters)
+    const { mutate: deleteCategory } = useDeleteCategory(queryKey)
 
     const _s = useMountedStyles();
     return <Table

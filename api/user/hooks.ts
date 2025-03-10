@@ -1,25 +1,27 @@
-import { createUser, deleteUser, updateUser, queryKey } from ".";
+import { QueryKey } from "@tanstack/react-query";
+import { createUser, deleteUser, updateUser, BASE_QUERY_KEY } from ".";
 import { useAction } from "../common/useAction";
 import { User, UserFilters } from "./type";
 
-export const useDeleteUser = (filters: UserFilters) => {
-  return useAction<UserFilters, number, User>({
+export const useDeleteUser = (queryKey: QueryKey) => {
+  return useAction<number, User>({
     fn: (id) => deleteUser(id),
-    queryKey,
-    filters
+    queryKey
   });
 };
 
 export const useCreateUser = () => {
-  return useAction<UserFilters, Partial<User>, User>({
+  return useAction<Partial<User>, User>({
     fn: (data) => createUser(data),
-    queryKey
+    queryKey: [BASE_QUERY_KEY],
+    exact: true,
   });
 };
 
 export const useUpdateUser = () => {
-  return useAction<UserFilters, { id: number, data: Partial<User> }, User>({
+  return useAction<{ id: number, data: Partial<User> }, User>({
     fn: ({ id, data }) => updateUser(id, data),
-    queryKey
+    queryKey: [BASE_QUERY_KEY],
+    exact: true,
   });
 };

@@ -1,7 +1,7 @@
 import request from "#root/utils/request";
 import { Site, SiteWithBaseMeta } from "./type";
 
-export const queryKey = "admin-site"
+export const BASE_QUERY_KEY = "admin-site"
 
 export const fetchSiteConfig = async (): Promise<SiteWithBaseMeta> => request.get('/site/config')
 
