@@ -1,4 +1,4 @@
-import { startTransition, Suspense } from "react";
+import { startTransition, Suspense, memo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { withFallback } from "vike-react-query";
 import { Button, Popconfirm, Table, TableColumnType, Tooltip, Typography } from "antd";
@@ -15,22 +15,21 @@ interface DisplayLongTextProps {
   copyable?: boolean;
 }
 
-const DisplayLongText = (
-  { text, width = 200, copyable = true }: DisplayLongTextProps
-) => {
-  const decodedText = decodeURIComponent(text);
-  return (
-    <Tooltip title={decodedText}>
-      <Paragraph ellipsis style={{ width: `${width}px` }} copyable={copyable}>
-        {decodedText}
-      </Paragraph>
-    </Tooltip>
-  );
-};
+const DisplayLongText = memo(
+  ({ text, width = 200, copyable = true }: DisplayLongTextProps) => {
+    const decodedText = decodeURIComponent(text);
+    return (
+      <Tooltip title={decodedText}>
+        <Paragraph ellipsis style={{ width: `${width}px` }} copyable={copyable}>
+          {decodedText}
+        </Paragraph>
+      </Tooltip>
+    );
+  }
+)
 
 const columns = (
-  onDelete: (id: number) => void
-): TableColumnType<File>[] => [
+  onDelete: (id: number) => void): TableColumnType<File>[] => [
     {
       title: "ID",
       dataIndex: "id",

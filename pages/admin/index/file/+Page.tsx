@@ -16,6 +16,10 @@ function Page() {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(20);
 
+  const handleAdd = () => {
+
+  }
+
   const filterItems: FilterItemConfig[] = [
     {
       type: 'input',
@@ -34,9 +38,10 @@ function Page() {
     filterItems: filterItems
   }
 
+
   return (
     <>
-      <FilterForm {...filterFormProps} />
+      <FilterForm {...filterFormProps} addText="上传" onAdd={handleAdd}/>
       <FilesTable
         filters={filters}
         page={page}
