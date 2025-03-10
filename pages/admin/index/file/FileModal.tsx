@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Modal, Upload, message, Select, Button } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { uploadFile } from "#root/api/file";
-import { fileFilters } from "#root/api/file/type";
 import { DeleteOutlined } from '@ant-design/icons';
 
 const { Dragger } = Upload;
@@ -12,18 +11,17 @@ interface FileModalProps {
   visible: boolean;
   onCancel: () => void;
   onSuccess: () => void;
-  filters: fileFilters;
 }
 
-const FileModal = React.memo(({ visible, onCancel, onSuccess, filters }: FileModalProps) => {
+const FileModal = React.memo(({ visible, onCancel, onSuccess }: FileModalProps) => {
   const [loading, setLoading] = useState(false);
-  const [selectedType, setSelectedType] = useState(filters.type || "");
+  const [selectedType, setSelectedType] = useState<null | string>(null);
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
   const [isHovering, setIsHovering] = useState(false);
 
   // 添加重置状态
   const resetState = () => {
-    setSelectedType(filters.type || "");
+    setSelectedType(null);
     setFileToUpload(null);
   };
 
@@ -142,8 +140,12 @@ const FileModal = React.memo(({ visible, onCancel, onSuccess, filters }: FileMod
         <Select
           placeholder="选择文件类型"
           value={selectedType}
+          allowClear
           onChange={setSelectedType}
           style={{ width: '100%' }}
+          showSearch
+          mode="tags"
+          maxCount={1}
         >
           <Option value="article">文章图片</Option>
           <Option value="image">图片</Option>

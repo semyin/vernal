@@ -58,7 +58,6 @@ function Page() {
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         onSuccess={handleUploadSuccess}
-        filters={filters}
       />
     </>
   );
