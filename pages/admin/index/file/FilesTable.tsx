@@ -88,7 +88,7 @@ const FilesTable = withFallback(
   ({ page, limit, setPage, setLimit, filters }: FilesTableProps) => {
 
     const result = useSuspenseQuery({
-      queryKey: [queryKey, filters],
+      queryKey: [queryKey, page, limit, filters],
       queryFn: () => fetchFiles({
         limit,
         page,
