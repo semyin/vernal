@@ -20,7 +20,7 @@ const DisplayLongText = memo(
     const decodedText = decodeURIComponent(text);
     return (
       <Tooltip title={decodedText}>
-        <Paragraph ellipsis style={{ width: `${width}px` }} copyable={copyable}>
+        <Paragraph ellipsis style={{ width: `${width}px`, marginBottom: 0 }} copyable={copyable}>
           {decodedText}
         </Paragraph>
       </Tooltip>
