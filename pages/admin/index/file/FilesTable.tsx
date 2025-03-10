@@ -48,15 +48,9 @@ const columns = (
       key: "cosKey",
     },
     {
-      title: "创建时间",
+      title: "上传时间",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 160,
-    },
-    {
-      title: "更新时间",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
       width: 160,
     },
     {
