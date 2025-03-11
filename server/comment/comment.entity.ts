@@ -9,7 +9,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import type { Relation } from 'typeorm'
-import { User } from '../user/user.entity';
 import { Expose, Transform } from 'class-transformer';
 import { format } from 'date-fns';
 
@@ -41,33 +40,12 @@ export class Comment {
   @Transform(({ value }) => format(new Date(value), 'yyyy-MM-dd HH:mm:ss')) // 转换为本地时间字符串
   updatedAt!: Date;
 
-  // 关联用户表
-  @ManyToOne(() => User, (user) => user.comments)
-  @JoinColumn({ name: 'user_id' })
-  @Transform(({ value }) => {
-    if (value) {
-      return {
-        id: value.id,
-        username: value.username,
-        avatarUrl: value.avatarUrl,
-      };
-    }
-    return null;
-  })
-  @Expose()
-  user!: Relation<User>;
-
   // 子评论
   @OneToMany(() => Comment, (comment) => comment.parent)
   @Transform(({ value }) => {
     if (value) {
       return value.map((comment: Comment) => ({
         ...comment,
-        user: comment.user ? {
-          id: comment.user.id,
-          username: comment.user.username,
-          avatarUrl: comment.user.avatarUrl,
-        } : null,
       }));
     }
     return [];

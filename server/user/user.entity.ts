@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import type { Relation } from 'typeorm'
-import { Like } from '../like/like.entity';
-import { Brief } from 'server/brief/brief.entity';
-import { Exclude } from 'class-transformer';
-import { Comment } from 'server/comment/comment.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity('user')
 export class User {
@@ -36,16 +37,4 @@ export class User {
 
   @Column({ nullable: true, comment: '电话号码' })
   phone!: string;
-
-  // 用户与点赞的关系
-  @OneToMany(() => Like, (like) => like.user)
-  likes?: Relation<Like>[];
-
-  // 用户与简讯的关系
-  @OneToMany(() => Brief, (brief) => brief.author)
-  briefs?: Relation<Brief>[];
-
-   // 用户与评论的关系
-   @OneToMany(() => Comment, (comment) => comment.user)
-   comments?: Relation<Comment>[];
 }
