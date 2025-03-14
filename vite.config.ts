@@ -10,8 +10,10 @@ export default defineConfig(({ mode }) => {
   // 加载 .env 文件中的环境变量
   const env = loadEnv(mode, process.cwd());
   const port = parseInt(env.VITE_PORT || "3000", 10);
+  const host = env.VITE_HOST || "localhost";
   return {
     server: {
+      host,
       port,
     },
     resolve: {
@@ -73,9 +75,8 @@ export default defineConfig(({ mode }) => {
             console.log("✅ Vite 开发服务已启动");
             // 在此执行预热逻辑
             if (mode === "development") {
-              const port = server.config.server.port;
-              const baseURL = `http://localhost:${port}`;
               const apiPrefix = env.VITE_API_PREFIX;
+              const baseURL = `http://${host}:${port}`;
               const warmupURL = `${baseURL}${apiPrefix}/`;
               fetch(warmupURL)
                 .then(res => {
