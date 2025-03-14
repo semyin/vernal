@@ -66,6 +66,32 @@ export default defineConfig(({ mode }) => {
         handlerEntry: "/server/main.ts",
         serveClientAssetsInDev: true,
       }),
+      {
+        name: "warmup",
+        configureServer(server) {
+          server.httpServer?.once("listening", () => {
+            console.log("✅ Vite 开发服务已启动");
+            // 在此执行预热逻辑
+            if (mode === "development") {
+              const port = server.config.server.port;
+              const baseURL = `http://localhost:${port}`;
+              const apiPrefix = env.VITE_API_PREFIX;
+              const warmupURL = `${baseURL}${apiPrefix}/`;
+              fetch(warmupURL)
+                .then(res => {
+                  if (res.ok) {
+                    console.log("✅ 开发环境预热请求成功");
+                  } else {
+                    console.error("⚠️ 预热接口返回非 200 状态:", res.status);
+                  }
+                })
+                .catch(err => {
+                  console.error("❌ 预热请求失败:", err.message);
+                });
+            }
+          });
+        }
+      },
       react(),
       ssr({ disableAutoFullBuild: true }),
       dynamicImport(),
