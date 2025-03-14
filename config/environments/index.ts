@@ -16,10 +16,10 @@ export const APP_ENV = {
     LOGGING: process.env.DATABASE_LOGGING,
   },
   JWT: {
-    AUTH_DISABLE: process.env.JWT_AUTH_DISABLE,
-    SECRET: process.env.JWT_SECRET,
-    EXPIRES_IN: process.env.JWT_EXPIRES_IN,
-    COOKIE_NAME: process.env.JWT_COOKIE_NAME,
+    AUTH_DISABLE: process.env.VITE_JWT_AUTH_DISABLE,
+    SECRET: process.env.VITE_JWT_SECRET,
+    EXPIRES_IN: process.env.VITE_JWT_EXPIRES_IN,
+    COOKIE_NAME: process.env.VITE_JWT_COOKIE_NAME,
   },
   COS: {
     BUCKET: process.env.TENCENT_COS_BUCKET,
