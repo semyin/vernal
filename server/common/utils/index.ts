@@ -1,4 +1,4 @@
-export { completeTimeFromDateRange };
+export { completeTimeFromDateRange, parseBoolean };
 
 function completeTimeFromDateRange(dates: string[] | undefined): string[] {
   const dateRange: string[] = [];
@@ -17,4 +17,20 @@ function completeTimeFromDateRange(dates: string[] | undefined): string[] {
     }
   }
   return dateRange;
+}
+
+function parseBoolean(value: boolean | string): boolean {
+  if (value === undefined) {
+    return false;
+  }
+
+  // 处理字符串的 'true' 和 'false'
+  if (value === "true") return true;
+  if (value === "false") return false;
+
+  // 处理实际的布尔值
+  if (value === true || value === false) return value;
+
+  // 如果不是有效的布尔值表示，返回 undefined
+  return false;
 }

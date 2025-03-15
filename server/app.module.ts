@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { VpsModule } from "./vps.module";
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { parseBoolean } from "./common/utils";
+import { VpsModule } from "./vps.module";
 import { SnakeNamingStrategy } from "./common/utils/SnakeNamingStrategy";
 import { ArticleModule } from './article/article.module';
 import { Article } from './article/article.entity';
@@ -51,8 +52,8 @@ const __dirname = dirname(__filename);
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        logging: configService.get<boolean>('DATABASE_LOGGING'),
-        synchronize: configService.get<boolean>('DATABASE_SYNCHRONIZE'),
+        logging: parseBoolean(configService.get<boolean>('DATABASE_LOGGING', false)),
+        synchronize: parseBoolean(configService.get<boolean>('DATABASE_SYNCHRONIZE', false)),
         namingStrategy: new SnakeNamingStrategy(),
         entities: [
           Article,
