@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { VpsModule } from "./vps.module";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from "./common/utils/SnakeNamingStrategy";
@@ -38,32 +38,36 @@ const __dirname = dirname(__filename);
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ // 加载 .env 文件
-      isGlobal: true, // 全局可用
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DATABASE_HOST, // 从环境变量中读取
-      port: parseInt(process.env.DATABASE_PORT as string, 10), // 从环境变量中读取
-      username: process.env.DATABASE_USER, // 从环境变量中读取
-      password: process.env.DATABASE_PASSWORD, // 从环境变量中读取
-      database: process.env.DATABASE_NAME, // 从环境变量中读取
-      // logging: true, // 启用日志
-      namingStrategy: new SnakeNamingStrategy(),
-      entities: [
-        Article,
-        Category,
-        Tag,
-        User,
-        Like,
-        Brief,
-        Comment,
-        Site,
-        Meta,
-        FriendLink,
-        File,
-      ],
-      synchronize: false, // 关闭自动同步，因为我们手动创建了表
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USER'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME'),
+        logging: configService.get<boolean>('DATABASE_LOGGING'),
+        synchronize: configService.get<boolean>('DATABASE_SYNCHRONIZE'),
+        namingStrategy: new SnakeNamingStrategy(),
+        entities: [
+          Article,
+          Category,
+          Tag,
+          User,
+          Like,
+          Brief,
+          Comment,
+          Site,
+          Meta,
+          FriendLink,
+          File,
+        ],
+      }),
     }),
     ArticleModule, // 注册 ArticleModule
     CategoryModule, // 注册 CategoryModule

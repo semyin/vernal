@@ -1,4 +1,5 @@
 import { NestFactory, Reflector } from "@nestjs/core";
+import { ConfigService } from "@nestjs/config";
 import type { Express } from "express";
 import { IncomingMessage, ServerResponse } from "node:http";
 import { AppModule } from "./app.module";
@@ -9,15 +10,25 @@ import cookieParser from "cookie-parser";
 bootstrap();
 
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
-  const { API_PREFIX = "/api" } = process.env;
-  const globalPrefix = API_PREFIX ? API_PREFIX.replace("/", "") : "api";
-  app.setGlobalPrefix(globalPrefix); // 设置全局前缀 没有读取到设置为 api
+
+  // 设置api前缀
+  const configService = app.get(ConfigService);
+  const API_PREFIX = configService.get<string>('VITE_API_PREFIX') || "/api";
+  const globalPrefix = API_PREFIX.replace("/", "");
+  app.setGlobalPrefix(globalPrefix);
+
   app.use(cookieParser());
+
   const reflector = app.get(Reflector); // 获取 Reflector 实例
+
   app.useGlobalInterceptors(new TransformInterceptor(reflector)); // 全局注册拦截器
+
   app.useGlobalFilters(new HttpExceptionFilter()); // 全局注册异常过滤器
+
   await app.init();
+
   resolveHandler(await app.getHttpAdapter().getInstance());
 }
 

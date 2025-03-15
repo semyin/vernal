@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { Site } from './site.entity';
 import { BaseService } from 'server/common/service/base.service';
@@ -17,6 +18,7 @@ export class SiteService extends BaseService implements OnModuleInit {
   private site!: Site | null; // 内存中的配置
 
   constructor(
+    private configService: ConfigService,
     @InjectRepository(Site)
     private readonly siteRepository: Repository<Site>,
     private readonly metaService: MetaService, // 注入 MetaService
@@ -44,26 +46,38 @@ export class SiteService extends BaseService implements OnModuleInit {
     this.logger.log('Load site configuration into memory from database...')
     this.site = await this.siteRepository.findOne({ where: { id: 1 } });
     if (!this.site) {
-      this.logger.log('No configuration file, creating...')
       // 如果数据库中没有配置，初始化默认配置
-      const envVars = ['VITE_SITE_URL', 'VITE_SITE_NAME', 'VITE_SITE_COPYRIGHT', 'VITE_SITE_ICP'];
+      this.logger.log('No configuration file, creating...')
+
       // 必要配置做校验
+      const envVars = ['VITE_SITE_NAME', 'VITE_SITE_URL'];
       for (const envVar of envVars) {
-        if (!process.env[envVar]) {
-          throw new Error(`Environment variable ${envVar} is missing in .env file`);
+        if (!this.configService.get<string>(envVar)) {
+          throw new Error(
+            `Environment variable ${envVar} is missing in .env file`
+          );
         }
       }
-      const { VITE_SITE_URL, VITE_SITE_NAME, VITE_SITE_DESC, VITE_SITE_COPYRIGHT, VITE_SITE_ICP } = process.env;
+
+      const name = this.configService.get<string>('VITE_SITE_NAME');
+      const url = this.configService.get<string>('VITE_SITE_URL');
+      const description = this.configService.get<string>('VITE_SITE_DESC');
+      const copyright = this.configService.get<string>('VITE_SITE_COPYRIGHT');
+      const icp = this.configService.get<string>('VITE_SITE_ICP');
+
       this.site = await this.initConfig({
-        name: VITE_SITE_NAME,
-        description: VITE_SITE_DESC,
-        url: VITE_SITE_URL,
-        copyright: VITE_SITE_COPYRIGHT,
-        icp: VITE_SITE_ICP,
+        name,
+        description,
+        url,
+        copyright,
+        icp,
         runTime: new Date(),
       });
     }
-    this.logger.log('Site configuration file loaded successfully!', JSON.stringify(plainToInstance(Site, this.site)))
+    this.logger.log(
+      'Site configuration file loaded successfully!',
+      JSON.stringify(plainToInstance(Site, this.site))
+    )
   }
 
   // 初始化配置（仅内部调用）

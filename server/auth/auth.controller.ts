@@ -1,12 +1,15 @@
-import { Controller, Post, Req, Res, Body, UseGuards } from "@nestjs/common";
+import { Controller, Post, Res, Body, UseGuards } from "@nestjs/common";
+import { ConfigService } from '@nestjs/config';
 import { AuthService } from "./auth.service";
 import type { Response } from "express";
 import { JwtAuthGuard } from "./jwt-auth.guard";
-import { APP_ENV } from "config/environments";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService
+  ) {}
 
   @Post("login")
   async login(
@@ -17,8 +20,8 @@ export class AuthController {
 
     // 解析环境变量中的过期时间
     let maxAge = 24 * 60 * 60 * 1000; // 默认1天
-    const expiresIn = APP_ENV.JWT.EXPIRES_IN || '1d';    
-    
+    const expiresIn = this.configService.get<string>('VITE_JWT_EXPIRES_IN') || '1d';
+
     if (expiresIn.endsWith('d')) {
       // 如果是天数（例如 '1d'）
       const days = parseInt(expiresIn.slice(0, -1), 10);
@@ -39,7 +42,7 @@ export class AuthController {
 
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: this.configService.get<string>('NODE_ENV') === "production",
       maxAge, // 使用环境变量中的过期时间
     });
 
