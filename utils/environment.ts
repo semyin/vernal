@@ -1,6 +1,6 @@
 export const isSSR = import.meta.env.SSR;
 
-export const HOST = 'localhost';
+export const HOST = import.meta.env.VITE_HOST;
 
 export const PORT = import.meta.env.VITE_PORT;
 
