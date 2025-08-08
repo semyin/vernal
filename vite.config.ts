@@ -72,7 +72,7 @@ export default defineConfig(({ mode }) => {
         name: "warmup",
         configureServer(server) {
           server.httpServer?.once("listening", () => {
-            console.log("✅ Vite 开发服务已启动");
+            console.log("\n ✅ Vite 开发服务已启动\n");
             // 在此执行预热逻辑
             if (mode === "development") {
               const apiPrefix = env.VITE_API_PREFIX;
@@ -81,13 +81,13 @@ export default defineConfig(({ mode }) => {
               fetch(warmupURL)
                 .then(res => {
                   if (res.ok) {
-                    console.log("✅ 开发环境预热请求成功");
+                    console.log("\n✅ 开发环境预热请求成功\n");
                   } else {
-                    console.error("⚠️ 预热接口返回非 200 状态:", res.status);
+                    console.error("\n⚠️ 预热接口返回非 200 状态:", res.status + "\n");
                   }
                 })
                 .catch(err => {
-                  console.error("❌ 预热请求失败:", err.message);
+                  console.error("\n❌ 预热请求失败:", err.message + "\n");
                 });
             }
           });

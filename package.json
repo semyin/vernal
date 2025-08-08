@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vavite serve",
+    "dev": "vite serve",
     "build": "vavite build",
     "start": "cross-env HOST=0.0.0.0 NODE_ENV=production node dist/server/index.mjs"
   },
